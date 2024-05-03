@@ -1149,7 +1149,7 @@ export default function StakeV2() {
   const feeGlpTrackerAddress = getContract(chainId, "FeeGlpTracker");
 
   const glpManagerAddress = getContract(chainId, "GlpManager");
-  
+
   const timeDistributorAddress = getContract(chainId, "TimeDistributor");
   const yieldTrackerAddress = getContract(chainId, "YieldTracker");
 
@@ -1235,27 +1235,30 @@ export default function StakeV2() {
       fetcher: contractFetcher(signer, Token),
     }
   );
-  const { data: AGXBalance } = useSWR(
-    [`GlpSwap:glpBalance:${active}`, chainId, AGXAddress, "balanceOf", account],
-    {
-      fetcher: contractFetcher(signer, GLP),
-    }
-  );
+  const { data: AGXBalance } = useSWR([`GlpSwap:glpBalance:${active}`, chainId, AGXAddress, "balanceOf", account], {
+    fetcher: contractFetcher(signer, GLP),
+  });
   const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
     fetcher: contractFetcher(signer, GlpManager),
   });
 
-  const { data: totalEmissions } = useSWR([`StakeV2:totalEmission:${active}`, chainId, timeDistributorAddress, "totalEmission"], {
-    fetcher: contractFetcher(signer, TimeDistributor),
-  });
+  const { data: totalEmissions } = useSWR(
+    [`StakeV2:totalEmission:${active}`, chainId, timeDistributorAddress, "totalEmission"],
+    {
+      fetcher: contractFetcher(signer, TimeDistributor),
+    }
+  );
   const { data: totalClaimed } = useSWR([`StakeV2:totalClaim:${active}`, chainId, yieldTrackerAddress, "totalClaim"], {
     fetcher: contractFetcher(signer, YieldTracker),
   });
-  const { data: perinterval } = useSWR([`StakeV2:getTokensPerInterval:${active}`, chainId, yieldTrackerAddress, "getTokensPerInterval"], {
-    fetcher: contractFetcher(signer, YieldTracker),
-  });
+  const { data: perinterval } = useSWR(
+    [`StakeV2:getTokensPerInterval:${active}`, chainId, yieldTrackerAddress, "getTokensPerInterval"],
+    {
+      fetcher: contractFetcher(signer, YieldTracker),
+    }
+  );
   const { data: rewards } = useSWR([`StakeV2:claimable:${active}`, chainId, yieldTrackerAddress, "claimable"], {
-    fetcher: contractFetcher(signer, YieldTracker,[account]),
+    fetcher: contractFetcher(signer, YieldTracker, [account]),
   });
   const { data: nativeTokenPrice } = useSWR(
     [`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress],
@@ -1699,27 +1702,16 @@ export default function StakeV2() {
   const onClickPrimary = () => {
     setIsClaiming(true);
     const contract = new ethers.Contract(AGXAddress, GLP.abi, signer);
-    callContract(
-      chainId,
-      contract,
-      "claim",
-      [
-        account
-      ],
-      {
-        sentMsg: t`Claim submitted.`,
-        failMsg: t`Claim failed.`,
-        successMsg: t`Claim completed!`,
-        setPendingTxns,
-      }
-    )
-      .then(() => {
-      })
-      .finally(() => {
-        setIsClaiming(false);
-      });
+    callContract(chainId, contract, "claim", [account], {
+      sentMsg: t`Claim submitted.`,
+      failMsg: t`Claim failed.`,
+      successMsg: t`Claim completed!`,
+      setPendingTxns,
+    }).finally(() => {
+      setIsClaiming(false);
+    });
   };
-  
+
   // const AGXAddress = getContract(chainId, "AGX");
   // const contract = new ethers.Contract(AGXAddress, GLP.abi, signer);
   // const balance = contract.methods.balanceOf(account).call();
@@ -1844,9 +1836,7 @@ export default function StakeV2() {
           title={t`Earn`}
           subtitle={
             <div>
-              <Trans>
-              Earn reward from trading fees and liquidity mining
-              </Trans>
+              <Trans>Earn reward from trading fees and liquidity mining</Trans>
               {earnMsg && <div className="Page-description">{earnMsg}</div>}
               {/* {(incentiveStats?.lp?.isActive || incentiveStats?.trading?.isActive) && (
                 <div>
@@ -2468,7 +2458,12 @@ export default function StakeV2() {
               <div className="StakeV2-claimNum">{formatAmount(rewards, 18, 2, true)}</div>
               <div className="StakeV2-claimToken">AGX</div>
             </div>
-            <Button variant="secondary" className="StakeV2-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <Button
+              variant="secondary"
+              className="StakeV2-button"
+              onClick={onClickPrimary}
+              disabled={!isPrimaryEnabled()}
+            >
               {getPrimaryText()}
             </Button>
           </div>
@@ -2516,11 +2511,11 @@ export default function StakeV2() {
             </div>
           </div>
         </div>
-        
+
         <div className="App-card App-card-space-between StakeV2-content">
           <div className="StakeV2-box">
             <div className="StakeV2-stakeTitle">Stake AGX</div>
-            <Button variant="secondary" className="StakeV2-stakeButton"  onClick={() => showStakeGmxModals()}>
+            <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => showStakeGmxModals()}>
               <Trans>Stake AGX</Trans>
             </Button>
           </div>
