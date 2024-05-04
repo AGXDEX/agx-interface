@@ -39,7 +39,7 @@ export function getOracleKeeperRandomIndex(chainId: number, bannedIndexes?: numb
 
     if (filteredUrls.length) {
       const url = sample(filteredUrls);
-      return urls.indexOf(url);
+      return urls.indexOf(url!);
     }
   }
 

@@ -13,7 +13,12 @@ export const BSС_TESTNET = 97;
 export const ETH_MAINNET = 1;
 export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI = 43113;
-export const ARBITRUM = 810181;
+type ArbitrumType = 810181 | 810180;
+console.log(process.env.REACT_APP_ENV, process.env.REACT_APP_CHAIN_ID);
+
+const currentChain = process.env.REACT_APP_ENV === "development" ? 810181 : 810180;
+export const ARBITRUM = currentChain;
+
 export const ARBITRUM_GOERLI = 421613;
 export const FEES_HIGH_BPS = 50;
 export const DEFAULT_ALLOWED_SLIPPAGE_BPS = 30;
@@ -42,7 +47,7 @@ export const CHAIN_NAMES_MAP = {
   [BSС_MAINNET]: "BSC",
   [BSС_TESTNET]: "BSC Testnet",
   [ARBITRUM_GOERLI]: "Arbitrum Goerli",
-  [ARBITRUM]: "zkLink Nova Sepolia Testnet",
+  [ARBITRUM]: process.env.REACT_APP_ENV === "development" ? "zkLink Nova Sepolia Testnet" : "zkLink Nova",
   [AVALANCHE]: "Avalanche",
   [AVALANCHE_FUJI]: "Avalanche Fuji",
   [NOVA]: "zkLink Nova",
@@ -249,7 +254,8 @@ export const RPC_PROVIDERS = {
     "https://bsc-dataseed4.binance.org",
   ],
   [BSС_TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
-  [ARBITRUM]: ["https://sepolia.rpc.zklink.io"],
+  [ARBITRUM]:
+    process.env.REACT_APP_ENV === "development" ? ["https://sepolia.rpc.zklink.io"] : ["https://rpc.zklink.io"],
   [ARBITRUM_GOERLI]: [
     "https://goerli-rollup.arbitrum.io/rpc",
     // "https://endpoints.omniatech.io/v1/arbitrum/goerli/public",
@@ -268,7 +274,8 @@ export const RPC_PROVIDERS = {
 
 export const FALLBACK_PROVIDERS = {
   // [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyHttpUrl()],
-  [ARBITRUM]: ["https://sepolia.rpc.zklink.io"],
+  [ARBITRUM]:
+    process.env.REACT_APP_ENV === "development" ? ["https://sepolia.rpc.zklink.io"] : ["https://rpc.zklink.io"],
   [AVALANCHE]: ENV_AVALANCHE_RPC_URLS
     ? JSON.parse(ENV_AVALANCHE_RPC_URLS)
     : ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],

@@ -21,6 +21,10 @@ Open [http://localhost:3010](http://localhost:3010) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
+### `yarn start:pro`
+
+Runs the app in the production mode.
+
 ### `yarn start-home`
 
 Start in development mode and show the home page.
@@ -33,6 +37,14 @@ Start in development mode and show the main app.
 
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+## `yarn build:dev`
+
+Builds the app for development to the `build` folder.\
+
+## `yarn build:pro`
+
+Builds the app for production to the `build` folder.\
 
 ### `yarn build`
 

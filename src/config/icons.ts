@@ -27,13 +27,6 @@ const ICONS = {
     esgmx: esGMXArbitrumIcon,
     gm: gmArbitrum,
   },
-  [NOVA]: {
-    network: glpNova,
-    gmx: glpNova,
-    glp: glpNova,
-    esgmx: esGMXArbitrumIcon,
-    gm: gmArbitrum,
-  },
   [AVALANCHE]: {
     network: avalanche,
     gmx: gmxAvax,
@@ -47,12 +40,6 @@ const ICONS = {
     glp: glpArbitrum,
     gm: gmArbitrum,
   },
-  [NOVA_SEPOLIA]: {
-    network: glpNova,
-    gmx: glpNova,
-    glp: glpNova,
-    gm: gmArbitrum,
-  },
   [AVALANCHE_FUJI]: {
     network: avalancheTestnet,
     gm: gmAvax,
@@ -60,6 +47,7 @@ const ICONS = {
     glp: glpAvax,
   },
   common: {
+    network: glpNova,
     gmx: gmxIcon,
     gmxOutline: gmxOutlineIcon,
     glp: glpIcon,
