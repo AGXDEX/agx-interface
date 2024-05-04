@@ -25,9 +25,9 @@ function HomePage() {
             <img src={logoImg} alt="GMX Logo" />
           </Link>
           <div className="nav">
-            <a href="https://zklink.io/" target="block">whitepaper</a>
-            <a href="https://zklink.io/" target="block">twitter</a>
-            <a href="https://zklink.io/" target="block">Discord</a>
+            <a href="https://agx-1.gitbook.io/agx/" target="block">whitepaper</a>
+            {/* <a href="https://zklink.io/" target="block">twitter</a>
+            <a href="https://zklink.io/" target="block">Discord</a> */}
           </div>
         </div>
         <div className="topInner">

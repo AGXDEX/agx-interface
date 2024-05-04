@@ -44,7 +44,7 @@ export function HomeHeaderLinks({ small, clickCloseIcon, showRedirectModal }: Pr
       {small && (
         <div className="App-header-links-header">
           <Link className="App-header-link-main" to="/">
-            <img src={logoImg} alt="GMX Logo" />
+            <img src={logoImg} alt="AGX Logo" />
           </Link>
           <div
             className="App-header-menu-icon-block mobile-cross-menu"
