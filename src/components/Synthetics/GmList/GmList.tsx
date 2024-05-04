@@ -76,7 +76,7 @@ export function GmList({
             <>
               <div className="App-card-title">
                 <Trans>GM Pools</Trans>
-                <img src={currentIcons.network} width="16" alt="Network Icon" />
+                <img src={currentIcons?.network} width="16" alt="Network Icon" />
               </div>
               <div className="App-card-divider"></div>
             </>

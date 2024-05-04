@@ -128,7 +128,7 @@ export default function DashboardV2() {
   const currentV2MarketOverview = v2MarketsOverview[chainId];
   const uniqueUsers = useUniqueUsers();
   const chainName = getChainName(chainId);
-  const currentIcons = getIcons(chainId);
+  const currentIcons = getIcons(chainId)!;
   const { data: positionStats } = useSWR(
     ACTIVE_CHAIN_IDS.map((chainId) => getServerUrl(chainId, "/position_stats")),
     {
@@ -1202,7 +1202,7 @@ export default function DashboardV2() {
 
 function GMCard() {
   const { chainId } = useChainId();
-  const currentIcons = getIcons(chainId);
+  const currentIcons = getIcons(chainId)!;
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: true });
   const { marketsInfoData } = useMarketsInfoRequest(chainId);
 
