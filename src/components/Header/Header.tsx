@@ -99,8 +99,8 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
           <div className="App-header large">
             <div className="App-header-container-left">
               <Link className="App-header-link-main" to="/">
-                <img src={logoImg} className="big" alt="GMX Logo" />
-                <img src={logoSmallImg} className="small" alt="GMX Logo" />
+                <img src={logoImg} className="big" alt="AGX Logo" />
+                <img src={logoSmallImg} className="small" alt="AGX Logo" />
               </Link>
               {isHomeSite() ? (
                 <HomeHeaderLinks showRedirectModal={showRedirectModal} />
@@ -130,8 +130,8 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
                   {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
                 </div>
                 <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
-                  <img src={logoImg} className="big" alt="GMX Logo" />
-                  <img src={logoSmallImg} className="small" alt="GMX Logo" />
+                  <img src={logoImg} className="big" alt="AGX Logo" />
+                  <img src={logoSmallImg} className="small" alt="AGX Logo" />
                 </div>
               </div>
               <div className="App-header-container-right">
@@ -148,7 +148,7 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
         {isTradingIncentiveActive && (
           <HeaderPromoBanner>
             <Trans>
-              Trade&nbsp;on GMX&nbsp;V2 in&nbsp;Arbitrum and win&nbsp;280,000&nbsp;ARB ({">"} $500k) in prizes in{" "}
+              Trade&nbsp;on AGX&nbsp;V2 in&nbsp;Arbitrum and win&nbsp;280,000&nbsp;ARB ({">"} $500k) in prizes in{" "}
               <HeaderLink
                 to="/competitions/"
                 showRedirectModal={showRedirectModal}

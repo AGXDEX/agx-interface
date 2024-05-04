@@ -2479,7 +2479,7 @@ msgid "GMX transfers not yet enabled"
 msgstr ""
 
 #: src/components/Common/SEO.js
-msgid "GMX | Decentralized Perpetual Exchange"
+msgid "AGX | Decentralized Restaking Liquidity Marketplace"
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
@@ -5909,7 +5909,7 @@ msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th,
 msgstr "Échanger sur GMX et gagner <0>$250.000</0> de prix ! Jusqu'au 30 novembre, <1> cliquer ici</1>, pour en savoir plus.\""
 
 #: src/components/Common/SEO.js
-msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
+msgid "AGX is the first ever LRT Asset Supported native Multi-Chain Perpetual DEX which is based zkLink Nova,support up to 50X leverage directly from your wallet"
 msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
