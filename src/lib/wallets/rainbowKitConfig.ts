@@ -16,7 +16,7 @@ import { http, defineChain } from "viem";
 import { arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 
 import binanceWallet from "./connecters/binanceW3W/binanceWallet";
-export const arbitrum = /*#__PURE__*/ defineChain({
+export const sepolia = /*#__PURE__*/ defineChain({
   id: 810181,
   name: "zkLink Nova Testnet",
   network: "nova",
@@ -48,6 +48,38 @@ export const arbitrum = /*#__PURE__*/ defineChain({
     },
   },
 });
+export const nova = /*#__PURE__*/ defineChain({
+  id: 810180,
+  name: "zkLink Nova",
+  network: "nova",
+  nativeCurrency: {
+    decimals: 18,
+    name: "ETH",
+    symbol: "ETH",
+  },
+  rpcUrls: {
+    default: { http: ["https://rpc.zklink.io"] },
+    public: { http: ["https://rpc.zklink.io"] },
+  },
+  blockExplorers: {
+    etherscan: {
+      name: "zkLink Nova Explorer",
+      url: "hhttps://explorer.zklink.io",
+    },
+    default: {
+      name: "zkLink Nova Explorer",
+      url: "https://explorer.zklink.io",
+    },
+  },
+  contracts: {
+    multicall3: {
+      address: "0x01c3f51294494e350AD69B999Db6B382b3B510b9",
+      blockCreated: 212929,
+    },
+  },
+});
+const arbitrum = process.env.REACT_APP_ENV === "development" ? sepolia : nova;
+console.log(arbitrum);
 
 const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
 const APP_NAME = "GMX";
