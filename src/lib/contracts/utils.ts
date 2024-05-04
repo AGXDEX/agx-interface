@@ -20,12 +20,12 @@ export async function setGasPrice(txnOpts: any, provider: Provider, chainId: num
     // in which case we should fallback to the usual getGasPrice flow handled below
     if (feeData && feeData.maxPriorityFeePerGas) {
       txnOpts.maxFeePerGas = maxGasPrice;
-      txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
+      txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium!);
       return;
     }
   }
 
-  txnOpts.gasPrice = gasPrice.add(premium);
+  txnOpts.gasPrice = gasPrice.add(premium!);
   return;
 }
 

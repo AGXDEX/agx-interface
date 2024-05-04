@@ -30,7 +30,7 @@ export default function BuyGMX() {
   const { chainId } = useChainId();
   const isArbitrum = chainId === ARBITRUM;
   const { active } = useWallet();
-  const icons = getIcons(chainId);
+  const icons = getIcons(chainId)!;
   const chainName = getChainName(chainId);
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const externalLinks = EXTERNAL_LINKS[chainId];

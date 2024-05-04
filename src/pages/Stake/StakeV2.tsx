@@ -106,7 +106,7 @@ function StakeModal(props) {
   const [isStaking, setIsStaking] = useState(false);
   const isMetamaskMobile = useIsMetamaskMobile();
   const [isApproving, setIsApproving] = useState(false);
-  const icons = getIcons(chainId);
+  const icons = getIcons(chainId)!;
   const { data: tokenAllowance } = useSWR(
     active && stakingTokenAddress && [active, chainId, stakingTokenAddress, "allowance", account, farmAddress],
     {
@@ -246,7 +246,7 @@ function UnstakeModal(props) {
     nativeTokenSymbol,
   } = props;
   const [isUnstaking, setIsUnstaking] = useState(false);
-  const icons = getIcons(chainId);
+  const icons = getIcons(chainId)!;
 
   let amount = parseValue(value, 18);
   let burnAmount;
@@ -391,7 +391,7 @@ function VesterDepositModal(props) {
     setPendingTxns,
   } = props;
   const [isDepositing, setIsDepositing] = useState(false);
-  const icons = getIcons(chainId);
+  const icons = getIcons(chainId)!;
 
   let amount = parseValue(value, 18);
 
@@ -1086,7 +1086,7 @@ export default function StakeV2() {
 
   const [, setPendingTxns] = usePendingTxns();
 
-  const icons = getIcons(chainId);
+  const icons = getIcons(chainId)!;
   const hasInsurance = true;
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
   const [stakeModalTitle, setStakeModalTitle] = useState("");
