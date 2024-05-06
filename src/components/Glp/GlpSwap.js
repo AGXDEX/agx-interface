@@ -744,11 +744,7 @@ export default function GlpSwap(props) {
 
   const buyGlp = () => {
     setIsSubmitting(true);
-    console.log('glpAmount',glpAmount);
-    // const minGlp = glpAmount.mul(BASIS_POINTS_DIVISOR - savedAllowedSlippage).div(BASIS_POINTS_DIVISOR);
-    // dev test
-    const minGlp = 0;
-    console.log('minGlp',minGlp);
+    const minGlp = glpAmount.mul(BASIS_POINTS_DIVISOR - savedAllowedSlippage).div(BASIS_POINTS_DIVISOR);
 
     const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, signer);
     const method = swapTokenAddress === AddressZero ? "mintAndStakeGlpETH" : "mintAndStakeGlp";
