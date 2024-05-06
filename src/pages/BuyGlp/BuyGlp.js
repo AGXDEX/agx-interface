@@ -28,7 +28,7 @@ export default function BuyGlp() {
   return (
     <div className="default-container page-layout">
       <PageTitle
-        title={t`Buy / Sell GLP`}
+        title={t`Buy / Sell ALP`}
         isTop
         // subtitle={
         //   <div>
