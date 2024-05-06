@@ -213,7 +213,7 @@ export default function GlpSwap(props) {
   const glpManagerAddress = getContract(chainId, "GlpManager");
   const glpRewardRouterAddress = getContract(chainId, "RewardRouter");
 
-  const tokensForBalanceAndSupplyQuery = [stakedGlpTrackerAddress, usdgAddress];
+  const tokensForBalanceAndSupplyQuery = [feeGlp, usdgAddress];
   const glpIcon = getIcon(chainId, "glp");
 
   const isFeesHigh = feeBasisPoints > FEES_HIGH_BPS;
@@ -240,22 +240,23 @@ export default function GlpSwap(props) {
     return t`Fees`;
   }
 
-  // const { data: balancesAndSupplies } = useSWR(
-  //   [
-  //     `GlpSwap:getTokenBalancesWithSupplies:${active}`,
-  //     chainId,
-  //     readerAddress,
-  //     "getTokenBalancesWithSupplies",
-  //     account || PLACEHOLDER_ACCOUNT,
-  //   ],
-  //   {
-  //     fetcher: contractFetcher(signer, ReaderV2, [tokensForBalanceAndSupplyQuery]),
-  //   }
-  // );
+  const { data: balancesAndSupplies } = useSWR(
+    [
+      `GlpSwap:getTokenBalancesWithSupplies:${active}`,
+      chainId,
+      readerAddress,
+      "getTokenBalancesWithSupplies",
+      account || PLACEHOLDER_ACCOUNT,
+    ],
+    {
+      fetcher: contractFetcher(signer, ReaderV2, [tokensForBalanceAndSupplyQuery]),
+    }
+  );
 
   const { data: aums } = useSWR([`GlpSwap:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
     fetcher: contractFetcher(signer, GlpManager),
   });
+  console.log('aums===>',aums);
 
   const { data: totalTokenWeights } = useSWR(
     [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
@@ -316,16 +317,17 @@ export default function GlpSwap(props) {
   const inCooldownWindow = redemptionTime && parseInt(Date.now() / 1000) < redemptionTime;
 
   // remove balancesAndSupplies
-  // const glpSupply = balancesAndSupplies ? balancesAndSupplies[1] : bigNumberify(0);
-  // const usdgSupply = balancesAndSupplies ? balancesAndSupplies[3] : bigNumberify(0);
-  const glpSupply = bigNumberify(0);
-  const usdgSupply =bigNumberify(0);
+  const glpSupply = balancesAndSupplies ? balancesAndSupplies[1] : bigNumberify(0);
+  const usdgSupply = balancesAndSupplies ? balancesAndSupplies[3] : bigNumberify(0);
+  // const glpSupply = bigNumberify(0);
+  // const usdgSupply =bigNumberify(0);
 
 
   let aum;
   if (aums && aums.length > 0) {
     aum = isBuying ? aums[0] : aums[1];
   }
+  console.log(aum);
   const glpPrice =
     aum && aum.gt(0) && glpSupply.gt(0)
       ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(glpSupply)

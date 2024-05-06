@@ -306,6 +306,9 @@
 .value-gap{
   margin: 0 0.2rem;
 }
+.Exchange-swap-max{
+  margin-left: 0.4rem;
+}
 
 @media (max-width: 900px) {
   .GlpSwap-content {
