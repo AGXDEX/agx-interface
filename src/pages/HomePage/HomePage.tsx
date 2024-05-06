@@ -32,6 +32,9 @@ function HomePage() {
         </div>
         <div className="topInner">
           <div className="titleFirst">
+            AGX
+          </div>
+          <div className="titleFirst">
             Decentralized Restaking Liquidity Marketplace
           </div>
           <div className="topButton">
