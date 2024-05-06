@@ -1160,6 +1160,7 @@ export default function StakeV2() {
   const glpVesterAddress = getContract(chainId, "GlpVester");
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
   const AGXAddress = getContract(chainId, "AGX");
+  const ALPAddress = getContract(chainId, "ALP");
 
   const excludedEsGmxAccounts = [stakedGmxDistributorAddress, stakedGlpDistributorAddress];
 
@@ -1701,7 +1702,7 @@ export default function StakeV2() {
   };
   const onClickPrimary = () => {
     setIsClaiming(true);
-    const contract = new ethers.Contract(AGXAddress, GLP.abi, signer);
+    const contract = new ethers.Contract(ALPAddress, GLP.abi, signer);
     callContract(chainId, contract, "claim", [account], {
       sentMsg: t`Claim submitted.`,
       failMsg: t`Claim failed.`,
