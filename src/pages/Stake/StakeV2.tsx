@@ -2472,7 +2472,7 @@ export default function StakeV2() {
 
         <div className="App-card App-card-space-between StakeV2-content">
           <div className="StakeV2-title">AGX Statistics</div>
-          <div className="StakeV2-box">
+          <div className="StakeV2-box mobileBox">
             <div className="StakeV2-fomBox">
               <div className="StakeV2-tit">APR</div>
               <div>1,333,213</div>
@@ -2493,7 +2493,7 @@ export default function StakeV2() {
         </div>
         <div className="App-card App-card-space-between StakeV2-content">
           <div className="StakeV2-title">My Data</div>
-          <div className="StakeV2-box">
+          <div className="StakeV2-box mobileBox">
             <div className="StakeV2-fomBox">
               <div className="StakeV2-tit">AGX</div>
               <div>{formatAmount(AGXBalance, 18, 2, true)}</div>

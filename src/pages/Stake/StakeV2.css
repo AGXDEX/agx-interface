@@ -102,7 +102,7 @@
   }
 
   .StakeV2-content {
-    min-height: 100vh;
+    /* min-height: 100vh; */
   }
 
   .StakeV2-total-rewards-card {
@@ -111,6 +111,19 @@
   .App-card-footer {
     position: relative;
     padding: 0;
+  }
+  .StakeV2-totalBox{
+    height: auto!important;
+  }
+  .StakeV2-button{
+    top: auto!important;
+    bottom: 5px;
+  }
+  .StakeV2-box{
+    padding-bottom: 50px;
+  }
+  .mobileBox{
+    display: block!important;
   }
 }
 .StakeV2-content{
