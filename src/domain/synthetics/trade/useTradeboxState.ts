@@ -73,7 +73,6 @@ export function useTradeboxState(
   // eslint-disable-next-line react/hook-use-state
   const [storedOptions, setStoredOptionsWithoutFallbacks] = useState<StoredTradeOptions | undefined>(() => {
     const raw = localStorage.getItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)));
-
     if (!raw) {
       localStorage.setItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)), "");
       return undefined;
@@ -146,6 +145,7 @@ export function useTradeboxState(
       }
 
       const market = availableTokensOptions.sortedAllMarkets?.at(0);
+      console.log("market===>", market);
 
       if (!market) {
         return;
@@ -285,8 +285,8 @@ export function useTradeboxState(
 
   const tradeFlags = useMemo(() => createTradeFlags(tradeType!, tradeMode!), [tradeType, tradeMode]);
   const { isSwap } = tradeFlags;
-
-  const fromTokenAddress = storedOptions?.tokens.fromTokenAddress;
+  // TODO
+  const fromTokenAddress = storedOptions?.tokens.fromTokenAddress || "";
   const fromToken = getByKey(tokensData, fromTokenAddress);
 
   const toTokenAddress = tradeFlags.isSwap

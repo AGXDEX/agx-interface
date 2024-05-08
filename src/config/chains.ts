@@ -167,7 +167,7 @@ const constants = {
   [ARBITRUM]: {
     nativeTokenSymbol: "ETH",
     wrappedTokenSymbol: "WETH",
-    defaultCollateralSymbol: "USDC.e",
+    defaultCollateralSymbol: "USDC",
     defaultFlagOrdersEnabled: false,
     positionReaderPropsLength: 9,
     v2: true,
