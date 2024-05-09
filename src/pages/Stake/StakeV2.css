@@ -144,6 +144,32 @@
   position: relative;
   gap: 15px;
 }
+.between{
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.between .halfBox{
+  width: 45%;
+}
+.between .StakeV2-fomBox{
+  width: 100%;
+  height: 30px;
+  padding: 0 12px;
+  display: flex;
+  justify-content: space-between;
+}
+.StakeV2-content .marBottom{
+  margin-bottom: 20px;
+}
+.StakeV2-content .ishide{
+  display: none;
+}
+.StakeV2-content .isShow{
+  display: flex;
+}
+.StakeV2-content .show{
+  display: block;
+}
 .StakeV2-totalBox{
   width: 233px;
   height: 68px;
@@ -202,6 +228,10 @@
   font-weight: 700;
   text-align: left;
 }
+.padLeft{
+  padding-left: 12px;
+  margin-bottom: 20px;
+}
 .StakeV2-stakeButton{
   position: absolute!important;
   padding: 10px 20px!important;
@@ -216,3 +246,21 @@
 /* .box-padding{
   padding: 0 150px;
 } */
+.tabBox{
+  width: 100%;
+  padding-bottom: 10px;
+  border-bottom: 3px solid #1d202e;
+  margin-bottom: 10px;
+  display: flex;
+}
+.tabBox .tab{
+  font-weight: 400;
+  font-size: 18px;
+  margin-right: 12px;
+  color: rgb(139, 145, 157);
+  padding: 0 10px;
+  cursor: pointer;
+}
+.tabBox .active{
+  color: #5D00FB;
+}

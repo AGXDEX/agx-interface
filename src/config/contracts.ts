@@ -141,6 +141,8 @@ export const SEPOLOIA_CONTRACRT = {
   TimeDistributor: "0x5ABb55813cf4EF88cCd0DD04e0036cD649C00949",
 
   Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
+  v3StakerAddress:"0x947248452C8227032b2B8c4a341F819C2d68f681",
+  nonfungibleTokenPositionManagerAddress:"0x45f84cf9620cecEDaf6742d38F480A5683030fe8"
 };
 const currentContract = process.env.REACT_APP_ENV === "development" ? SEPOLOIA_CONTRACRT : NOVA_CONTRACRT;
 const CONTRACTS = {
