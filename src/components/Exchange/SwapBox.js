@@ -2453,7 +2453,7 @@ export default function SwapBox(props) {
             )}
           </div>
         )}
-        <UsefulLinks className="Useful-links-swapbox" />
+        {/* <UsefulLinks className="Useful-links-swapbox" /> */}
       </div>
       <NoLiquidityErrorModal
         chainId={chainId}

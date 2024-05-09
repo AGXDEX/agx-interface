@@ -141,6 +141,9 @@ export const SEPOLOIA_CONTRACRT = {
   TimeDistributor: "0x5ABb55813cf4EF88cCd0DD04e0036cD649C00949",
 
   Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
+  UniswapAGXEthPool: "0x6e42d10eB474a17b14f3cfeAC2590bfa604313C7",
+  v3Factory: "0x0c283f1a3C6981eE623cb4E8AcC4f450f39D0815",
+  WethSwap: "0x6e42d10eB474a17b14f3cfeAC2590bfa604313C7",
 };
 const currentContract = process.env.REACT_APP_ENV === "development" ? SEPOLOIA_CONTRACRT : NOVA_CONTRACRT;
 const CONTRACTS = {
