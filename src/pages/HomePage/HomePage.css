@@ -60,7 +60,7 @@
 }
 .titleFirst{
   width: 95%;
-  font-family: Inter;
+  font-family: Satoshi;
   font-size: 56px;
   font-weight: 800;
   line-height: 55px;
@@ -79,7 +79,7 @@
 }
 .topText{
   width: 60%;
-  font-family: Inter;
+  font-family: Satoshi;
   font-size: 24px;
   font-weight: 400;
   color: #CBD5E1;
@@ -128,7 +128,7 @@
   display: inline-block;
   width: auto;
   max-width: 110%;
-  font-family: Inter;
+  font-family: Satoshi;
   font-size: 40px;
   font-weight: 800;
   line-height: 45px;
@@ -175,7 +175,7 @@
   background: linear-gradient(18.55deg, #77F6D3 -26.26%, #6063F0 43.6%, #9F57F2 108.45%);
   text-align: center;
   line-height: 40px;
-  font-family: Inter;
+  font-family: Satoshi;
   font-size: 24px;
   font-weight: 500;
 }
