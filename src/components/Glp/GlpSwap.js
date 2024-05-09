@@ -162,12 +162,12 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
 
 const tabOptions = [t`Buy ALP`, t`Sell ALP`];
 const dataList = [
-  { name: "USDT", value: 2500000, percentage: 25 },
-  { name: "USDC", value: 2500000, percentage: 25 },
-  { name: "ETH", value: 750000, percentage: 15 },
-  { name: "WBTC", value: 750000, percentage: 15 },
-  { name: "pufETH", value: 500000, percentage: 10 },
-  { name: "ezETH", value: 500000, percentage: 10 },
+  { name: "USDT", value: 0.25 },
+  { name: "USDC", value: 0.25 },
+  { name: "ETH", value: 0.15 },
+  { name: "WBTC", value: 0.15 },
+  { name: "pufETH", value: 0.1 },
+  { name: "ezETH", value: 0.1 },
 ];
 export default function GlpSwap(props) {
   const { isBuying, setIsBuying } = props;
@@ -287,7 +287,7 @@ export default function GlpSwap(props) {
   );
 
   const glpVesterAddress = getContract(chainId, "GlpVester");
-  const reservedAmount =0;
+  const reservedAmount = 0;
   // const { data: reservedAmount } = useSWR(
   //   [`GlpSwap:reservedAmount:${active}`, chainId, glpVesterAddress, "pairAmounts", account || PLACEHOLDER_ACCOUNT],
   //   {
@@ -298,8 +298,8 @@ export default function GlpSwap(props) {
   // const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
   const rewardTrackersForStakingInfo = [stakedGlpTrackerAddress, feeGlpTrackerAddress];
-  
- //TODO
+
+  //TODO
   // const { data: stakingInfo } = useSWR(
   //   [`GlpSwap:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
   //   {
@@ -307,10 +307,8 @@ export default function GlpSwap(props) {
   //   }
   // );
 
- 
   // const stakingData = getStakingData(stakingInfo);
   const stakingData = null;
-
 
   const redemptionTime = lastPurchaseTime ? lastPurchaseTime.add(GLP_COOLDOWN_DURATION) : undefined;
   const inCooldownWindow = redemptionTime && parseInt(Date.now() / 1000) < redemptionTime;
@@ -318,7 +316,6 @@ export default function GlpSwap(props) {
   // remove balancesAndSupplies
   const glpSupply = balancesAndSupplies ? balancesAndSupplies[1] : bigNumberify(0);
   const usdgSupply = balancesAndSupplies ? balancesAndSupplies[3] : bigNumberify(0);
-
 
   let aum;
   if (aums && aums.length > 0) {
@@ -1329,7 +1326,7 @@ export default function GlpSwap(props) {
                   {!isBuying && (
                     <div className="App-card-row">
                       <div className="label">
-                      {t`CurrentTarget`}
+                        {t`CurrentTarget`}
                         {/* <Tooltip
                           handle={t`CurrentTarget`}
                           position="bottom-start"
