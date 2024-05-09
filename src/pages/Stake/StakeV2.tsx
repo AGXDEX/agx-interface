@@ -82,6 +82,39 @@ import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 import { usePendingTxns } from "lib/usePendingTxns";
 
 const { AddressZero } = ethers.constants;
+function DepositModal(props) {
+  const {
+    isVisible,
+    setIsVisible,
+    chainId,
+    title,
+    maxAmount,
+    value,
+    setValue,
+    active,
+    account,
+    signer,
+    stakingTokenSymbol,
+    stakingTokenAddress,
+    farmAddress,
+    rewardRouterAddress,
+    stakeMethodName,
+    setPendingTxns,
+  } = props;
+  return (
+    <div className="StakeModal bigModal">
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
+        
+        <div className="Exchange-swap-button-container">
+          <Button variant="primary-action" className="w-full">
+            {/* {getPrimaryText()} */}
+            Deposit
+          </Button>
+        </div>
+      </Modal>
+    </div>
+  );
+}
 
 function StakeModal(props) {
   const {
@@ -1089,6 +1122,7 @@ export default function StakeV2() {
   const icons = getIcons(chainId)!;
   const hasInsurance = true;
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
+  const [depositModalVisible, setDepositModalVisible] = useState(false);
   const [stakeModalTitle, setStakeModalTitle] = useState("");
   const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState<BigNumber | undefined>(undefined);
   const [stakeValue, setStakeValue] = useState("");
@@ -1398,6 +1432,9 @@ export default function StakeV2() {
     setStakingTokenAddress(gmxAddress);
     setStakingFarmAddress(stakedGmxTrackerAddress);
     setStakeMethodName("stakeGmx");
+  };
+  const showDepositModals = () => {
+    setDepositModalVisible(true);
   };
   const showStakeGmxModals = () => {
     setIsStakeModalVisible(true);
@@ -1719,6 +1756,27 @@ export default function StakeV2() {
   // console.log(balance)
   return (
     <div className="default-container page-layout">
+      <DepositModal
+        isVisible={depositModalVisible}
+        setIsVisible={setDepositModalVisible}
+        chainId={chainId}
+        title='Choose your AGX-ETH NFT'
+        maxAmount={stakeModalMaxAmount}
+        value={stakeValue}
+        setValue={setStakeValue}
+        active={active}
+        account={account}
+        signer={signer}
+        stakingTokenSymbol={stakingTokenSymbol}
+        stakingTokenAddress={stakingTokenAddress}
+        farmAddress={stakingFarmAddress}
+        rewardRouterAddress={rewardRouterAddress}
+        stakeMethodName={stakeMethodName}
+        hasMultiplierPoints={hasMultiplierPoints}
+        setPendingTxns={setPendingTxns}
+        nativeTokenSymbol={nativeTokenSymbol}
+        wrappedTokenSymbol={wrappedTokenSymbol}
+      />
       <StakeModal
         isVisible={isStakeModalVisible}
         setIsVisible={setIsStakeModalVisible}
@@ -2463,7 +2521,7 @@ export default function StakeV2() {
               variant="secondary"
               className="StakeV2-button"
               onClick={onClickPrimary}
-              disabled={!isPrimaryEnabled()}
+              disabled={!rewards}
             >
               {getPrimaryText()}
             </Button>
@@ -2519,6 +2577,35 @@ export default function StakeV2() {
             <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => showStakeGmxModals()}>
               <Trans>Stake AGX</Trans>
             </Button>
+          </div>
+        </div>
+        <div className="App-card App-card-space-between StakeV2-content">
+          <div className="StakeV2-box">
+            <div className="StakeV2-stakeTitle">Stake AGX-ETH LP</div>
+            <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => showDepositModals()}>
+              <Trans>Deposit AGX-ETH LP</Trans>
+            </Button>
+          </div>
+        </div>
+        <div className="App-card App-card-space-between StakeV2-content">
+          <div className="StakeV2-stakeTitle">My deposit LP NFT</div>
+          <div className="StakeV2-box mobileBox">
+            <div className="StakeV2-fomBox">
+              <div className="StakeV2-tit">AGX</div>
+              <div>{formatAmount(AGXBalance, 18, 2, true)}</div>
+            </div>
+            <div className="StakeV2-fomBox">
+              <div className="StakeV2-tit">Staked AGX</div>
+              <div>0</div>
+            </div>
+            <div className="StakeV2-fomBox">
+              <div className="StakeV2-tit">Total Reward</div>
+              <div>0</div>
+            </div>
+            <div className="StakeV2-fomBox">
+              <div className="StakeV2-tit">Claimable Rewards</div>
+              <div>0</div>
+            </div>
           </div>
         </div>
       </div>
