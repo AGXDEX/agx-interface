@@ -258,8 +258,8 @@ function FullApp() {
           {!isHome && (
             <Switch>
               <Route exact path="/">
-                {/* <Redirect to="/trade" /> */}
-                <HomePage />
+                <Redirect to="/buy" />
+                {/* <HomePage /> */}
               </Route>
               <Route exact path="/price_impact_rebates_stats">
                 <PriceImpactRebatesStatsPage />
