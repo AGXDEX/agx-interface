@@ -130,8 +130,8 @@
   margin-bottom: 15px;
 }
 .StakeV2-title{
-  font-family: Satoshi;
-  font-size: 16px;
+  font-family: "Relative", sans-serif;
+  font-size: 20px;
   font-weight: 700;
   line-height: 21.6px;
   text-align: left;
@@ -161,13 +161,13 @@
 .StakeV2-content .marBottom{
   margin-bottom: 20px;
 }
-.StakeV2-content .ishide{
+.StakeV2-content .ishide,.NFTCard .ishide{
   display: none;
 }
 .StakeV2-content .isShow{
   display: flex;
 }
-.StakeV2-content .show{
+.StakeV2-content .show,.NFTCard .show{
   display: block;
 }
 .StakeV2-totalBox{
@@ -175,17 +175,17 @@
   height: 68px;
   border-radius: 8px 0px 0px 0px;
   padding: 12px;
-  background: #1d202e;
-  font-family: Satoshi;
-  font-size: 16px;
+  /* background: #1d202e; */
+  font-family: "Relative", sans-serif;
+  font-size: 20px;
   font-weight: 900;
   text-align: left;
 }
 .StakeV2-tit{
-  font-family: Satoshi;
-  font-size: 12px;
+  font-family: "Relative", sans-serif;
+  font-size: 16px;
   font-weight: 500;
-  color: #5A5B5D;
+  color: #a5a6a8;
   margin-bottom: 10px;
 }
 .StakeV2-button{
@@ -198,7 +198,7 @@
 }
 .StakeV2-claimBox{
   display: flex;
-  font-family: Satoshi;
+  font-family: "Relative", sans-serif;
   font-size: 16px;
   font-weight: 500;
   text-align: left;
@@ -217,13 +217,13 @@
   height: 68px;
   border-radius: 8px 0px 0px 0px;
   padding: 12px;
-  font-family: Satoshi;
+  font-family: "Relative", sans-serif;
   font-size: 16px;
   font-weight: 900;
   text-align: left;
 }
 .StakeV2-stakeTitle{
-  font-family: Satoshi;
+  font-family: "Relative", sans-serif;
   font-size: 16px;
   font-weight: 700;
   text-align: left;
@@ -243,9 +243,12 @@
 .bigModal .Modal-content{
   width: 50rem;
 }
-/* .box-padding{
-  padding: 0 150px;
-} */
+.largeModal .Modal-content{
+  width: 80rem;
+}
+.box-padding{
+  font-family: "Relative", sans-serif;
+}
 .tabBox{
   width: 100%;
   padding-bottom: 10px;
@@ -262,5 +265,45 @@
   cursor: pointer;
 }
 .tabBox .active{
+  color: #5D00FB;
+}
+.NFTCard{
+  display: flex;
+  gap: 29px;
+  flex-wrap: wrap;
+}
+.NFTCard img{
+  width: 170px;
+}
+.NFTCard .NFTBox{
+  cursor: pointer;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+.NFTCard .tokenActive{
+  border: 1px solid #fff;
+  border-radius: 24px;
+}
+.depositButton{
+  text-align: right;
+}
+.depositButton button{
+  width: 200px;
+}
+.depButton{
+  display: flex;
+  flex-direction: column;
+}
+.stakeButton{
+  width: 100%;
+  margin-top: 10px;
+}
+.addNow{
+  padding-left: 12px;
+}
+.addNow span{
+  cursor: pointer;
+}
+.addNow a:hover{
   color: #5D00FB;
 }

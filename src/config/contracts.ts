@@ -142,7 +142,15 @@ export const SEPOLOIA_CONTRACRT = {
 
   Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   v3StakerAddress:"0x947248452C8227032b2B8c4a341F819C2d68f681",
-  nonfungibleTokenPositionManagerAddress:"0x45f84cf9620cecEDaf6742d38F480A5683030fe8"
+  nonfungibleTokenPositionManagerAddress:"0x45f84cf9620cecEDaf6742d38F480A5683030fe8",
+  dexreader: "0xCb33c510e98510Ab047e2f182c4164b2Df46cFeC",
+  weth: "0x6e42d10eB474a17b14f3cfeAC2590bfa604313C7",
+  IncentiveKey: {
+    rewardToken: '0x0F3aFfe0c0465F7965845123B8c23509De0b0154',
+    pool: '0x5f54797FDaA58c118Eb1EbdAbA79Ac4bFD975efA',
+    startTime: 1715248592,
+    endTime: 1716248582,
+  }
 };
 const currentContract = process.env.REACT_APP_ENV === "development" ? SEPOLOIA_CONTRACRT : NOVA_CONTRACRT;
 const CONTRACTS = {

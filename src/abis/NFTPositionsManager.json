@@ -1,4 +1,7 @@
-[
+{
+  "_format": "hh-zksolc-artifact-1",
+  "contractName": "NFTPositionsManager",
+  "abi": [
   {
     "inputs": [
       { "internalType": "address", "name": "_factory", "type": "address" },
@@ -512,18 +515,6 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "from", "type": "address" },
-      { "internalType": "address", "name": "to", "type": "address" },
-      { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
-      { "internalType": "bytes", "name": "_data", "type": "bytes" }
-    ],
-    "name": "safeTransferFrom",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
       { "internalType": "address", "name": "token", "type": "address" },
       { "internalType": "uint256", "name": "value", "type": "uint256" },
       { "internalType": "uint256", "name": "deadline", "type": "uint256" },
@@ -683,4 +674,5 @@
     "type": "function"
   },
   { "stateMutability": "payable", "type": "receive" }
-]
+  ]
+}

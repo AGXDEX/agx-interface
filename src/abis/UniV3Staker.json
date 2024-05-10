@@ -1,4 +1,7 @@
-[
+{
+  "_format": "hh-zksolc-artifact-1",
+  "contractName": "UniV3Staker",
+  "abi": [
   {
     "inputs": [
       {
@@ -703,4 +706,5 @@
     "stateMutability": "nonpayable",
     "type": "function"
   }
-]
+  ]
+}
