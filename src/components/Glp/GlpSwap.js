@@ -164,12 +164,12 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
 
 const tabOptions = [t`Buy ALP`, t`Sell ALP`];
 const dataList = [
-  { name: "USDT", value: 2500000, percentage: 25 },
-  { name: "USDC", value: 2500000, percentage: 25 },
-  { name: "ETH", value: 750000, percentage: 15 },
-  { name: "WBTC", value: 750000, percentage: 15 },
-  { name: "pufETH", value: 500000, percentage: 10 },
-  { name: "ezETH", value: 500000, percentage: 10 },
+  { name: "USDT", value: 0.25 },
+  { name: "USDC", value: 0.25 },
+  { name: "ETH", value: 0.15 },
+  { name: "WBTC", value: 0.15 },
+  { name: "pufETH", value: 0.1 },
+  { name: "ezETH", value: 0.1 },
 ];
 export default function GlpSwap(props) {
   const { isBuying, setIsBuying } = props;

@@ -11,37 +11,20 @@ const RingChart: React.FC<RingChartProps> = ({ data }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
 
-  // 计算每个配比项的数值
-  // const totalValue = dataList.reduce((acc, item) => acc + item.value, 0);
-  // dataList.forEach((item) => {
-  //   item.value = (item.percentage / 100) * totalValue;
-  // });
   useEffect(() => {
     if (chartRef.current) {
       chartInstance.current = echarts.init(chartRef.current);
 
       const option: echarts.EChartOption = {
         title: {
-          text: "Crypto allocation",
+          text: "Target allocation",
           left: "center",
           top: "0",
           textStyle: { color: "#fff" },
         },
         tooltip: {
           trigger: "item",
-          // formatter: "{b}: {c} ({d}%)",
-          formatter: (params: any) => {
-            const value = params.value;
-            let formattedValue = "";
-            if (value >= 1000000) {
-              formattedValue = (value / 1000000).toFixed(1) + "M";
-            } else if (value >= 1000) {
-              formattedValue = (value / 1000).toFixed(1) + "k";
-            } else {
-              formattedValue = value.toString();
-            }
-            return `${params.name}: ${formattedValue}`;
-          },
+          formatter: "{b}: {d}%",
         },
         legend: {
           bottom: "-2%",

@@ -5,6 +5,7 @@ import Checkbox from "components/Checkbox/Checkbox";
 import Footer from "components/Footer/Footer";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
+import cx from "classnames";
 
 import GlpManager from "abis/GlpManager.json";
 import ReaderV2 from "abis/ReaderV2.json";
@@ -16,6 +17,8 @@ import Vester from "abis/Vester.json";
 import TimeDistributor from "abis/TimeDistributor.json";
 import YieldTracker from "abis/YieldTracker.json";
 import GLP from "abis/GLP.json";
+import NFTPositionsManager from "abis/NFTPositionsManager.json";
+import UniV3Staker from "abis/UniV3Staker.json";
 
 import { ARBITRUM, AVALANCHE, getConstant } from "config/chains";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
@@ -80,8 +83,41 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import useVestingData from "domain/vesting/useVestingData";
 import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 import { usePendingTxns } from "lib/usePendingTxns";
-
+import axios from "axios";
 const { AddressZero } = ethers.constants;
+function DepositModal(props) {
+  const {
+    isVisible,
+    setIsVisible,
+    chainId,
+    title,
+    maxAmount,
+    value,
+    setValue,
+    active,
+    account,
+    signer,
+    stakingTokenSymbol,
+    stakingTokenAddress,
+    farmAddress,
+    rewardRouterAddress,
+    stakeMethodName,
+    setPendingTxns,
+  } = props;
+  return (
+    <div className="StakeModal bigModal">
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
+        
+        <div className="Exchange-swap-button-container">
+          <Button variant="primary-action" className="w-full">
+            {/* {getPrimaryText()} */}
+            Deposit
+          </Button>
+        </div>
+      </Modal>
+    </div>
+  );
+}
 
 function StakeModal(props) {
   const {
@@ -1089,6 +1125,7 @@ export default function StakeV2() {
   const icons = getIcons(chainId)!;
   const hasInsurance = true;
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
+  const [depositModalVisible, setDepositModalVisible] = useState(false);
   const [stakeModalTitle, setStakeModalTitle] = useState("");
   const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState<BigNumber | undefined>(undefined);
   const [stakeValue, setStakeValue] = useState("");
@@ -1129,6 +1166,7 @@ export default function StakeV2() {
   const [isCompoundModalVisible, setIsCompoundModalVisible] = useState(false);
   const [isClaimModalVisible, setIsClaimModalVisible] = useState(false);
   const [isAffiliateClaimModalVisible, setIsAffiliateClaimModalVisible] = useState(false);
+  const [selectTab, setselectTab] = useState('Staking');
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
   const rewardReaderAddress = getContract(chainId, "RewardReader");
@@ -1152,6 +1190,9 @@ export default function StakeV2() {
 
   const timeDistributorAddress = getContract(chainId, "TimeDistributor");
   const yieldTrackerAddress = getContract(chainId, "YieldTracker");
+
+  const NFTPositionsManagerAddress = getContract(chainId, "nonfungibleTokenPositionManagerAddress");
+  const uniV3StakerAddress = getContract(chainId, "v3StakerAddress");
 
   const stakedGmxDistributorAddress = getContract(chainId, "StakedGmxDistributor");
   const stakedGlpDistributorAddress = getContract(chainId, "StakedGlpDistributor");
@@ -1261,6 +1302,11 @@ export default function StakeV2() {
   const { data: rewards } = useSWR([`StakeV2:claimable:${active}`, chainId, yieldTrackerAddress, "claimable"], {
     fetcher: contractFetcher(signer, YieldTracker, [account]),
   });
+
+  const { data: NFTlist } = useSWR([`StakeV2:positions:${active}`, chainId, NFTPositionsManagerAddress, "positions"], {
+    fetcher: contractFetcher(signer, NFTPositionsManager,[9]),
+  });
+  console.log(NFTlist)
   const { data: nativeTokenPrice } = useSWR(
     [`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress],
     {
@@ -1398,6 +1444,9 @@ export default function StakeV2() {
     setStakingTokenAddress(gmxAddress);
     setStakingFarmAddress(stakedGmxTrackerAddress);
     setStakeMethodName("stakeGmx");
+  };
+  const showDepositModals = () => {
+    setDepositModalVisible(true);
   };
   const showStakeGmxModals = () => {
     setIsStakeModalVisible(true);
@@ -1712,6 +1761,19 @@ export default function StakeV2() {
       setIsClaiming(false);
     });
   };
+  axios.post('http://13.115.181.197:8000/subgraphs/name/staker', "{\"query\":\"{\\n  nfts(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    }\\n}\"}")
+  .then(response => {
+    // console.log('Response:', response.data);
+    // response.data.data.nfts.map((i)=>{
+    //   const { data: list } = useSWR([`StakeV2:positions:${active}`, chainId, NFTPositionsManagerAddress, "positions", i.tokenId], {
+    //     fetcher: contractFetcher(signer, NFTPositionsManager),
+    //   });
+    //   console.log(list)
+    // })
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
 
   // const AGXAddress = getContract(chainId, "AGX");
   // const contract = new ethers.Contract(AGXAddress, GLP.abi, signer);
@@ -1719,6 +1781,27 @@ export default function StakeV2() {
   // console.log(balance)
   return (
     <div className="default-container page-layout">
+      <DepositModal
+        isVisible={depositModalVisible}
+        setIsVisible={setDepositModalVisible}
+        chainId={chainId}
+        title='Choose your AGX-ETH NFT'
+        maxAmount={stakeModalMaxAmount}
+        value={stakeValue}
+        setValue={setStakeValue}
+        active={active}
+        account={account}
+        signer={signer}
+        stakingTokenSymbol={stakingTokenSymbol}
+        stakingTokenAddress={stakingTokenAddress}
+        farmAddress={stakingFarmAddress}
+        rewardRouterAddress={rewardRouterAddress}
+        stakeMethodName={stakeMethodName}
+        hasMultiplierPoints={hasMultiplierPoints}
+        setPendingTxns={setPendingTxns}
+        nativeTokenSymbol={nativeTokenSymbol}
+        wrappedTokenSymbol={wrappedTokenSymbol}
+      />
       <StakeModal
         isVisible={isStakeModalVisible}
         setIsVisible={setIsStakeModalVisible}
@@ -2463,7 +2546,7 @@ export default function StakeV2() {
               variant="secondary"
               className="StakeV2-button"
               onClick={onClickPrimary}
-              disabled={!isPrimaryEnabled()}
+              disabled={!rewards}
             >
               {getPrimaryText()}
             </Button>
@@ -2471,54 +2554,114 @@ export default function StakeV2() {
         </div>
 
         <div className="App-card App-card-space-between StakeV2-content">
-          <div className="StakeV2-title">AGX Statistics</div>
-          <div className="StakeV2-box mobileBox">
-            <div className="StakeV2-fomBox">
-              <div className="StakeV2-tit">APR</div>
-              <div>1,333,213</div>
+          <div className="tabBox">
+            <div className={cx("tab", { 'active': selectTab === 'Staking' })} onClick={()=>setselectTab('Staking')}>Staking</div>
+            <div className={cx("tab", { 'active': selectTab === 'Pool2' })} onClick={()=>setselectTab('Pool2')}>Pool2 Mining</div>
+          </div>
+          <div className="StakeV2-box between">
+            <div className="halfBox">
+              <div className="StakeV2-stakeTitle padLeft">Overview</div>
+              <div className={cx("mobileBox ishide", { 'show': selectTab === 'Staking' })}>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">APR</div>
+                  <div>1,333,213</div>
+                </div>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Stake APR</div>
+                  <div>0</div>
+                </div>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Staked AGX</div>
+                  <div>0</div>
+                </div>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Total Staking Reward</div>
+                  <div>0</div>
+                </div>
+              </div>
+              <div className={cx("mobileBox ishide", { 'show': selectTab === 'Pool2' })}>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">APR</div>
+                  <div>1,333,213</div>
+                </div>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Stake AGX in LP NFT:</div>
+                  <div>0</div>
+                </div>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">TVL</div>
+                  <div>0</div>
+                </div>
+              </div>
             </div>
-            <div className="StakeV2-fomBox">
-              <div className="StakeV2-tit">Stake APR</div>
-              <div>0</div>
-            </div>
-            <div className="StakeV2-fomBox">
-              <div className="StakeV2-tit">Staked AGX</div>
-              <div>0</div>
-            </div>
-            <div className="StakeV2-fomBox">
-              <div className="StakeV2-tit">Total Staking Reward</div>
-              <div>0</div>
+            <div className="halfBox">
+              <div className="StakeV2-stakeTitle padLeft">My Data</div>
+              <div className={cx("mobileBox ishide", { 'show': selectTab === 'Staking' })}>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">AGX</div>
+                  <div>{formatAmount(AGXBalance, 18, 2, true)}</div>
+                </div>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Staked AGX</div>
+                  <div>0</div>
+                </div>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Total Reward</div>
+                  <div>0</div>
+                </div>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Claimable Rewards</div>
+                  <div>0</div>
+                </div>
+              </div>
+              <div className={cx("mobileBox ishide", { 'show': selectTab === 'Pool2' })}>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Staked AGX in LP NFT</div>
+                  <div>{formatAmount(AGXBalance, 18, 2, true)}</div>
+                </div>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Total Reward</div>
+                  <div>0</div>
+                </div>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Claimable Rewards</div>
+                  <div>0</div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="App-card App-card-space-between StakeV2-content">
-          <div className="StakeV2-title">My Data</div>
-          <div className="StakeV2-box mobileBox">
-            <div className="StakeV2-fomBox">
-              <div className="StakeV2-tit">AGX</div>
-              <div>{formatAmount(AGXBalance, 18, 2, true)}</div>
-            </div>
-            <div className="StakeV2-fomBox">
-              <div className="StakeV2-tit">Staked AGX</div>
-              <div>0</div>
-            </div>
-            <div className="StakeV2-fomBox">
-              <div className="StakeV2-tit">Total Reward</div>
-              <div>0</div>
-            </div>
-            <div className="StakeV2-fomBox">
-              <div className="StakeV2-tit">Claimable Rewards</div>
-              <div>0</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="App-card App-card-space-between StakeV2-content">
-          <div className="StakeV2-box">
-            <div className="StakeV2-stakeTitle">Stake AGX</div>
+          <div className={cx("StakeV2-box marBottom ishide", { 'isShow': selectTab === 'Staking' })}>
+            <div className="StakeV2-stakeTitle padLeft">Stake AGX</div>
             <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => showStakeGmxModals()}>
               <Trans>Stake AGX</Trans>
             </Button>
+          </div>
+          <div className={cx("StakeV2-box marBottom ishide", { 'isShow': selectTab === 'Pool2' })}>
+            <div className="StakeV2-stakeTitle padLeft">Stake AGX-ETH LP</div>
+            <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => showDepositModals()}>
+              <Trans>Deposit AGX-ETH LP</Trans>
+            </Button>
+          </div>
+          <div className={cx("ishide", { 'show': selectTab === 'Pool2' })}>
+            <div className="StakeV2-stakeTitle padLeft">My deposit LP NFT</div>
+            <div className="StakeV2-box mobileBox">
+              <div className="StakeV2-fomBox">
+                <div className="StakeV2-tit">AGX</div>
+                <div>{formatAmount(AGXBalance, 18, 2, true)}</div>
+              </div>
+              <div className="StakeV2-fomBox">
+                <div className="StakeV2-tit">Staked AGX</div>
+                <div>0</div>
+              </div>
+              <div className="StakeV2-fomBox">
+                <div className="StakeV2-tit">Total Reward</div>
+                <div>0</div>
+              </div>
+              <div className="StakeV2-fomBox">
+                <div className="StakeV2-tit">Claimable Rewards</div>
+                <div>0</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

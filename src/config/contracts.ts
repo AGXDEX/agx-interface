@@ -144,6 +144,8 @@ export const SEPOLOIA_CONTRACRT = {
   UniswapAGXEthPool: "0x6e42d10eB474a17b14f3cfeAC2590bfa604313C7",
   v3Factory: "0x0c283f1a3C6981eE623cb4E8AcC4f450f39D0815",
   WethSwap: "0x6e42d10eB474a17b14f3cfeAC2590bfa604313C7",
+  v3StakerAddress: "0x947248452C8227032b2B8c4a341F819C2d68f681",
+  nonfungibleTokenPositionManagerAddress: "0x45f84cf9620cecEDaf6742d38F480A5683030fe8",
 };
 const currentContract = process.env.REACT_APP_ENV === "development" ? SEPOLOIA_CONTRACRT : NOVA_CONTRACRT;
 const CONTRACTS = {
