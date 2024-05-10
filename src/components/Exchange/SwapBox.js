@@ -1968,6 +1968,7 @@ export default function SwapBox(props) {
               option={swapOption}
               onChange={onSwapOptionChange}
               className="Exchange-swap-option-tabs"
+              disabledOptions={[LONG, SHORT]}
             />
             {flagOrdersEnabled && (
               <Tab
@@ -2452,7 +2453,7 @@ export default function SwapBox(props) {
             )}
           </div>
         )}
-        <UsefulLinks className="Useful-links-swapbox" />
+        {/* <UsefulLinks className="Useful-links-swapbox" /> */}
       </div>
       <NoLiquidityErrorModal
         chainId={chainId}

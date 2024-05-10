@@ -36,6 +36,8 @@ import GLP from "abis/GLP.json";
 import Token from "abis/Token.json";
 import VaultV2 from "abis/VaultV2.json";
 import Vester from "abis/Vester.json";
+import UniswapV3 from "abis/UniswapV3Factory.json";
+import UniPoolV3 from "abis/UniswapV3Pool.json";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -296,7 +298,12 @@ export default function GlpSwap(props) {
   // );
 
   // const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
-
+  const v3Factory = getContract(ARBITRUM, "v3Factory");
+  const wethSwap = getContract(ARBITRUM, "WethSwap");
+  const agxAddressArb = getContract(ARBITRUM, "AGX");
+  const { data: gmxPrice } = useSWR([`GlpSwap:agxPrice:${active}`, chainId, v3Factory, "getPool"], {
+    fetcher: contractFetcher(signer, UniswapV3, [agxAddressArb, wethSwap, 3000]),
+  });
   const rewardTrackersForStakingInfo = [stakedGlpTrackerAddress, feeGlpTrackerAddress];
 
   //TODO

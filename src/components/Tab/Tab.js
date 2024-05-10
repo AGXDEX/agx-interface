@@ -3,13 +3,25 @@ import cx from "classnames";
 import "./Tab.css";
 
 export default function Tab(props) {
-  const { options, option, setOption, onChange, type = "block", className, optionLabels, icons } = props;
+  const {
+    options,
+    option,
+    setOption,
+    onChange,
+    type = "block",
+    className,
+    optionLabels,
+    icons,
+    disabledOptions = [],
+  } = props;
   const onClick = (opt) => {
-    if (setOption) {
-      setOption(opt);
-    }
-    if (onChange) {
-      onChange(opt);
+    if (!disabledOptions.includes(opt)) {
+      if (setOption) {
+        setOption(opt);
+      }
+      if (onChange) {
+        onChange(opt);
+      }
     }
   };
 
@@ -18,7 +30,11 @@ export default function Tab(props) {
       {options.map((opt) => {
         const label = optionLabels && optionLabels[opt] ? optionLabels[opt] : opt;
         return (
-          <div className={cx("Tab-option", "muted", { active: opt === option })} onClick={() => onClick(opt)} key={opt}>
+          <div
+            className={cx("Tab-option", "muted", { active: opt === option, disabled: disabledOptions.includes(opt) })}
+            onClick={() => onClick(opt)}
+            key={opt}
+          >
             {icons && icons[opt] && <img className="Tab-option-icon" src={icons[opt]} alt={option} />}
             {label}
           </div>
