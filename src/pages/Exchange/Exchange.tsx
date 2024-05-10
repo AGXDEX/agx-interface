@@ -1016,12 +1016,12 @@ export const Exchange = forwardRef(
     return (
       <div className="Exchange page-layout">
         {showBanner && <ExchangeBanner hideBanner={hideBanner} />}
-        <div className="Exchange-content">
-          <div className="Exchange-left">
+        <div className="Exchange-content default-container">
+          {/* <div className="Exchange-left">
             {renderChart()}
             <div className="Exchange-lists large">{getListSection()}</div>
-          </div>
-          <div className="Exchange-right">
+          </div> */}
+          <div className="Exchange-right ">
             {getIsV1Supported(chainId) && (
               <SwapBox
                 pendingPositions={pendingPositions}
