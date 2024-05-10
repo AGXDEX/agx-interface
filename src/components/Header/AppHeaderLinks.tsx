@@ -42,13 +42,13 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
         </HeaderLink>
       </div> */}
       <div className="App-header-link-container">
-        <HeaderLink to="/earn" showRedirectModal={showRedirectModal}>
-          <Trans>Earn</Trans>
+        <HeaderLink to="/buy" showRedirectModal={showRedirectModal}>
+          <Trans>Buy</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink to="/buy" showRedirectModal={showRedirectModal}>
-          <Trans>Buy</Trans>
+        <HeaderLink to="/earn" showRedirectModal={showRedirectModal}>
+          <Trans>Earn</Trans>
         </HeaderLink>
       </div>
       {/* <div className="App-header-link-container">
