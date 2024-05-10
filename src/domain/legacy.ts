@@ -12,6 +12,8 @@ import Router from "abis/Router.json";
 import Token from "abis/Token.json";
 import UniPool from "abis/UniPool.json";
 import UniswapV2 from "abis/UniswapV2.json";
+import UniswapV3 from "abis/UniswapV3Factory.json";
+import UniPoolV3 from "abis/UniswapV3Pool.json";
 import Vault from "abis/Vault.json";
 
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, getChainName, getConstant, getHighExecutionFee } from "config/chains";
@@ -501,7 +503,8 @@ export function useHasOutdatedUi() {
 
 export function useGmxPrice(chainId, libraries, active) {
   const arbitrumLibrary = libraries && libraries.arbitrum ? libraries.arbitrum : undefined;
-  const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum(arbitrumLibrary, active);
+  // const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum(arbitrumLibrary, active);
+  const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useAGXPriceFromNova();
   const { data: gmxPriceFromAvalanche, mutate: mutateFromAvalanche } = useGmxPriceFromAvalanche();
 
   const gmxPrice = chainId === ARBITRUM ? gmxPriceFromArbitrum : gmxPriceFromAvalanche;
@@ -690,6 +693,40 @@ function useGmxPriceFromArbitrum(signer, active) {
     updateUniPoolSlot0(undefined, true);
     updateEthPrice(undefined, true);
   }, [updateEthPrice, updateUniPoolSlot0]);
+
+  return { data: gmxPrice, mutate };
+}
+function useAGXPriceFromNova() {
+  const poolAddress = getContract(ARBITRUM, "UniswapAGXEthPool");
+  const v3Factory = getContract(ARBITRUM, "v3Factory");
+  const wethSwap = getContract(ARBITRUM, "WethSwap");
+  const agxAddressArb = getContract(ARBITRUM, "AGX");
+
+  const { data, mutate: updateReserves } = useSWR(["TraderJoeAGXNovaReserves", ARBITRUM, v3Factory, "getPool"], {
+    fetcher: contractFetcher(undefined, UniswapV3, [agxAddressArb, wethSwap, 3000]),
+  });
+
+  const { _reserve0: gmxReserve, _reserve1: avaxReserve }: any = data || {};
+
+  const vaultAddress = getContract(AVALANCHE, "Vault");
+  const avaxAddress = getTokenBySymbol(AVALANCHE, "WAVAX").address;
+  const { data: avaxPrice, mutate: updateAvaxPrice } = useSWR(
+    [`StakeV2:avaxPrice`, AVALANCHE, vaultAddress, "getMinPrice", avaxAddress],
+    {
+      fetcher: contractFetcher(undefined, Vault),
+    }
+  );
+
+  const PRECISION = bigNumberify(10)!.pow(18);
+  let gmxPrice;
+  if (avaxReserve && gmxReserve && avaxPrice) {
+    gmxPrice = avaxReserve.mul(PRECISION).div(gmxReserve).mul(avaxPrice).div(PRECISION);
+  }
+
+  const mutate = useCallback(() => {
+    updateReserves(undefined, true);
+    updateAvaxPrice(undefined, true);
+  }, [updateReserves, updateAvaxPrice]);
 
   return { data: gmxPrice, mutate };
 }

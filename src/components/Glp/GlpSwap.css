@@ -34,7 +34,7 @@
 
 .GlpSwap-content .GlpSwap-stats-card {
   max-width: 71.2rem;
-  margin-right: 1.5rem;
+  margin-right: 2.4rem;
 }
 
 .GlpSwap-stats-card .App-card-row .label {
@@ -52,10 +52,11 @@
 .GlpSwap-box .Exchange-swap-option-tabs {
   margin: 1.5rem 0;
 }
-.App-card-stats{
+.GlpSwap-stats-card .App-card-stats{
   display: flex;
   align-items: center;
   margin-bottom: 2.4rem;
+  padding: 1rem 1.5rem;
 }
 .App-card-stats .App-card-title { 
   margin-bottom: 0;

@@ -1250,7 +1250,7 @@ export default function StakeV2() {
   const glpVesterAddress = getContract(chainId, "GlpVester");
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
   const AGXAddress = getContract(chainId, "AGX");
-  const wethAddress = getContract(chainId, "weth");
+  const wethAddress = getContract(chainId, "WethSwap");
   const ALPAddress = getContract(chainId, "ALP");
 
   const excludedEsGmxAccounts = [stakedGmxDistributorAddress, stakedGlpDistributorAddress];
