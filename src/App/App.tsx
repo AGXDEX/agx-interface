@@ -266,7 +266,7 @@ function FullApp() {
               <Route exact path="/price_impact_rebates_stats">
                 <PriceImpactRebatesStatsPage />
               </Route>
-              <Route exact path="/v1/swap">
+              <Route exact path="/v1/:tradeType?">
                 <Exchange ref={exchangeRef} openSettings={openSettings} />
               </Route>
               <Route exact path="/dashboard">
@@ -304,7 +304,7 @@ function FullApp() {
                   <SyntheticsFallbackPage />
                 )}
               </Route>
-              {/* <Redirect from="/v2" to="/trade" /> */}
+              <Redirect from="/v2" to="/trade" />
               <Route exact path="/buy_glp">
                 <BuyGlp />
               </Route>

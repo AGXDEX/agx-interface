@@ -62,7 +62,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
   const [tradePageVersion] = useTradePageVersion();
 
   // const tradeLink = tradePageVersion === 2 ? "/trade" : "/v1";
-  const tradeLink = "/v1/swap";
+  const tradeLink = "/v1";
 
   const selectorLabel = getChainName(chainId);
   const icon = getIcon(chainId, "network");

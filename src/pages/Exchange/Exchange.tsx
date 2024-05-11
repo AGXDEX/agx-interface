@@ -443,7 +443,7 @@ export const Exchange = forwardRef(
       "Short-Collateral-Address",
       getTokenBySymbol(chainId, defaultCollateralSymbol).address
     );
-    const [swapOption, setSwapOption] = useLocalStorageByChainId(chainId, "Swap-option-v2", LONG);
+    const [swapOption, setSwapOption] = useLocalStorageByChainId(chainId, "Swap-option-v2", SWAP);
     let [orderOption, setOrderOption] = useLocalStorageSerializeKey([chainId, "Order-option"], MARKET);
     const fromTokenAddress = tokenSelection?.[swapOption as any].from;
     const toTokenAddress = tokenSelection?.[swapOption as any].to;
