@@ -867,7 +867,7 @@ export const Exchange = forwardRef(
     const ORDERS = "Orders";
     const TRADES = "Trades";
 
-    const LIST_SECTIONS = [POSITIONS, flagOrdersEnabled && ORDERS, TRADES].filter(Boolean);
+    const LIST_SECTIONS = [TRADES].filter(Boolean);
     let [listSection, setListSection] = useLocalStorageByChainId(chainId, "List-section-v2", LIST_SECTIONS[0]);
     const LIST_SECTIONS_LABELS = {
       [ORDERS]: orders.length ? t`Orders (${orders.length})` : t`Orders`,
@@ -1016,12 +1016,12 @@ export const Exchange = forwardRef(
     return (
       <div className="Exchange page-layout">
         {showBanner && <ExchangeBanner hideBanner={hideBanner} />}
-        <div className="Exchange-content default-container">
-          {/* <div className="Exchange-left">
+        <div className="Exchange-content">
+          <div className="Exchange-left">
             {renderChart()}
             <div className="Exchange-lists large">{getListSection()}</div>
-          </div> */}
-          <div className="Exchange-right ">
+          </div>
+          <div className="Exchange-right">
             {getIsV1Supported(chainId) && (
               <SwapBox
                 pendingPositions={pendingPositions}

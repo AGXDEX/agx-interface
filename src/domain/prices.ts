@@ -110,8 +110,8 @@ export async function getChartPricesFromStats(chainId, symbol, period) {
     for (let i = 0; i < 3; i++) {
       if (done) return;
       try {
-        const res = await fetch(url);
-        resolve(res);
+        // const res = await fetch(url);
+        // resolve(res);
         return;
       } catch (ex) {
         await sleep(300);
