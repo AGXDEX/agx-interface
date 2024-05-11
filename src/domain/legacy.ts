@@ -503,8 +503,8 @@ export function useHasOutdatedUi() {
 
 export function useGmxPrice(chainId, libraries, active) {
   const arbitrumLibrary = libraries && libraries.arbitrum ? libraries.arbitrum : undefined;
-  // const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum(arbitrumLibrary, active);
-  const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useAGXPriceFromNova();
+  const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum(arbitrumLibrary, active);
+  const { data: agxPriceFromNova, mutate: mutateFromNova } = useAGXPriceFromNova();
   const { data: gmxPriceFromAvalanche, mutate: mutateFromAvalanche } = useGmxPriceFromAvalanche();
 
   const gmxPrice = chainId === ARBITRUM ? gmxPriceFromArbitrum : gmxPriceFromAvalanche;
@@ -517,6 +517,20 @@ export function useGmxPrice(chainId, libraries, active) {
     gmxPrice,
     gmxPriceFromArbitrum,
     gmxPriceFromAvalanche,
+    mutate,
+  };
+}
+export function useAGXPrice(libraries, active) {
+  const { data: agxPriceFromNova, mutate: mutateFromNova } = useAGXPriceFromNova();
+
+  const agxPrice = agxPriceFromNova;
+  const mutate = useCallback(() => {
+    mutateFromNova();
+  }, [mutateFromNova]);
+
+  return {
+    agxPrice,
+    agxPriceFromNova,
     mutate,
   };
 }
@@ -697,38 +711,57 @@ function useGmxPriceFromArbitrum(signer, active) {
   return { data: gmxPrice, mutate };
 }
 function useAGXPriceFromNova() {
-  const poolAddress = getContract(ARBITRUM, "UniswapAGXEthPool");
   const v3Factory = getContract(ARBITRUM, "v3Factory");
   const wethSwap = getContract(ARBITRUM, "WethSwap");
   const agxAddressArb = getContract(ARBITRUM, "AGX");
 
-  const { data, mutate: updateReserves } = useSWR(["TraderJoeAGXNovaReserves", ARBITRUM, v3Factory, "getPool"], {
+  const { data: poolAdr, mutate: updateReserves } = useSWR(["TraderAGXNovaReserves", ARBITRUM, v3Factory, "getPool"], {
     fetcher: contractFetcher(undefined, UniswapV3, [agxAddressArb, wethSwap, 3000]),
   });
-
-  const { _reserve0: gmxReserve, _reserve1: avaxReserve }: any = data || {};
-
-  const vaultAddress = getContract(AVALANCHE, "Vault");
-  const avaxAddress = getTokenBySymbol(AVALANCHE, "WAVAX").address;
-  const { data: avaxPrice, mutate: updateAvaxPrice } = useSWR(
-    [`StakeV2:avaxPrice`, AVALANCHE, vaultAddress, "getMinPrice", avaxAddress],
+  const vaultAddress = getContract(ARBITRUM, "Vault");
+  const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address;
+  const { data: ethPrice, mutate: updateEthPrice } = useSWR<BigNumber>(
+    [`StakeV3:ethPrice`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
     {
-      fetcher: contractFetcher(undefined, Vault),
+      fetcher: contractFetcher(undefined, Vault) as any,
+    }
+  );
+  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR<any>(
+    poolAdr ? [`StakeV3:uniPoolSlot0:`, ARBITRUM, poolAdr, "slot0"] : null,
+    {
+      fetcher: contractFetcher(undefined, UniPoolV3),
+    }
+  );
+  const { data: uniPoolToken1, mutate: updateUniPoolToken1 } = useSWR<any>(
+    poolAdr ? [`StakeV3:uniPoolToken1:`, ARBITRUM, poolAdr, "token1"] : null,
+    {
+      fetcher: contractFetcher(undefined, UniPoolV3),
     }
   );
 
-  const PRECISION = bigNumberify(10)!.pow(18);
-  let gmxPrice;
-  if (avaxReserve && gmxReserve && avaxPrice) {
-    gmxPrice = avaxReserve.mul(PRECISION).div(gmxReserve).mul(avaxPrice).div(PRECISION);
-  }
+  const agxPrice = useMemo(() => {
+    if (poolAdr && ethPrice && uniPoolSlot0 && uniPoolToken1) {
+      const { sqrtPriceX96 } = uniPoolSlot0;
+      let price;
+      // const ratioSquared = sqrtPriceX96.div(BigNumber.from(2).pow(96)).pow(2);
+      if (uniPoolToken1 === wethSwap) {
+        // agxprice = eth price *  (slot0.sqrtPriceX96 / 2** 96) ** 2
+        // price = ethPrice.mul(ratioSquared);
+      } else {
+        // agxprice  = eth price * ( 1 /  (slot0.sqrtPriceX96 / 2** 96) ** 2 )
+        // price = ethPrice.div(ratioSquared);
+      }
+      return price;
+    }
+  }, [ethPrice, poolAdr, wethSwap]);
 
   const mutate = useCallback(() => {
     updateReserves(undefined, true);
-    updateAvaxPrice(undefined, true);
-  }, [updateReserves, updateAvaxPrice]);
+    updateEthPrice(undefined, true);
+    // updateUniPoolSlot0(undefined, true);
+  }, [updateEthPrice, updateReserves]);
 
-  return { data: gmxPrice, mutate };
+  return { data: agxPrice, mutate };
 }
 
 export async function approvePlugin(chainId, pluginAddress, { signer, setPendingTxns, sentMsg, failMsg }) {
