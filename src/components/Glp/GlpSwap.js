@@ -196,6 +196,7 @@ export default function GlpSwap(props) {
     `${swapLabel}-swap-token-address`,
     AddressZero
   );
+  console.log(swapTokenAddress)
   const [isApproving, setIsApproving] = useState(false);
   const [isWaitingForApproval, setIsWaitingForApproval] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);

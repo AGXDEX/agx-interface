@@ -6,7 +6,7 @@ import Footer from "components/Footer/Footer";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
 import cx from "classnames";
-import { Link } from "react-router-dom";
+import { Link,useHistory } from "react-router-dom";
 
 import GlpManager from "abis/GlpManager.json";
 import ReaderV2 from "abis/ReaderV2.json";
@@ -21,6 +21,7 @@ import GLP from "abis/GLP.json";
 import NFTPositionsManager from "abis/NFTPositionsManager.json";
 import UniV3Staker from "abis/UniV3Staker.json";
 import DexReader from "abis/DexReader.json";
+import VaultV2 from "abis/VaultV2.json";
 
 import { ARBITRUM, AVALANCHE, getConstant } from "config/chains";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
@@ -59,7 +60,6 @@ import { getServerUrl } from "config/backend";
 import { getIsSyntheticsSupported } from "config/features";
 import { getTotalGmInfo, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
-import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -86,7 +86,138 @@ import useVestingData from "domain/vesting/useVestingData";
 import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 import { usePendingTxns } from "lib/usePendingTxns";
 import axios from "axios";
+import {
+  getV1Tokens,
+  getWhitelistedV1Tokens,
+} from "config/tokens";
+import { getTokenInfo } from "domain/tokens/utils";
+
+import { approveTokens, useInfoTokens } from "domain/tokens";
+import {
+  getBuyGlpFromAmount,
+} from "lib/legacy";
+
+import { useLocalStorageByChainId } from "lib/localStorage";
 const { AddressZero } = ethers.constants;
+function ClaimAllModal(props) {
+  const {
+    isVisible,
+    setIsVisible,
+    chainId,
+    title,
+    maxAmount,
+    value,
+    setValue,
+    active,
+    account,
+    signer,
+    stakingTokenSymbol,
+    stakingTokenAddress,
+    farmAddress,
+    rewardRouterAddress,
+    stakeMethodName,
+    setPendingTxns,
+    showNFTdata,
+    URLlist,
+    setNFTData,
+    Pool2ewards
+  } = props;
+  const [tokenId, setTokenId] = useState('');
+  const NFTPositionsManagerAddress = getContract(chainId, "nonfungibleTokenPositionManagerAddress");
+  const IncentiveKeyAddress = getContract(chainId, "IncentiveKey");
+  const uniV3StakerAddress = getContract(chainId, "v3StakerAddress");
+  const ALPAddress = getContract(chainId, "ALP");
+  const AGXAddress = getContract(chainId, "AGX");
+  const [isDeposit, setIsDeposit] = useState(false);
+  const goDeposit = () => {
+    if (isDeposit || !tokenId) {
+      return
+    }
+    if (tokenId === 'Liquidity') {
+      setIsDeposit(true);
+      const contract = new ethers.Contract(ALPAddress, GLP.abi, signer);
+      callContract(chainId, contract, "claim", [account], {
+        sentMsg: t`Claim submitted.`,
+        failMsg: t`Claim failed.`,
+        successMsg: t`Claim completed!`,
+        setPendingTxns,
+      }).finally(() => {
+        setIsDeposit(false);
+        setIsVisible(false)
+      });
+    } else if (tokenId === 'Staking') {
+
+    } else {
+      setIsDeposit(true);
+      const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
+      callContract(chainId, contract, "claimReward", [AGXAddress,account,Pool2ewards.toNumber()], {
+        sentMsg: t`Claim submitted.`,
+        failMsg: t`Claim failed.`,
+        successMsg: t`Claim completed!`,
+        setPendingTxns,
+      }).finally(() => {
+        setIsDeposit(false);
+        setIsVisible(false)
+      });
+    }
+  };
+  return (
+    <div className="StakeModal largeModal">
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
+        <div className="claimModal">
+          <div className="tabBox">
+            <div>
+              <Checkbox isChecked={tokenId==='Staking'} setIsChecked={(isChecked)=>{isChecked?setTokenId('Staking'):setTokenId('')}}>
+                <span className="muted">
+                  <Trans>
+                  Staking
+                  </Trans>
+                </span>
+              </Checkbox>
+            </div>
+            <div>
+              1
+            </div>
+          </div>
+          <div className="tabBox">
+            <div>
+              <Checkbox isChecked={tokenId==='Pool2'} setIsChecked={(isChecked)=>{isChecked?setTokenId('Pool2'):setTokenId('')}}>
+                <span className="muted">
+                  <Trans>
+                  Pool2 Mining
+                  </Trans>
+                </span>
+              </Checkbox>
+            </div>
+            <div>
+              {Pool2ewards && Pool2ewards.toNumber()}
+            </div>
+          </div>
+          <div className="tabBox">
+            <div>
+              <Checkbox isChecked={tokenId==='Liquidity'} setIsChecked={(isChecked)=>{isChecked?setTokenId('Liquidity'):setTokenId('')}}>
+                <span className="muted">
+                  <Trans>
+                  Liquidity Mining
+                  </Trans>
+                </span>
+              </Checkbox>
+            </div>
+            <div>
+              1
+            </div>
+          </div>
+        </div>
+        <div>You will receive</div>
+        <div className="Exchange-swap-button-container">
+          <Button variant="primary-action" className="w-full" onClick={goDeposit}>
+            Claim
+          </Button>
+        </div>
+      </Modal>
+    </div>
+  );
+}
 function DepositModal(props) {
   const {
     isVisible,
@@ -1169,6 +1300,7 @@ export default function StakeV2() {
   const hasInsurance = true;
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
   const [depositModalVisible, setDepositModalVisible] = useState(false);
+  const [claimModalVisible, setClaimModalVisible] = useState(false);
   const [stakeModalTitle, setStakeModalTitle] = useState("");
   const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState<BigNumber | undefined>(undefined);
   const [stakeValue, setStakeValue] = useState("");
@@ -1629,16 +1761,7 @@ export default function StakeV2() {
     return t`Claim All`;
   };
   const onClickPrimary = () => {
-    setIsClaiming(true);
-    const contract = new ethers.Contract(ALPAddress, GLP.abi, signer);
-    callContract(chainId, contract, "claim", [account], {
-      sentMsg: t`Claim submitted.`,
-      failMsg: t`Claim failed.`,
-      successMsg: t`Claim completed!`,
-      setPendingTxns,
-    }).finally(() => {
-      setIsClaiming(false);
-    });
+    setClaimModalVisible(true)
   };
 
   const { data: depNFTlist } = useSWR([`StakeV2:getSpecificNftId:${active}`, chainId, dexreaderAddress, "getSpecificNftIds"], {
@@ -1661,6 +1784,9 @@ export default function StakeV2() {
   });
   const { data: baselist } = useSWR([`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
     fetcher: contractFetcher(signer, DexReader,[NFTdata]),
+  });
+  const { data: Pool2ewards } = useSWR([`StakeV2:rewards:${active}`, chainId, uniV3StakerAddress, "rewards"], {
+    fetcher: contractFetcher(signer, UniV3Staker,[AGXAddress,account]),
   });
   const urlList = baselist && baselist.length> 0&&baselist.map((base)=>{
     let str = Buffer.from(base.split(',')[1], 'base64').toString('utf-8');
@@ -1739,8 +1865,94 @@ export default function StakeV2() {
       })
     });
   };
+
+  const [feeBasisPoints, setFeeBasisPoints] = useState("");
+  const { data: totalTokenWeights } = useSWR(
+    [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
+    {
+      fetcher: contractFetcher(signer, VaultV2),
+    }
+  );
+  const feeGlp = getContract(chainId, "GLP");
+  const usdgAddress = getContract(chainId, "USDG");
+  const tokensForBalanceAndSupplyQuery = [feeGlp, usdgAddress];
+  const { data: balancesAndSupplies } = useSWR(
+    [
+      `GlpSwap:getTokenBalancesWithSupplies:${active}`,
+      chainId,
+      readerAddress,
+      "getTokenBalancesWithSupplies",
+      account || PLACEHOLDER_ACCOUNT,
+    ],
+    {
+      fetcher: contractFetcher(signer, ReaderV2, [tokensForBalanceAndSupplyQuery]),
+    }
+  );
+  const usdgSupply = balancesAndSupplies ? balancesAndSupplies[3] : bigNumberify(0);
+  const glpSupply = balancesAndSupplies ? balancesAndSupplies[1] : bigNumberify(0);
+  let aum1;
+  if (aums && aums.length > 0) {
+    aum1 = aums[0]
+  }
+  const glpPrice =
+  aum1 && aum1.gt(0) && glpSupply.gt(0)
+      ? aum1.mul(expandDecimals(1, GLP_DECIMALS)).div(glpSupply)
+      : expandDecimals(1, USD_DECIMALS);
+  const glpSupplyUsd = glpSupply.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS));
+  const tokens = getV1Tokens(chainId);
+  const tokenAddresses = tokens.map((token) => token.address);
+  const { data: tokenBalances } = useSWR(
+    [`GlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account || PLACEHOLDER_ACCOUNT],
+    {
+      fetcher: contractFetcher(signer, ReaderV2, [tokenAddresses]),
+    }
+  );
+  const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, undefined);
+  const [glpValue, setGlpValue] = useState("");
+  const glpAmount = parseValue(glpValue, GLP_DECIMALS);
+
+  const whitelistedTokens = getWhitelistedV1Tokens(chainId);
+  const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
+  const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
+
+  const swapLabel = "BuyAlp";
+  const [swapTokenAddress, setSwapTokenAddress] = useLocalStorageByChainId(
+    chainId,
+    `${swapLabel}-swap-token-address`,
+    AddressZero
+  );
+  const history = useHistory();
+  const selectToken = (token) => {
+    setSwapTokenAddress(token.address);
+    history.push('/buy');
+  };
   return (
     <div className="default-container page-layout">
+      <ClaimAllModal
+        isVisible={claimModalVisible}
+        setIsVisible={setClaimModalVisible}
+        chainId={chainId}
+        title='Claim All'
+        maxAmount={stakeModalMaxAmount}
+        value={stakeValue}
+        setValue={setStakeValue}
+        active={active}
+        account={account}
+        signer={signer}
+        stakingTokenSymbol={stakingTokenSymbol}
+        stakingTokenAddress={stakingTokenAddress}
+        farmAddress={stakingFarmAddress}
+        rewardRouterAddress={rewardRouterAddress}
+        stakeMethodName={stakeMethodName}
+        hasMultiplierPoints={hasMultiplierPoints}
+        setPendingTxns={setPendingTxns}
+        nativeTokenSymbol={nativeTokenSymbol}
+        wrappedTokenSymbol={wrappedTokenSymbol}
+        showNFTdata={NFTlist}
+        URLlist={urlList}
+        setNFTData={setNFTData}
+        Pool2ewards={Pool2ewards}
+      />
       <DepositModal
         isVisible={depositModalVisible}
         setIsVisible={setDepositModalVisible}
@@ -1935,8 +2147,9 @@ export default function StakeV2() {
           <div className="tabBox">
             <div className={cx("tab", { 'active': selectTab === 'Staking' })} onClick={()=>setselectTab('Staking')}>Staking</div>
             <div className={cx("tab", { 'active': selectTab === 'Pool2' })} onClick={()=>setselectTab('Pool2')}>Pool2 Mining</div>
+            <div className={cx("tab", { 'active': selectTab === 'Liquidity' })} onClick={()=>setselectTab('Liquidity')}>Liquidity Mining</div>
           </div>
-          <div className="StakeV2-box between">
+          <div className={cx("StakeV2-box between", { 'ishide': selectTab === 'Liquidity' })}>
             <div className="halfBox">
               <div className="StakeV2-stakeTitle padLeft">Overview</div>
               <div className={cx("mobileBox ishide", { 'show': selectTab === 'Staking' })}>
@@ -2014,13 +2227,15 @@ export default function StakeV2() {
               <Trans>Stake AGX</Trans>
             </Button>
           </div>
-          <div className={cx("StakeV2-box marBottom ishide", { 'isShow': selectTab === 'Pool2' })}>
-            <div className="StakeV2-stakeTitle padLeft">Stake AGX-ETH LP</div>
-            <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => showDepositModals()} disabled={!NFTlist || NFTlist.length === 0}>
-              <Trans>Deposit AGX-ETH LP</Trans>
-            </Button>
+          <div className="tolong">
+            <div className={cx("StakeV2-box marBottom", { 'ishide': selectTab !== 'Pool2' }, { 'isShow': selectTab === 'Pool2' })}>
+              <div className="StakeV2-stakeTitle padLeft">Stake AGX-ETH LP</div>
+              <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => showDepositModals()} disabled={!NFTlist || NFTlist.length === 0}>
+                <Trans>Deposit AGX-ETH LP</Trans>
+              </Button>
+            </div>
           </div>
-          <div className="addNow">Add liquidity to Uniswap AGX/ETH pool to receive your LP NFT. <Link className="" to="/buy">
+          <div className={cx("addNow ishide", { 'show': selectTab === 'Pool2' })}>Add liquidity to Uniswap AGX/ETH pool to receive your LP NFT. <Link className="" to="/buy">
             Add now &gt;&gt;
             </Link>
           </div>
@@ -2049,6 +2264,49 @@ export default function StakeV2() {
                 );
               })}
             </div>
+          </div>
+          <div className={cx("ishide liquidity", { 'show': selectTab === 'Liquidity' })}>
+              <div className="table-tr">
+                <div className="leftAlign">Pool</div>
+                <div className="rightAlign">Daily Emission</div>
+                <div className="rightAlign">Total Liquidity</div>
+                <div className="rightAlign"></div>
+              </div>
+              {visibleTokens.map((token)=>{
+                let tokenFeeBps;
+                const obj = getBuyGlpFromAmount(
+                  glpAmount,
+                  token.address,
+                  infoTokens,
+                  glpPrice,
+                  usdgSupply,
+                  totalTokenWeights
+                );
+                if ('feeBasisPoints' in obj) {
+                  tokenFeeBps = obj.feeBasisPoints;
+                }
+                const tokenInfo = getTokenInfo(infoTokens, token.address);
+                let managedUsd;
+                if (tokenInfo && tokenInfo.managedUsd) {
+                  managedUsd = tokenInfo.managedUsd;
+                }
+                let manage = 1
+                if (managedUsd) {
+                  manage = managedUsd.mul(50000).div(glpSupplyUsd)
+                }
+                return (
+                  <div className="table-td" key={token.symbol}>
+                    <div className="leftAlign">{token.symbol}/USDT</div>
+                    <div className="rightAlign">{formatAmount(manage, 0, 0, true)}</div>
+                    <div className="rightAlign">{`${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`}</div>
+                    <div className="rightAlign">
+                      <Button variant="secondary" onClick={() => selectToken(token)}>
+                        <Trans>Add</Trans>
+                      </Button>
+                    </div>
+                  </div>
+                )
+              })}
           </div>
         </div>
       </div>

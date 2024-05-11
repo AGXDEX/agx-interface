@@ -119,11 +119,24 @@
     top: auto!important;
     bottom: 5px;
   }
-  .StakeV2-box{
+  .StakeV2-content .StakeV2-box{
+    display: block;
     padding-bottom: 50px;
   }
   .mobileBox{
     display: block!important;
+  }
+  .between .halfBox{
+    width: 100%!important;
+  }
+  .StakeV2-content .tolong .isShow .StakeV2-stakeButton{
+    top: auto;
+    right: auto;
+    left: 0;
+    bottom: 0;
+  }
+  .liquidity{
+    overflow: auto;
   }
 }
 .StakeV2-content{
@@ -300,10 +313,44 @@
 }
 .addNow{
   padding-left: 12px;
+  margin-bottom: 20px;
 }
 .addNow span{
   cursor: pointer;
 }
 .addNow a:hover{
   color: #5D00FB;
+}
+.claimModal .tabBox{
+  display: flex;
+  justify-content: space-between;
+}
+.table-tr, .table-td{
+  font-size: 14px;
+  margin: 0px;
+  font-family: "Noto Sans";
+  line-height: 1.43;
+  font-weight: 400;
+  color: rgb(139, 145, 157);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 12px;
+  margin-bottom: 10px;
+}
+.table-tr{
+  margin-bottom: 15px;
+}
+.table-td{
+  line-height: 1.6;
+  font-weight: 500;
+  color: #fff;
+}
+.table-tr div,.table-td div{
+  min-width: 150px;
+}
+.table-tr .leftAlign,.table-td .leftAlign{
+  text-align: left;
+}
+.table-tr .rightAlign,.table-td .rightAlign{
+  text-align: right;
 }

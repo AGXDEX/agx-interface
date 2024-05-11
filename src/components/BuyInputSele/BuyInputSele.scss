@@ -120,3 +120,8 @@
     background: rgb(56, 61, 94);
   }
 }
+@media (max-width: 900px) {
+  .buy-input-top-row {
+    flex-wrap: wrap;
+  }
+}
