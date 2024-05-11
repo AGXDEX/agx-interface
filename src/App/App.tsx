@@ -234,11 +234,13 @@ function FullApp() {
     <>
       <div className="App">
         <div className="App-content">
-          { location.pathname !== '/' &&(<Header
-            disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-            openSettings={openSettings}
-            showRedirectModal={showRedirectModal}
-          />)}
+          {location.pathname !== "/" && (
+            <Header
+              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+              openSettings={openSettings}
+              showRedirectModal={showRedirectModal}
+            />
+          )}
           {isHome && (
             <Switch>
               <Route exact path="/">
@@ -264,7 +266,7 @@ function FullApp() {
               <Route exact path="/price_impact_rebates_stats">
                 <PriceImpactRebatesStatsPage />
               </Route>
-              <Route exact path="/v1/:tradeType?">
+              <Route exact path="/v1/swap">
                 <Exchange ref={exchangeRef} openSettings={openSettings} />
               </Route>
               <Route exact path="/dashboard">
@@ -302,7 +304,7 @@ function FullApp() {
                   <SyntheticsFallbackPage />
                 )}
               </Route>
-              <Redirect from="/v2" to="/trade" />
+              {/* <Redirect from="/v2" to="/trade" /> */}
               <Route exact path="/buy_glp">
                 <BuyGlp />
               </Route>
