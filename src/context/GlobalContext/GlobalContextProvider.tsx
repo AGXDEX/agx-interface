@@ -87,7 +87,8 @@ export const useGlobalContext = () => {
 
 function useTradePageVersion() {
   const { chainId } = useChainId();
-  const defaultVersion = getIsSyntheticsSupported(chainId) ? 2 : 1;
+  // const defaultVersion = getIsSyntheticsSupported(chainId) ? 2 : 1;
+  const defaultVersion = 1;
   const [tradePageVersionRaw, setTradePageVersion] = useLocalStorageSerializeKey(
     [chainId, TRADE_LINK_KEY],
     defaultVersion

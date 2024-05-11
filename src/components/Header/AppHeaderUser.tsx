@@ -73,7 +73,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
         <div className="network-img-box">
           <img className="network-dropdown-icon network-img" src={icon} alt={selectorLabel} />
         </div>
-        <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
+        <div className={cx("", { "homepage-header": isHomeSite() })}>
           <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
           </HeaderLink>

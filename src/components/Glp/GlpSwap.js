@@ -21,7 +21,7 @@ import { useHistory } from "react-router-dom";
 import useSWR from "swr";
 import Tab from "../Tab/Tab";
 
-import { useGmxPrice } from "domain/legacy";
+import { useGmxPrice, useAGXPrice } from "domain/legacy";
 
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
@@ -298,13 +298,8 @@ export default function GlpSwap(props) {
   //   }
   // );
 
-  // const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
-  const v3Factory = getContract(ARBITRUM, "v3Factory");
-  const wethSwap = getContract(ARBITRUM, "WethSwap");
-  const agxAddressArb = getContract(ARBITRUM, "AGX");
-  const { data: gmxPrice } = useSWR([`GlpSwap:agxPrice:${active}`, chainId, v3Factory, "getPool"], {
-    fetcher: contractFetcher(signer, UniswapV3, [agxAddressArb, wethSwap, 3000]),
-  });
+  const { agxPrice } = useAGXPrice();
+
   const rewardTrackersForStakingInfo = [stakedGlpTrackerAddress, feeGlpTrackerAddress];
 
   //TODO

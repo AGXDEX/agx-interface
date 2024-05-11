@@ -6,6 +6,7 @@ import { CHART_PERIODS, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
 
 import { t } from "@lingui/macro";
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";
+import CandlestickChart from "components/CandlestickChart/CandlestickChart";
 import { DEFAULT_PERIOD, availableNetworksForChart } from "components/TVChartContainer/constants";
 import { VersionSwitch } from "components/VersionSwitch/VersionSwitch";
 import { getPriceDecimals, getToken, getV1Tokens } from "config/tokens";
@@ -16,6 +17,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, numberWithCommas } from "lib/numbers";
 import getLiquidationPrice from "lib/positions/getLiquidationPrice";
 import ChartTokenSelector from "./ChartTokenSelector";
+import { CANDLESTICK_CHART } from "config/candlesSetting";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -308,7 +310,7 @@ export default function ExchangeTVChart(props) {
   if (!chartToken) {
     return null;
   }
-
+  const currentCandleUrl = CANDLESTICK_CHART[chartToken.symbol];
   const onSelectToken = (token) => {
     const toTokenInfo = getTokenInfo(infoTokens, token.address);
     setToTokenAddress(swapOption, toTokenInfo.address);
@@ -340,14 +342,14 @@ export default function ExchangeTVChart(props) {
                 ${chartToken.minPrice && formatAmount(chartToken.minPrice, USD_DECIMALS, priceDecimal, true)}
               </div>
             </div>
-            <div className="Chart-24h-change">
+            {/* <div className="Chart-24h-change">
               <div className="ExchangeChart-info-label">24h Change</div>
               <div className={cx({ positive: deltaPercentage > 0, negative: deltaPercentage < 0 })}>
                 {!deltaPercentageStr && "-"}
                 {deltaPercentageStr && deltaPercentageStr}
               </div>
-            </div>
-            <div className="ExchangeChart-additional-info">
+            </div> */}
+            {/* <div className="ExchangeChart-additional-info">
               <div className="ExchangeChart-info-label">24h High</div>
               <div>
                 {!high && "-"}
@@ -360,15 +362,18 @@ export default function ExchangeTVChart(props) {
                 {!low && "-"}
                 {low && numberWithCommas(low.toFixed(priceDecimal))}
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
-        <div className="ExchangeChart-info VersionSwitch-wrapper">
+        {/* <div className="ExchangeChart-info VersionSwitch-wrapper">
           <VersionSwitch />
-        </div>
+        </div> */}
       </div>
+
       <div className="ExchangeChart-bottom App-box App-box-border">
-        {availableNetworksForChart.includes(chainId) && chartToken.symbol && chainId ? (
+        <CandlestickChart url={currentCandleUrl} />
+
+        {/* {availableNetworksForChart.includes(chainId) && chartToken.symbol && chainId ? (
           <TVChartContainer
             chartLines={chartLines}
             savedShouldShowPositionLines={savedShouldShowPositionLines}
@@ -383,7 +388,7 @@ export default function ExchangeTVChart(props) {
           />
         ) : (
           <p className="ExchangeChart-error">Sorry, chart is not supported on this network yet.</p>
-        )}
+        )} */}
       </div>
     </div>
   );

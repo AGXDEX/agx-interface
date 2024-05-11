@@ -234,11 +234,13 @@ function FullApp() {
     <>
       <div className="App">
         <div className="App-content">
-          { location.pathname !== '/' &&(<Header
-            disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-            openSettings={openSettings}
-            showRedirectModal={showRedirectModal}
-          />)}
+          {location.pathname !== "/" && (
+            <Header
+              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+              openSettings={openSettings}
+              showRedirectModal={showRedirectModal}
+            />
+          )}
           {isHome && (
             <Switch>
               <Route exact path="/">
