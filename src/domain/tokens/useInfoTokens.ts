@@ -42,7 +42,7 @@ export function useInfoTokens(
   );
 
   const indexPricesUrl = getServerUrl(chainId, "/prices");
-  // TODO 
+  // TODO
   const indexPrices = {};
   // const { data: indexPrices } = useSWR(indexPricesUrl, {
   //   // @ts-ignore spread args incorrect type

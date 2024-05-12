@@ -310,7 +310,9 @@ export default function ExchangeTVChart(props) {
   if (!chartToken) {
     return null;
   }
-  const currentCandleUrl = CANDLESTICK_CHART[chartToken.symbol];
+  const currentCandleUrl = ["USDT", "USDC"].includes(chartToken.symbol)
+    ? CANDLESTICK_CHART["ETH"]
+    : CANDLESTICK_CHART[chartToken.symbol];
   const onSelectToken = (token) => {
     const toTokenInfo = getTokenInfo(infoTokens, token.address);
     setToTokenAddress(swapOption, toTokenInfo.address);

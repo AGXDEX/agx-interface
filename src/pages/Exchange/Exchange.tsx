@@ -585,6 +585,7 @@ export const Exchange = forwardRef(
     );
 
     const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
+
     const { minExecutionFee, minExecutionFeeUSD, minExecutionFeeErrorMessage } = useExecutionFee(
       signer,
       active,
@@ -786,7 +787,8 @@ export const Exchange = forwardRef(
     }));
 
     const flagOrdersEnabled = true;
-    const [orders] = useAccountOrders(flagOrdersEnabled);
+    // const [orders] = useAccountOrders(flagOrdersEnabled);
+    const orders = [];
 
     const [isWaitingForPluginApproval, setIsWaitingForPluginApproval] = useState(false);
     const [isWaitingForPositionRouterApproval, setIsWaitingForPositionRouterApproval] = useState(false);
@@ -889,7 +891,7 @@ export const Exchange = forwardRef(
           className="muted font-base cancel-order-btn"
           disabled={isCancelMultipleOrderProcessing}
           type="button"
-          onClick={onMultipleCancelClick}
+          // onClick={onMultipleCancelClick}
         >
           <Plural value={cancelOrderIdList.length} one="Cancel order" other="Cancel # orders" />
         </button>
