@@ -28,7 +28,7 @@ import { getTokenBySymbol } from "config/tokens";
 import { callContract, contractFetcher } from "lib/contracts";
 import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getProvider } from "lib/rpc";
-import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
+import { getGmxGraphClient, nissohGraphClient, endpointGraphClient } from "lib/subgraph/clients";
 import { groupBy } from "lodash";
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
@@ -206,6 +206,43 @@ export function useAllPositions(chainId, signer) {
   });
 
   return positions;
+}
+export function useHistoryTradeData(chainId, account, pageSize) {
+  const getKey = (pageIndex: number) => [chainId, "useHistoryTradeData", account, pageIndex, pageSize];
+  const {
+    data,
+    error,
+    size: pageIndex,
+    setSize: setPageIndex,
+  } = useSWRInfinite<[]>(getKey, {
+    fetcher: async (key) => {
+      const pageIndex = key[3];
+      const skip = pageIndex * pageSize;
+      const first = pageSize;
+      const query = gql(`query MyQuery {
+        swapInfos(where: {owner: "${account.toLowerCase()}"}, orderBy: blockTimestamp, orderDirection: desc,skip: ${skip},
+        first: ${first},) {
+          owner
+          tokenIn
+          tokenOut
+          transactionHash
+          amountIn
+          amountOut
+          blockTimestamp
+        }
+      }
+      `);
+      const { data } = await endpointGraphClient.query({ query, fetchPolicy: "no-cache" });
+      console.log("data.swapInfos", data.swapInfos);
+      return data.swapInfos;
+    },
+  });
+  const trades = data ? data.flat() : [];
+  return {
+    trades,
+    pageIndex,
+    setPageIndex,
+  };
 }
 
 export function useAllOrders(chainId, signer) {
