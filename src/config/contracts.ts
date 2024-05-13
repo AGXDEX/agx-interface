@@ -141,7 +141,7 @@ export const SEPOLOIA_CONTRACRT = {
   TimeDistributor: "0x5ABb55813cf4EF88cCd0DD04e0036cD649C00949",
 
   Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
-  v3StakerAddress:"0x947248452C8227032b2B8c4a341F819C2d68f681",
+  v3StakerAddress:"0xa4e383E582581DEAac4020363De0a741bEfDF3Ad",
   nonfungibleTokenPositionManagerAddress:"0x45f84cf9620cecEDaf6742d38F480A5683030fe8",
   dexreader: "0xCb33c510e98510Ab047e2f182c4164b2Df46cFeC",
   IncentiveKey: {
