@@ -1353,7 +1353,7 @@ export function getProcessedData(
 }
 
 export function getPageTitle(data) {
-  const title = t`Formula Finance`;
+  const title = t`AGX`;
   // return `${data} | ${title}`;
   return `${title}`;
 }

@@ -145,10 +145,10 @@ export const SEPOLOIA_CONTRACRT = {
   nonfungibleTokenPositionManagerAddress:"0x45f84cf9620cecEDaf6742d38F480A5683030fe8",
   dexreader: "0xCb33c510e98510Ab047e2f182c4164b2Df46cFeC",
   IncentiveKey: {
-    rewardToken: '0x0F3aFfe0c0465F7965845123B8c23509De0b0154',
-    pool: '0x5f54797FDaA58c118Eb1EbdAbA79Ac4bFD975efA',
-    startTime: 1715248592,
-    endTime: 1716248582,
+    rewardToken: '0x2AAde57a0d52950535996E8d26eCaCb32342AeAe',
+    pool: '0x4471e21e7CC6436437f19576F8571186F164ea0F',
+    startTime: 1715588374,
+    endTime: 1716588364,
     refundee: '0x330BD48140Cf1796e3795A6b374a673D7a4461d0'
   },
   UniswapAGXEthPool: "0x6e42d10eB474a17b14f3cfeAC2590bfa604313C7",
