@@ -146,7 +146,17 @@ function ClaimAllModal(props) {
         setIsVisible(false)
       });
     } else if (tokenId === 'Staking') {
-
+      setIsDeposit(true);
+      const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
+      callContract(chainId, contract, "claimReward", [AGXAddress,account,Pool2ewards.toNumber()], {
+        sentMsg: t`Claim submitted.`,
+        failMsg: t`Claim failed.`,
+        successMsg: t`Claim completed!`,
+        setPendingTxns,
+      }).finally(() => {
+        setIsDeposit(false);
+        setIsVisible(false)
+      });
     } else {
       setIsDeposit(true);
       const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
