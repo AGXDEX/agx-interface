@@ -1792,6 +1792,7 @@ export default function StakeV2() {
   const { data: NFTlist } = useSWR([`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress, "getSpecificNftIds"], {
     fetcher: contractFetcher(signer, DexReader,[NFTdata,AGXAddress,wethAddress]),
   });
+  console.log(NFTlist)
   const { data: baselist } = useSWR([`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
     fetcher: contractFetcher(signer, DexReader,[NFTdata]),
   });
@@ -2242,6 +2243,8 @@ export default function StakeV2() {
               <div className="StakeV2-stakeTitle padLeft">Stake AGX-ETH LP</div>
               <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => showDepositModals()} disabled={!NFTlist || NFTlist.length === 0}>
                 <Trans>Deposit AGX-ETH LP</Trans>
+                <Trans>{NFTlist&&NFTlist.length}</Trans>
+                <Trans>{!NFTlist}</Trans>
               </Button>
             </div>
           </div>
