@@ -233,7 +233,7 @@ export function useHistoryTradeData(chainId, account, pageSize) {
       }
       `);
       const { data } = await endpointGraphClient.query({ query, fetchPolicy: "no-cache" });
-      console.log("data.swapInfos", data.swapInfos);
+      // console.log("data.swapInfos", data.swapInfos);
       return data.swapInfos;
     },
   });
