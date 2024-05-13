@@ -99,8 +99,12 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
           <div className="App-header large">
             <div className="App-header-container-left">
               <Link className="App-header-link-main" to="/">
-                <img src={logoImg} className="big" alt="AGX Logo" />
-                <img src={logoSmallImg} className="small" alt="AGX Logo" />
+                <div className="big">
+                  <img src={logoImg} alt="AGX Logo" /> AGX
+                </div>
+                <div className="small">
+                  <img src={logoSmallImg} alt="AGX Logo" /> AGX
+                </div>
               </Link>
               {isHomeSite() ? (
                 <HomeHeaderLinks showRedirectModal={showRedirectModal} />
