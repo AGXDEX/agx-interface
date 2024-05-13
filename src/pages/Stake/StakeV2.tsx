@@ -2243,8 +2243,6 @@ export default function StakeV2() {
               <div className="StakeV2-stakeTitle padLeft">Stake AGX-ETH LP</div>
               <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => showDepositModals()} disabled={!NFTlist || NFTlist.length === 0}>
                 <Trans>Deposit AGX-ETH LP</Trans>
-                <Trans>{NFTlist&&NFTlist.length}</Trans>
-                <Trans>{!NFTlist}</Trans>
               </Button>
             </div>
           </div>
