@@ -2,6 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
+import Footer from "components/Footer/Footer";
 import {
   adjustForDecimals,
   getBuyGlpFromAmount,
@@ -1409,6 +1410,7 @@ export default function GlpSwap(props) {
           })}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

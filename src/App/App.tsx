@@ -260,7 +260,7 @@ function FullApp() {
           {!isHome && (
             <Switch>
               <Route exact path="/">
-                <Redirect to="/buy" />
+                <Redirect to="/v1" />
                 {/* <HomePage /> */}
               </Route>
               <Route exact path="/price_impact_rebates_stats">
