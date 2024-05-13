@@ -1,5 +1,5 @@
 .Footer-wrapper {
-  text-align: left;
+  text-align: center;
   padding-top: 16rem;
   /* background: #16182e; */
   width: 100%;
@@ -28,7 +28,8 @@
 .Footer-social-link-block {
   margin: 0 auto;
   display: flex;
-  justify-content: start;
+  justify-content: center;
+  gap: 20px;
   margin-bottom: 2.4rem;
 }
 .Footer-link {
@@ -46,7 +47,7 @@
 .Footer-social-link-block .App-social-link {
   /* margin: 0 3.2rem; */
   margin-left: 0;
-  margin-right: 20px;
+  margin-right: 0;
   display: flex;
   width: 2rem;
   height: 2rem;

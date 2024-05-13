@@ -643,13 +643,15 @@ button.App-connect-wallet:hover {
   margin-right: 1.2rem;
 }
 
-.App-header-link-main img {
+.App-header-link-main .big {
   display: inline-block;
-  height: 2.15rem;
-  vertical-align: middle;
+}
+.App-header-link-main .big img{
+  height: 3rem;
+  vertical-align: inherit;
 }
 
-.App-header-link-main img.small {
+.App-header-link-main .small {
   display: none;
 }
 
@@ -1389,11 +1391,11 @@ button.App-button {
 }
 
 @media (max-width: 600px) {
-  .App-header-link-main img.big {
+  .App-header-link-main .big {
     display: none;
   }
 
-  .App-header-link-main img.small {
+  .App-header-link-main .small {
     display: inline-block;
   }
 }
