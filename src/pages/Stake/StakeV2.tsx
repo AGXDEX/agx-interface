@@ -2245,9 +2245,7 @@ export default function StakeV2() {
               </Button>
             </div>
           </div>
-          <div className={cx("addNow ishide", { 'show': selectTab === 'Pool2' })}>Add liquidity to Uniswap AGX/ETH pool to receive your LP NFT. <Link className="" to="/buy">
-            Add now &gt;&gt;
-            </Link>
+          <div className={cx("addNow ishide", { 'show': selectTab === 'Pool2' })}>Add liquidity to Uniswap AGX/ETH pool to receive your LP NFT. <a href={`https://novaswap.finance/?chain=nova_sepolia#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`} className="">Add now &gt;&gt;</a>
           </div>
           <div className={cx("ishide", { 'show': selectTab === 'Pool2' })}>
             <div className="StakeV2-stakeTitle padLeft">My deposit LP NFT</div>
