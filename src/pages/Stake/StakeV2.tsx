@@ -1402,7 +1402,7 @@ export default function StakeV2() {
 
 
   useEffect(() => {
-    axios.post('http://13.115.181.197:8000/subgraphs/name/staker', "{\"query\":\"{\\n  nfts(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    }\\n}\"}")
+    axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  nfts(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    }\\n}\"}")
       .then(response => {
         const array = response.data.data.nfts.map(item => item.tokenId);
         setNFTData(array);
@@ -1410,7 +1410,7 @@ export default function StakeV2() {
       .catch(error => {
         console.error('Error:', error);
       });
-    axios.post('http://13.115.181.197:8000/subgraphs/name/staker', "{\"query\":\"{\\n  positions(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}\"}")
+    axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  positions(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}\"}")
       .then(response => {
         const array = response.data.data.positions.map(item => item.tokenId);
         setDepNFTData(response.data.data.positions);
@@ -1792,6 +1792,7 @@ export default function StakeV2() {
   const { data: NFTlist } = useSWR([`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress, "getSpecificNftIds"], {
     fetcher: contractFetcher(signer, DexReader,[NFTdata,AGXAddress,wethAddress]),
   });
+  console.log(NFTlist)
   const { data: baselist } = useSWR([`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
     fetcher: contractFetcher(signer, DexReader,[NFTdata]),
   });

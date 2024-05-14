@@ -1353,7 +1353,7 @@ export function getProcessedData(
 }
 
 export function getPageTitle(data) {
-  const title = t`Formula Finance`;
+  const title = t`AGX | Decentralized Restaking Liquidity Marketplace`;
   // return `${data} | ${title}`;
   return `${title}`;
 }
