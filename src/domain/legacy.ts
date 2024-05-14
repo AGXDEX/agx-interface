@@ -557,7 +557,7 @@ export function useGmxPrice(chainId, libraries, active) {
     mutate,
   };
 }
-export function useAGXPrice(libraries, active) {
+export function useAGXPrice() {
   const { data: agxPriceFromNova, mutate: mutateFromNova } = useAGXPriceFromNova();
 
   const agxPrice = agxPriceFromNova;
@@ -783,10 +783,10 @@ function useAGXPriceFromNova() {
       // const ratioSquared = sqrtPriceX96.div(BigNumber.from(2).pow(96)).pow(2);
       if (uniPoolToken1 === wethSwap) {
         // agxprice = eth price *  (slot0.sqrtPriceX96 / 2** 96) ** 2
-        // price = ethPrice.mul(ratioSquared);
+        price = Number(ethPrice)*(Number(sqrtPriceX96)/(2**96)**2)
       } else {
         // agxprice  = eth price * ( 1 /  (slot0.sqrtPriceX96 / 2** 96) ** 2 )
-        // price = ethPrice.div(ratioSquared);
+        price = Number(ethPrice)*(1/(Number(sqrtPriceX96)/(2**96)**2))
       }
       return price;
     }
