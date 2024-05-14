@@ -11,11 +11,13 @@ import { useChainId } from "lib/chains";
 import { getAccountUrl, isHomeSite } from "lib/legacy";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
+import ChainDropdown from "components/ChainDropDown/ChainDropdown";
 import "./Header.scss";
 import { HeaderLink } from "./HeaderLink";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useTradePageVersion } from "lib/useTradePageVersion";
+import { chainList } from "config/networks";
 
 type Props = {
   openSettings: () => void;
@@ -66,13 +68,15 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
 
   const selectorLabel = getChainName(chainId);
   const icon = getIcon(chainId, "network");
+  const selectChain = "ethereum";
 
   if (!active || !account) {
     return (
       <div className="App-header-user">
-        <div className="network-img-box">
+        {/* <div className="network-img-box">
           <img className="network-dropdown-icon network-img" src={icon} alt={selectorLabel} />
-        </div>
+        </div> */}
+        <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
         <div className={cx("", { "homepage-header": isHomeSite() })}>
           <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
@@ -103,9 +107,10 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
 
   return (
     <div className="App-header-user">
-      <div className="network-img-box">
+      {/* <div className="network-img-box">
         <img className="network-dropdown-icon network-img" src={icon} alt={selectorLabel} />
-      </div>
+      </div> */}
+      <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
       <div className={cx("App-header-trade-link")}>
         <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
           {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
