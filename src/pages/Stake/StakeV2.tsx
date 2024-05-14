@@ -20,11 +20,12 @@ import YieldTracker from "abis/YieldTracker.json";
 import GLP from "abis/GLP.json";
 import NFTPositionsManager from "abis/NFTPositionsManager.json";
 import UniV3Staker from "abis/UniV3Staker.json";
+import UniswapV3Factory from "abis/UniswapV3Factory.json";
 import DexReader from "abis/DexReader.json";
 import VaultV2 from "abis/VaultV2.json";
 
 import { ARBITRUM, AVALANCHE, getConstant } from "config/chains";
-import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
+import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply,useAGXPrice } from "domain/legacy";
 import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
 import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
@@ -90,6 +91,7 @@ import {
   getV1Tokens,
   getWhitelistedV1Tokens,
 } from "config/tokens";
+import { getTokenBySymbol } from "config/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 
 import { approveTokens, useInfoTokens } from "domain/tokens";
@@ -128,6 +130,7 @@ function ClaimAllModal(props) {
   const uniV3StakerAddress = getContract(chainId, "v3StakerAddress");
   const ALPAddress = getContract(chainId, "ALP");
   const AGXAddress = getContract(chainId, "AGX");
+  
   const [isDeposit, setIsDeposit] = useState(false);
   const goDeposit = () => {
     if (isDeposit || !tokenId) {
@@ -268,7 +271,7 @@ function DepositModal(props) {
       successMsg: t`Deposit completed!`,
       setPendingTxns,
     }).finally(() => {
-      axios.post('http://13.115.181.197:8000/subgraphs/name/staker', "{\"query\":\"{\\n  nfts(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    }\\n}\"}")
+      axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  nfts(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    }\\n}\"}")
       .then(response => {
         const array = response.data.data.nfts.map(item => item.tokenId);
         setNFTData(array);
@@ -1356,11 +1359,17 @@ export default function StakeV2() {
   const [depNFTData, setDepNFTData] = useState<any[]>([]);
   const [depNFTDataId, setDepNFTDataId] = useState<any[]>([]);
   const [showNFTdata, setshowNFTData] = useState<any[]>([]);
+  const [stakeliquidity, setstakeliquidity] = useState('');
+  const [poolValue, setpoolValue] = useState(0);
+  const [stakeAllValue, setstakeAllValue] = useState(0);
+  const [stakeAPRValue, setstakeAPRValue] = useState('');
+  const [AGXVFTValue, setAGXVFTValue] = useState('');
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
   const rewardReaderAddress = getContract(chainId, "RewardReader");
   const readerAddress = getContract(chainId, "Reader");
 
+  const EthPoolAddress = getContract(chainId, "UniswapAGXEthPool");
   const vaultAddress = getContract(chainId, "Vault");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const gmxAddress = getContract(chainId, "GMX");
@@ -1383,6 +1392,7 @@ export default function StakeV2() {
   const NFTPositionsManagerAddress = getContract(chainId, "nonfungibleTokenPositionManagerAddress");
   const dexreaderAddress = getContract(chainId, "dexreader");
   const uniV3StakerAddress = getContract(chainId, "v3StakerAddress");
+  const v3FactoryAddress = getContract(chainId, "v3Factory");
   const IncentiveKeyAddress = getContract(chainId, "IncentiveKey");
 
   const stakedGmxDistributorAddress = getContract(chainId, "StakedGmxDistributor");
@@ -1415,6 +1425,13 @@ export default function StakeV2() {
         const array = response.data.data.positions.map(item => item.tokenId);
         setDepNFTData(response.data.data.positions);
         setDepNFTDataId(array)
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  incentives {\\n    liquidity\\n    }\\n}\"}")
+      .then(response => {
+        setstakeliquidity(response.data.data.incentives[0].liquidity)
       })
       .catch(error => {
         console.error('Error:', error);
@@ -1792,17 +1809,52 @@ export default function StakeV2() {
   const { data: NFTlist } = useSWR([`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress, "getSpecificNftIds"], {
     fetcher: contractFetcher(signer, DexReader,[NFTdata,AGXAddress,wethAddress]),
   });
-  console.log(NFTlist)
+  // console.log(NFTlist)
   const { data: baselist } = useSWR([`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
     fetcher: contractFetcher(signer, DexReader,[NFTdata]),
   });
   const { data: Pool2ewards } = useSWR([`StakeV2:rewards:${active}`, chainId, uniV3StakerAddress, "rewards"], {
     fetcher: contractFetcher(signer, UniV3Staker,[AGXAddress,account]),
   });
+  const { data: Pooladdress } = useSWR([`StakeV2:getPool:${active}`, chainId, v3FactoryAddress, "getPool"], {
+    fetcher: contractFetcher(signer, UniswapV3Factory,[AGXAddress,EthPoolAddress,10000]),
+  });
   const urlList = baselist && baselist.length> 0&&baselist.map((base)=>{
     let str = Buffer.from(base.split(',')[1], 'base64').toString('utf-8');
     return JSON.parse(str)
   })
+
+  const { agxPrice } = useAGXPrice();
+
+  const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address;
+  const { data: ethPrice, mutate: updateEthPrice } = useSWR<BigNumber>(
+    [`StakeV3:ethPrice`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
+    {
+      fetcher: contractFetcher(undefined, Vault) as any,
+    }
+  );
+  Pooladdress && axios.post('http://13.115.181.197:8000/subgraphs/name/novasap-subgraph', "{\"query\":\"{\\n  pool(id: \\\""+ Pooladdress.toLowerCase() +"\\\") {\\n    token0 {\\nid\\n}\\n    token1 {\\nid\\n}\\n    liquidity\\n    totalValueLockedToken0\\n    totalValueLockedToken1\\n    }\\n}\"}")
+  .then(response => {
+    let num = 0
+    if (response.data.data.pool.token0.id.toLowerCase() === AGXAddress) {
+      // (totalValueLockedToken0 * token0 price) + (totalValueLockedToken1 * token1 price)
+      num = (Number(response.data.data.pool.totalValueLockedToken0) * agxPrice) + (Number(response.data.data.pool.totalValueLockedToken1) * Number(ethPrice)/(10**30))
+      let AGXVFTValue = Number(stakeliquidity)/Number(response.data.data.pool.liquidity)*Number(response.data.data.pool.totalValueLockedToken0)
+      setAGXVFTValue(Number(AGXVFTValue).toLocaleString())
+    } else {
+      num = (Number(response.data.data.pool.totalValueLockedToken1) * agxPrice) + (Number(response.data.data.pool.totalValueLockedToken0) * Number(ethPrice)/(10**30))
+      let AGXVFTValue = Number(stakeliquidity)/Number(response.data.data.pool.liquidity)*Number(response.data.data.pool.totalValueLockedToken1)
+      setAGXVFTValue(Number(AGXVFTValue).toLocaleString())
+    }
+    setpoolValue(num)
+    setstakeAllValue(num*Number(stakeliquidity)/Number(response.data.data.pool.liquidity))
+    //   (agxprice * x)  / stake   TODO
+    let stakeAPRValue = ((agxPrice*365)/stakeAllValue).toFixed(2)
+    setstakeAPRValue(Number(stakeAPRValue).toLocaleString())
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
   const stake = (tokenId) => {
     const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
     callContract(chainId, contract, "stakeToken", [IncentiveKeyAddress,tokenId], {
@@ -1811,7 +1863,7 @@ export default function StakeV2() {
       successMsg: t`Stake completed!`,
       setPendingTxns,
     }).finally(() => {
-      axios.post('http://13.115.181.197:8000/subgraphs/name/staker', "{\"query\":\"{\\n  positions(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}\"}")
+      axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  positions(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}\"}")
       .then(response => {
         const array = response.data.data.positions.map(item => item.tokenId);
         setDepNFTData(response.data.data.positions);
@@ -1835,7 +1887,7 @@ export default function StakeV2() {
       successMsg: t`Withdraw completed!`,
       setPendingTxns,
     }).finally(() => {
-      axios.post('http://13.115.181.197:8000/subgraphs/name/staker', "{\"query\":\"{\\n  positions(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}\"}")
+      axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  positions(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}\"}")
       .then(response => {
         const array = response.data.data.positions.map(item => item.tokenId);
         setDepNFTData(response.data.data.positions);
@@ -1860,7 +1912,7 @@ export default function StakeV2() {
       successMsg: t`Unstake completed!`,
       setPendingTxns,
     }).finally(() => {
-      axios.post('http://13.115.181.197:8000/subgraphs/name/staker', "{\"query\":\"{\\n  positions(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}\"}")
+      axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  positions(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}\"}")
       .then(response => {
         const array = response.data.data.positions.map(item => item.tokenId);
         setDepNFTData(response.data.data.positions);
@@ -2184,11 +2236,11 @@ export default function StakeV2() {
               <div className={cx("mobileBox ishide", { 'show': selectTab === 'Pool2' })}>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">APR</div>
-                  <div>1,333,213</div>
+                  <div>{stakeAPRValue}</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Stake AGX in LP NFT:</div>
-                  <div>0</div>
+                  <div>{AGXVFTValue}</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">TVL</div>
