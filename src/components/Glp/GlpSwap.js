@@ -1,4 +1,5 @@
 import { t, Trans } from "@lingui/macro";
+import { Link } from "react-router-dom";
 import cx from "classnames";
 import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
@@ -89,6 +90,7 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import Checkbox from "components/Checkbox/Checkbox";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePendingTxns } from "lib/usePendingTxns";
+import { SELECTED_CHAIN_LOCAL_STORAGE_KEY } from "config/localStorage";
 
 const { AddressZero } = ethers.constants;
 
@@ -186,6 +188,7 @@ export default function GlpSwap(props) {
   const { chainId } = useChainId();
   const tokens = getV1Tokens(chainId);
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);
+  console.log("1", whitelistedTokens);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
   const minutesToNextEpoch = getMinutesToNextEpochIfLessThanHour();
@@ -197,7 +200,6 @@ export default function GlpSwap(props) {
     `${swapLabel}-swap-token-address`,
     AddressZero
   );
-  console.log(swapTokenAddress)
   const [isApproving, setIsApproving] = useState(false);
   const [isWaitingForApproval, setIsWaitingForApproval] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -299,7 +301,7 @@ export default function GlpSwap(props) {
   //   }
   // );
 
-  const { agxPrice } = useAGXPrice();
+  // const { agxPrice } = useAGXPrice();
 
   const rewardTrackersForStakingInfo = [stakedGlpTrackerAddress, feeGlpTrackerAddress];
 
@@ -928,6 +930,9 @@ export default function GlpSwap(props) {
       </div>
     );
   }
+  const chainKeyFromLocalStorage = localStorage.getItem(SELECTED_CHAIN_LOCAL_STORAGE_KEY);
+  const bridgeUrl = `https://preview.portal.zklink.io/deposit-integrate?network=${chainKeyFromLocalStorage}&token=${swapTokenAddress}`;
+
   return (
     <div className="GlpSwap">
       <SwapErrorModal
@@ -1176,6 +1181,16 @@ export default function GlpSwap(props) {
             </div>
             {minutesToNextEpoch && renderEpochEndingCheckbox(minutesToNextEpoch)}
             <div className="GlpSwap-cta Exchange-swap-button-container">
+              <Link
+                to={{
+                  pathname: "/bridge",
+                  hash: `#swapTokenAddress=${swapTokenAddress}`,
+                }}
+              >
+                <Button type="button" variant="secondary" className="w-full bridge-to-nova">
+                  Bridge to Nova
+                </Button>
+              </Link>
               <Button type="submit" variant="primary-action" className="w-full" disabled={!isPrimaryEnabled()}>
                 {getPrimaryText()}
               </Button>

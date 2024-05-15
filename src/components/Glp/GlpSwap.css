@@ -310,6 +310,16 @@
 .Exchange-swap-max{
   margin-left: 0.4rem;
 }
+.bridge-to-nova{
+  margin-bottom: 1rem;
+}
+.Bridge-toa .Modal-content {
+  width: 80%;
+
+}
+.Bridge-toa .Modal-body {
+  min-height: 60vh;
+}
 
 @media (max-width: 900px) {
   .GlpSwap-content {
