@@ -1,4 +1,5 @@
 import { t, Trans } from "@lingui/macro";
+import { Link } from "react-router-dom";
 import cx from "classnames";
 import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
@@ -75,6 +76,7 @@ import { IoArrowDownSharp } from "react-icons/io5";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import "./GlpSwap.css";
 import SwapErrorModal from "./SwapErrorModal";
+import DepositModal from "./depositModal";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -89,6 +91,7 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import Checkbox from "components/Checkbox/Checkbox";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePendingTxns } from "lib/usePendingTxns";
+import { SELECTED_CHAIN_LOCAL_STORAGE_KEY } from "config/localStorage";
 
 const { AddressZero } = ethers.constants;
 
@@ -186,6 +189,7 @@ export default function GlpSwap(props) {
   const { chainId } = useChainId();
   const tokens = getV1Tokens(chainId);
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);
+  console.log("1", whitelistedTokens);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
   const minutesToNextEpoch = getMinutesToNextEpochIfLessThanHour();
@@ -197,13 +201,13 @@ export default function GlpSwap(props) {
     `${swapLabel}-swap-token-address`,
     AddressZero
   );
-  console.log(swapTokenAddress)
   const [isApproving, setIsApproving] = useState(false);
   const [isWaitingForApproval, setIsWaitingForApproval] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [anchorOnSwapAmount, setAnchorOnSwapAmount] = useState(true);
   const [feeBasisPoints, setFeeBasisPoints] = useState("");
   const [modalError, setModalError] = useState(false);
+  const [bridgeIsVisible, setbridgeIsVisible] = useState(false);
   const [isEpochAcknowledgeSelected, setIsEpochAcknowledgeSelected] = useState(false);
 
   const readerAddress = getContract(chainId, "Reader");
@@ -299,7 +303,7 @@ export default function GlpSwap(props) {
   //   }
   // );
 
-  const { agxPrice } = useAGXPrice();
+  // const { agxPrice } = useAGXPrice();
 
   const rewardTrackersForStakingInfo = [stakedGlpTrackerAddress, feeGlpTrackerAddress];
 
@@ -928,6 +932,9 @@ export default function GlpSwap(props) {
       </div>
     );
   }
+  const chainKeyFromLocalStorage = localStorage.getItem(SELECTED_CHAIN_LOCAL_STORAGE_KEY);
+  const bridgeUrl = `https://preview.portal.zklink.io/deposit-integrate?network=${chainKeyFromLocalStorage}&token=${swapTokenAddress}`;
+
   return (
     <div className="GlpSwap">
       <SwapErrorModal
@@ -941,6 +948,11 @@ export default function GlpSwap(props) {
         glpPrice={glpPrice}
         infoTokens={infoTokens}
         swapUsdMin={swapUsdMin}
+      />
+      <DepositModal
+        isVisible={Boolean(bridgeIsVisible)}
+        setIsVisible={setbridgeIsVisible}
+        swapTokenAddress={swapTokenAddress}
       />
       <div className="GlpSwap-content">
         <div className="GlpSwap-stats-card">
@@ -1176,6 +1188,13 @@ export default function GlpSwap(props) {
             </div>
             {minutesToNextEpoch && renderEpochEndingCheckbox(minutesToNextEpoch)}
             <div className="GlpSwap-cta Exchange-swap-button-container">
+              <div
+                className={cx({ 'hideButton': (!chainKeyFromLocalStorage || chainKeyFromLocalStorage === 'nova') })}
+              >
+                <Button type="button" variant="secondary" className="w-full bridge-to-nova" onClick={()=>setbridgeIsVisible(true)}>
+                  Bridge to Nova
+                </Button>
+              </div>
               <Button type="submit" variant="primary-action" className="w-full" disabled={!isPrimaryEnabled()}>
                 {getPrimaryText()}
               </Button>

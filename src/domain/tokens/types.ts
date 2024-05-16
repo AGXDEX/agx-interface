@@ -1,5 +1,8 @@
 import { BigNumber } from "@ethersproject/bignumber";
-
+export type L1Address = {
+  key: string;
+  address: string;
+};
 export type Token = {
   name: string;
   symbol: string;
@@ -27,6 +30,7 @@ export type Token = {
   isChartDisabled?: boolean;
   isV1Available?: boolean;
   isPlatformToken?: boolean;
+  l1Addresses?: L1Address[];
 };
 
 export type TokenInfo = Token & {

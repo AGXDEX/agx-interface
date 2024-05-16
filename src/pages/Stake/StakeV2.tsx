@@ -1840,11 +1840,11 @@ export default function StakeV2() {
       // (totalValueLockedToken0 * token0 price) + (totalValueLockedToken1 * token1 price)
       num = (Number(response.data.data.pool.totalValueLockedToken0) * agxPrice) + (Number(response.data.data.pool.totalValueLockedToken1) * Number(ethPrice)/(10**30))
       let AGXVFTValue = Number(stakeliquidity)/Number(response.data.data.pool.liquidity)*Number(response.data.data.pool.totalValueLockedToken0)
-      setAGXVFTValue(Number(AGXVFTValue).toLocaleString())
+      setAGXVFTValue(AGXVFTValue.toLocaleString())
     } else {
       num = (Number(response.data.data.pool.totalValueLockedToken1) * agxPrice) + (Number(response.data.data.pool.totalValueLockedToken0) * Number(ethPrice)/(10**30))
       let AGXVFTValue = Number(stakeliquidity)/Number(response.data.data.pool.liquidity)*Number(response.data.data.pool.totalValueLockedToken1)
-      setAGXVFTValue(Number(AGXVFTValue).toLocaleString())
+      setAGXVFTValue(AGXVFTValue.toLocaleString())
     }
     setpoolValue(num)
     setstakeAllValue(num*Number(stakeliquidity)/Number(response.data.data.pool.liquidity))
@@ -2215,7 +2215,7 @@ export default function StakeV2() {
           <div className={cx("StakeV2-box between", { 'ishide': selectTab === 'Liquidity' })}>
             <div className="halfBox">
               <div className="StakeV2-stakeTitle padLeft">Overview</div>
-              <div className={cx("mobileBox ishide", { 'show': selectTab === 'Staking' })}>
+              <div className={cx("mobileBox", {'ishide': selectTab !== 'Staking','show': selectTab === 'Staking' })}>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">APR</div>
                   <div>1,333,213</div>
@@ -2233,7 +2233,7 @@ export default function StakeV2() {
                   <div>0</div>
                 </div>
               </div>
-              <div className={cx("mobileBox ishide", { 'show': selectTab === 'Pool2' })}>
+              <div className={cx("mobileBox", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">APR</div>
                   <div>{stakeAPRValue}</div>
@@ -2250,7 +2250,7 @@ export default function StakeV2() {
             </div>
             <div className="halfBox">
               <div className="StakeV2-stakeTitle padLeft">My Data</div>
-              <div className={cx("mobileBox ishide", { 'show': selectTab === 'Staking' })}>
+              <div className={cx("mobileBox", {'ishide': selectTab !== 'Staking','show': selectTab === 'Staking' })}>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">AGX</div>
                   <div>{formatAmount(AGXBalance, 18, 2, true)}</div>
@@ -2268,7 +2268,7 @@ export default function StakeV2() {
                   <div>0</div>
                 </div>
               </div>
-              <div className={cx("mobileBox ishide", { 'show': selectTab === 'Pool2' })}>
+              <div className={cx("mobileBox", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Staked AGX in LP NFT</div>
                   <div>{formatAmount(AGXBalance, 18, 2, true)}</div>
@@ -2284,7 +2284,7 @@ export default function StakeV2() {
               </div>
             </div>
           </div>
-          <div className={cx("StakeV2-box marBottom ishide", { 'isShow': selectTab === 'Staking' })}>
+          <div className={cx("StakeV2-box marBottom", {'ishide': selectTab !== 'Staking','isShow': selectTab === 'Staking' })}>
             <div className="StakeV2-stakeTitle padLeft">Stake AGX</div>
             <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => showStakeGmxModals()}>
               <Trans>Stake AGX</Trans>
@@ -2298,9 +2298,9 @@ export default function StakeV2() {
               </Button>
             </div>
           </div>
-          <div className={cx("addNow ishide", { 'show': selectTab === 'Pool2' })}>Add liquidity to Uniswap AGX/ETH pool to receive your LP NFT. <a href={`https://novaswap.finance/?chain=nova_sepolia#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`} className="">Add now &gt;&gt;</a>
+          <div className={cx("addNow", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>Add liquidity to Uniswap AGX/ETH pool to receive your LP NFT. <a href={`https://novaswap.finance/?chain=nova_sepolia#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`} className="">Add now &gt;&gt;</a>
           </div>
-          <div className={cx("ishide", { 'show': selectTab === 'Pool2' })}>
+          <div className={cx("", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>
             <div className="StakeV2-stakeTitle padLeft">My deposit LP NFT</div>
             <div className="NFTCard">
               {depNFTlists && depNFTlists.length > 0 && depNFTlists.map((item,index) => {
@@ -2326,7 +2326,7 @@ export default function StakeV2() {
               })}
             </div>
           </div>
-          <div className={cx("ishide liquidity", { 'show': selectTab === 'Liquidity' })}>
+          <div className={cx("liquidity", {'ishide': selectTab !== 'Liquidity','show': selectTab === 'Liquidity' })}>
               <div className="table-tr">
                 <div className="leftAlign">Pool</div>
                 <div className="rightAlign">Daily Emission</div>
