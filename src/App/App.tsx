@@ -94,7 +94,6 @@ import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { useDisconnect } from "wagmi";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
 import { Provider } from "@ethersproject/providers";
-import BridgeToNova from "pages/BridgeNova/BridgeToNova";
 
 // @ts-ignore
 if (window?.ethereum?.autoRefreshOnNetworkChange) {
@@ -285,9 +284,6 @@ function FullApp() {
               </Route>
               <Route exact path="/buy">
                 <BuyGlp />
-              </Route>
-              <Route exact path="/bridge:address?">
-                <BridgeToNova />
               </Route>
               <Route exact path="/pools">
                 {getIsSyntheticsSupported(chainId) ? (

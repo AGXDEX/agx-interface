@@ -76,6 +76,7 @@ import { IoArrowDownSharp } from "react-icons/io5";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import "./GlpSwap.css";
 import SwapErrorModal from "./SwapErrorModal";
+import DepositModal from "./depositModal";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -206,6 +207,7 @@ export default function GlpSwap(props) {
   const [anchorOnSwapAmount, setAnchorOnSwapAmount] = useState(true);
   const [feeBasisPoints, setFeeBasisPoints] = useState("");
   const [modalError, setModalError] = useState(false);
+  const [bridgeIsVisible, setbridgeIsVisible] = useState(false);
   const [isEpochAcknowledgeSelected, setIsEpochAcknowledgeSelected] = useState(false);
 
   const readerAddress = getContract(chainId, "Reader");
@@ -947,6 +949,11 @@ export default function GlpSwap(props) {
         infoTokens={infoTokens}
         swapUsdMin={swapUsdMin}
       />
+      <DepositModal
+        isVisible={Boolean(bridgeIsVisible)}
+        setIsVisible={setbridgeIsVisible}
+        swapTokenAddress={swapTokenAddress}
+      />
       <div className="GlpSwap-content">
         <div className="GlpSwap-stats-card">
           <div className="App-card App-card-stats">
@@ -1181,16 +1188,13 @@ export default function GlpSwap(props) {
             </div>
             {minutesToNextEpoch && renderEpochEndingCheckbox(minutesToNextEpoch)}
             <div className="GlpSwap-cta Exchange-swap-button-container">
-              <Link
-                to={{
-                  pathname: "/bridge",
-                  hash: `#swapTokenAddress=${swapTokenAddress}`,
-                }}
+              <div
+                className={cx({ 'hideButton': (!chainKeyFromLocalStorage || chainKeyFromLocalStorage === 'nova') })}
               >
-                <Button type="button" variant="secondary" className="w-full bridge-to-nova">
+                <Button type="button" variant="secondary" className="w-full bridge-to-nova" onClick={()=>setbridgeIsVisible(true)}>
                   Bridge to Nova
                 </Button>
-              </Link>
+              </div>
               <Button type="submit" variant="primary-action" className="w-full" disabled={!isPrimaryEnabled()}>
                 {getPrimaryText()}
               </Button>

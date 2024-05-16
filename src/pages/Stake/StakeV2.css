@@ -126,6 +126,9 @@
   .mobileBox{
     display: block!important;
   }
+  .StakeV2-content .ishide{
+    display: none!important;
+  }
   .between .halfBox{
     width: 100%!important;
   }

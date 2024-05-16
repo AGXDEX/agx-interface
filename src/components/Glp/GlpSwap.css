@@ -365,6 +365,9 @@
     margin-top: 0.8rem;
   }
 }
+.hideButton{
+  display: none;
+}
 @media (max-width: 600px) {
   .token-grid {
     display: grid;

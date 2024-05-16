@@ -16,8 +16,10 @@ const switchChain = (key) => {
 export default function ChainDropdown({ networkOptions, selectorLabel }) {
   const { active } = useWallet();
   const { chainId } = useChainId();
-  const icon = getIcon(chainId, "network");
-  const [selectedChain, setSelectedChain] = useState(networkOptions[0].key);
+  // const icon = getIcon(chainId, "network");
+  console.log(networkOptions)
+  const icon = networkOptions && networkOptions.filter((net)=>{return net.key === (localStorage.getItem(SELECTED_CHAIN_LOCAL_STORAGE_KEY) || 'nova')})[0].logoUrl || networkOptions[0].logoUrl;
+  const [selectedChain, setSelectedChain] = useState(localStorage.getItem(SELECTED_CHAIN_LOCAL_STORAGE_KEY) || networkOptions[0].key);
   const handleNetworkClick = (networkKey) => {
     setSelectedChain(networkKey);
     switchChain(networkKey);
@@ -26,7 +28,7 @@ export default function ChainDropdown({ networkOptions, selectorLabel }) {
     <div className="App-header-network">
       <Menu>
         <Menu.Button as="div" className="network-img-box">
-          <img className="network-dropdown-icon network-img" src={icon} alt={selectorLabel} />
+          <img className="network-dropdown-icon network-img" src={icon}/>
         </Menu.Button>
         <Menu.Items as="div" className="menu-items network-dropdown-items">
           <div className="network-dropdown-list">
