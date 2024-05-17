@@ -120,8 +120,6 @@ export default function TradeHistory(props) {
   );
   const currentPageData = getCurrentData();
 
-  console.log(startDate)
-  console.log(endDate)
   useEffect(() => {
     if (!pageCount || !currentPage) return;
     const totalPossiblePages = (TRADES_PAGE_SIZE * size) / TRADE_HISTORY_PER_PAGE;
