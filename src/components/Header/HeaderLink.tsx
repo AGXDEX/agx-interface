@@ -64,7 +64,13 @@ export function HeaderLink({
       </a>
     );
   }
-
+  if (to === '/referrals' || to === '/leaderboard') {
+    return (
+      <a className={cx(className)} title='soon'>
+        {children}
+      </a>
+    );
+  }
   return (
     <NavLink
       isActive={isActive}

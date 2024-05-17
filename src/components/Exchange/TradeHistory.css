@@ -12,3 +12,7 @@
 .TradeHistory-item-link {
   display: inline-block;
 }
+.TradeHistory{
+  background: var(--dark-blue-bg);
+  border-radius: 0.4rem;
+}

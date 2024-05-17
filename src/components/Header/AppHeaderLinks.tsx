@@ -51,26 +51,26 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
           <Trans>Earn</Trans>
         </HeaderLink>
       </div>
-      {/* <div className="App-header-link-container">
+      <div className="App-header-link-container">
         <HeaderLink to="/referrals" showRedirectModal={showRedirectModal}>
           <Trans>Referrals</Trans>
         </HeaderLink>
-      </div> */}
-      {/* <div className="App-header-link-container">
-        <HeaderLink to="/leaderboard" showRedirectModal={showRedirectModal} isActive={isLeaderboardActive}>
+      </div>
+      <div className="App-header-link-container">
+        <HeaderLink to="/leaderboard" showRedirectModal={showRedirectModal}>
           <Trans>Leaderboard</Trans>
         </HeaderLink>
       </div>
-      <div className="App-header-link-container">
+      {/* <div className="App-header-link-container">
         <HeaderLink to="/ecosystem" showRedirectModal={showRedirectModal}>
           <Trans>Ecosystem</Trans>
         </HeaderLink>
-      </div>
+      </div> */}
       <div className="App-header-link-container">
         <ExternalLink href="https://docs.gmx.io/">
           <Trans>Docs</Trans>
         </ExternalLink>
-      </div> */}
+      </div>
       {/* {small && !isHomeSite() && ( */}
       {/* <div className="App-header-link-container"> */}
       {/* eslint-disable-next-line */}

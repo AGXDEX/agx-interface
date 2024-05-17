@@ -7,23 +7,23 @@ export const NATIVE_TOKEN_ADDRESS = ethers.constants.AddressZero;
 import { SELECTED_CHAIN_LOCAL_STORAGE_KEY } from "config/localStorage";
 const chainKeyFromLocalStorage = localStorage.getItem(SELECTED_CHAIN_LOCAL_STORAGE_KEY)||'nova';
 const ChainToken: Token[] = [
-  {
-    name: "Dai",
-    symbol: "Dai",
-    decimals: 18,
-    address: "0xfc31ff38e24901052b813dcebef5a9a10eaf25ec",
-    isShortable: true,
-    imageUrl: "https://assets.coingecko.com/coins/images/34753/large/Ezeth_logo_circle.png?1713496404",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/renzo-restaked-eth",
-    explorerUrl: "https://sepolia.explorer.zklink.io/address/0xD7C43Ef14bb17C8bBD6575992aa35d9EBBfc512D",
-    isV1Available: true,
-    l1Addresses: [
-      {
-        key: "arbitrum",
-        address: "0x2416092f143378750bb29b79eD961ab195CcEea5",
-      },
-    ],
-  },
+  // {
+  //   name: "Dai",
+  //   symbol: "Dai",
+  //   decimals: 18,
+  //   address: "0xfc31ff38e24901052b813dcebef5a9a10eaf25ec",
+  //   isShortable: true,
+  //   imageUrl: "https://assets.coingecko.com/coins/images/34753/large/Ezeth_logo_circle.png?1713496404",
+  //   coingeckoUrl: "https://www.coingecko.com/en/coins/renzo-restaked-eth",
+  //   explorerUrl: "https://sepolia.explorer.zklink.io/address/0xD7C43Ef14bb17C8bBD6575992aa35d9EBBfc512D",
+  //   isV1Available: true,
+  //   l1Addresses: [
+  //     {
+  //       key: "arbitrum",
+  //       address: "0x2416092f143378750bb29b79eD961ab195CcEea5",
+  //     },
+  //   ],
+  // },
   {
     name: "Ethereum",
     symbol: "ETH",
@@ -256,17 +256,17 @@ const ChainToken: Token[] = [
   }
 ];
 const novaChain = [
-    {
-      name: "Dai",
-      symbol: "Dai",
-      decimals: 18,
-      address: '0x5f2eC2cC20C1B556E397e70193b28bE7b459C54f', // ，ethers.constants.AddressZero
-      isNative: true,
-      isShortable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
-      isV1Available: true,
-    },
+    // {
+    //   name: "Dai",
+    //   symbol: "Dai",
+    //   decimals: 18,
+    //   address: '0x5f2eC2cC20C1B556E397e70193b28bE7b459C54f', // ，ethers.constants.AddressZero
+    //   isNative: true,
+    //   isShortable: true,
+    //   imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+    //   coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+    //   isV1Available: true,
+    // },
     {
       name: "Ethereum",
       symbol: "ETH",

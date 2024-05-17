@@ -2371,7 +2371,6 @@ export default function StakeV2() {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import cx from "classnames";
 import "./Footer.css";
-import logoImg from "img/ic_gmx_footer.svg";
+import logoImg from "img/logo.png";
 import { NavLink } from "react-router-dom";
 import { isHomeSite, getAppBaseUrl, shouldShowRedirectModal } from "lib/legacy";
 import { getFooterLinks, SOCIAL_LINKS } from "./constants";
@@ -17,9 +17,6 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
       <div className={cx("Footer-wrapper", { home: isHome })}>
         <div className="Footer-logo">
           <img src={logoImg} alt="MetaMask" />
-          <div className="deposit">
-          Copyright © AGX, 2024. All rights reserved
-          </div>
         </div>
         <div className="Footer-social-link-block">
           {SOCIAL_LINKS.map((platform) => {
@@ -29,6 +26,9 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
               </ExternalLink>
             );
           })}
+        </div>
+        <div className="deposit">
+        Copyright © AGX, 2024. All rights reserved
         </div>
         {/* <div className="Footer-links">
           {getFooterLinks(isHome).map(({ external, label, link, isAppLink }) => {
