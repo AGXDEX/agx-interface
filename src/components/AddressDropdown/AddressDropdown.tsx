@@ -70,14 +70,14 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
               </p>
             </ExternalLink>
           </Menu.Item>
-          <Menu.Item>
+          {/* <Menu.Item>
             <div className="menu-item" onClick={handleSubaccountClick}>
               <img width={20} src={oneClickTradingIcon} alt="Open One-click Trading settings" />
               <p>
                 <Trans>One-Click Trading</Trans>
               </p>
             </div>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item>
             <div className="menu-item" onClick={disconnectAccountAndCloseSettings}>
               <img width={20} src={disconnect} alt="Disconnect the wallet" />

@@ -1429,7 +1429,6 @@ export default function GlpSwap(props) {
           })}
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

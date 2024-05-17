@@ -4,7 +4,7 @@ import cx from "classnames";
 import { AppHeaderUser } from "./AppHeaderUser";
 import { AppHeaderLinks } from "./AppHeaderLinks";
 
-import logoImg from "img/logo_GMX.svg";
+import logoImg from "img/logo.png";
 import logoSmallImg from "img/logo_GMX_small.svg";
 import { RiMenuLine } from "react-icons/ri";
 import { FaTimes } from "react-icons/fa";
@@ -100,10 +100,10 @@ export function Header({ disconnectAccountAndCloseSettings, openSettings, showRe
             <div className="App-header-container-left">
               <Link className="App-header-link-main" to="/">
                 <div className="big">
-                  <img src={logoImg} alt="AGX Logo" /> AGX
+                  <img src={logoImg} alt="AGX Logo" />
                 </div>
                 <div className="small">
-                  <img src={logoSmallImg} alt="AGX Logo" /> AGX
+                  <img src={logoSmallImg} alt="AGX Logo" />
                 </div>
               </Link>
               {isHomeSite() ? (

@@ -207,7 +207,9 @@ export function useAllPositions(chainId, signer) {
 
   return positions;
 }
-export function useHistoryTradeData(chainId, account, pageSize) {
+export function useHistoryTradeData(chainId, account, pageSize, startDate=new Date('1990.1.1').getTime()/1000, endDate=new Date('2200.1.1').getTime()/1000) {
+  console.log(startDate)
+  console.log(endDate)
   const getKey = (pageIndex: number) => [chainId, "useHistoryTradeData", account, pageIndex, pageSize];
   const {
     data,
@@ -220,7 +222,7 @@ export function useHistoryTradeData(chainId, account, pageSize) {
       const skip = pageIndex * pageSize;
       const first = pageSize;
       const query = gql(`query MyQuery {
-        swapInfos(where: {owner: "${account.toLowerCase()}"}, orderBy: blockTimestamp, orderDirection: desc,skip: ${skip},
+        swapInfos(where: {blockTimestamp_gt: "${startDate}", blockTimestamp_lt: "${endDate}",owner: "${account.toLowerCase()}"}, orderBy: blockTimestamp, orderDirection: desc,skip: ${skip},
         first: ${first},) {
           owner
           tokenIn

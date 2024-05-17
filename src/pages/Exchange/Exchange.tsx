@@ -36,7 +36,9 @@ import ExchangeWalletTokens from "components/Exchange/ExchangeWalletTokens";
 import OrdersList from "components/Exchange/OrdersList";
 import PositionsList from "components/Exchange/PositionsList";
 import SwapBox from "components/Exchange/SwapBox";
-import TradeHistory from "components/Exchange/TradeHistory";
+// import TradeHistory from "components/Exchange/TradeHistory";
+
+import TradeHistorys from "components/Exchange/TradeHistorys";
 import Footer from "components/Footer/Footer";
 import Tab from "components/Tab/Tab";
 
@@ -869,7 +871,7 @@ export const Exchange = forwardRef(
     const ORDERS = "Orders";
     const TRADES = "Trades";
 
-    const LIST_SECTIONS = [TRADES].filter(Boolean);
+    const LIST_SECTIONS = [POSITIONS,ORDERS,TRADES].filter(Boolean);
     let [listSection, setListSection] = useLocalStorageByChainId(chainId, "List-section-v2", LIST_SECTIONS[0]);
     const LIST_SECTIONS_LABELS = {
       [ORDERS]: orders.length ? t`Orders (${orders.length})` : t`Orders`,
@@ -981,7 +983,7 @@ export const Exchange = forwardRef(
             />
           )}
           {listSection === TRADES && (
-            <TradeHistory
+            <TradeHistorys
               account={account}
               infoTokens={infoTokens}
               getTokenInfo={getTokenInfo}
@@ -1084,7 +1086,6 @@ export const Exchange = forwardRef(
           <div className="Exchange-lists small">{getListSection()}</div>
           <UsefulLinks className="Useful-links-exchange" />
         </div>
-        <Footer />
       </div>
     );
   }
