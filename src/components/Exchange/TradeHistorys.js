@@ -232,7 +232,7 @@ export default function TradeHistory(props) {
                   const tokenOut = getTokenInfo(lowerCaseInfoTokens, trade.tokenOut.toLowerCase(), true, nativeTokenAddress);
                   const price = (Number(trade.amountIn)/(10**tokenIn.decimals))/(Number(trade.amountOut)/(10**tokenOut.decimals))
                   return (
-                    <tr>
+                    <tr key={index}>
                       <th>
                       <ExternalLink className="plain TradeHistory-item-link" href={txUrl}>
                         Swap
