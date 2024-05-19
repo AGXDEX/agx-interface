@@ -18,7 +18,7 @@ export default function ChainDropdown({ networkOptions, selectorLabel }) {
   const { active } = useWallet();
   const { chainId } = useChainId();
   // const icon = getIcon(chainId, "network");
-  console.log(networkOptions)
+  // console.log(networkOptions)
   const icon = networkOptions && networkOptions.filter((net)=>{return net.key === (localStorage.getItem(SELECTED_CHAIN_LOCAL_STORAGE_KEY) || 'nova')})[0].logoUrl || networkOptions[0].logoUrl;
   const [selectedChain, setSelectedChain] = useState(localStorage.getItem(SELECTED_CHAIN_LOCAL_STORAGE_KEY) || networkOptions[0].key);
   const handleNetworkClick = (networkKey) => {
