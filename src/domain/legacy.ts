@@ -208,8 +208,8 @@ export function useAllPositions(chainId, signer) {
   return positions;
 }
 export function useHistoryTradeData(chainId, account, pageSize, startDate=new Date('1990.1.1').getTime()/1000, endDate=new Date('2200.1.1').getTime()/1000) {
-  console.log(startDate)
-  console.log(endDate)
+  // console.log(startDate)
+  // console.log(endDate)
   const getKey = (pageIndex: number) => [chainId, "useHistoryTradeData", account, pageIndex, pageSize];
   const {
     data,
@@ -755,7 +755,7 @@ function useAGXPriceFromNova() {
   const agxAddressArb = getContract(ARBITRUM, "AGX");
 
   const { data: poolAdr, mutate: updateReserves } = useSWR(["TraderAGXNovaReserves", ARBITRUM, v3Factory, "getPool"], {
-    fetcher: contractFetcher(undefined, UniswapV3, [agxAddressArb, wethSwap, 3000]),
+    fetcher: contractFetcher(undefined, UniswapV3, [agxAddressArb, wethSwap, 10000]),
   });
   const vaultAddress = getContract(ARBITRUM, "Vault");
   const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address;
@@ -771,6 +771,7 @@ function useAGXPriceFromNova() {
       fetcher: contractFetcher(undefined, UniPoolV3),
     }
   );
+  // console.log(uniPoolSlot0)
   const { data: uniPoolToken1, mutate: updateUniPoolToken1 } = useSWR<any>(
     poolAdr ? [`StakeV3:uniPoolToken1:`, ARBITRUM, poolAdr, "token1"] : null,
     {
@@ -785,10 +786,10 @@ function useAGXPriceFromNova() {
       // const ratioSquared = sqrtPriceX96.div(BigNumber.from(2).pow(96)).pow(2);
       if (uniPoolToken1 === wethSwap) {
         // agxprice = eth price *  (slot0.sqrtPriceX96 / 2** 96) ** 2
-        price = Number(ethPrice)*(Number(sqrtPriceX96)/(2**96)**2)
+        price = Number(ethPrice)/(10**30)*((Number(sqrtPriceX96)/(2**96))**2)
       } else {
         // agxprice  = eth price * ( 1 /  (slot0.sqrtPriceX96 / 2** 96) ** 2 )
-        price = Number(ethPrice)*(1/(Number(sqrtPriceX96)/(2**96)**2))
+        price = Number(ethPrice)/(10**30)*(1/((Number(sqrtPriceX96)/(2**96))**2))
       }
       return price;
     }

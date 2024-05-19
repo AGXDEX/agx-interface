@@ -1816,6 +1816,7 @@ export default function StakeV2() {
   const { data: Pool2ewards } = useSWR([`StakeV2:rewards:${active}`, chainId, uniV3StakerAddress, "rewards"], {
     fetcher: contractFetcher(signer, UniV3Staker,[AGXAddress,account]),
   });
+  console.log(Pool2ewards)
   const { data: Pooladdress } = useSWR([`StakeV2:getPool:${active}`, chainId, v3FactoryAddress, "getPool"], {
     fetcher: contractFetcher(signer, UniswapV3Factory,[AGXAddress,EthPoolAddress,10000]),
   });
@@ -1825,7 +1826,6 @@ export default function StakeV2() {
   })
 
   const { agxPrice } = useAGXPrice();
-
   const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address;
   const { data: ethPrice, mutate: updateEthPrice } = useSWR<BigNumber>(
     [`StakeV3:ethPrice`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
@@ -1836,6 +1836,8 @@ export default function StakeV2() {
   Pooladdress && axios.post('http://13.115.181.197:8000/subgraphs/name/novasap-subgraph', "{\"query\":\"{\\n  pool(id: \\\""+ Pooladdress.toLowerCase() +"\\\") {\\n    token0 {\\nid\\n}\\n    token1 {\\nid\\n}\\n    liquidity\\n    totalValueLockedToken0\\n    totalValueLockedToken1\\n    }\\n}\"}")
   .then(response => {
     let num = 0
+    // console.log(agxPrice)
+    // console.log(Number(ethPrice)/(10**30))
     if (response.data.data.pool.token0.id.toLowerCase() === AGXAddress) {
       // (totalValueLockedToken0 * token0 price) + (totalValueLockedToken1 * token1 price)
       num = (Number(response.data.data.pool.totalValueLockedToken0) * agxPrice) + (Number(response.data.data.pool.totalValueLockedToken1) * Number(ethPrice)/(10**30))
