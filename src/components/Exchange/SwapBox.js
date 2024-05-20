@@ -306,7 +306,6 @@ export default function SwapBox(props) {
   );
 
   const { data: hasOutdatedUi } = Api.useHasOutdatedUi();
-
   const fromToken = getToken(chainId, fromTokenAddress);
   const toToken = getToken(chainId, toTokenAddress);
   const shortCollateralToken = getTokenInfo(infoTokens, shortCollateralAddress);

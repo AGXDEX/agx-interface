@@ -23,6 +23,7 @@ import UniV3Staker from "abis/UniV3Staker.json";
 import UniswapV3Factory from "abis/UniswapV3Factory.json";
 import DexReader from "abis/DexReader.json";
 import VaultV2 from "abis/VaultV2.json";
+import YieldEmission from "abis/YieldEmission.json";
 
 import { ARBITRUM, AVALANCHE, getConstant } from "config/chains";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply,useAGXPrice } from "domain/legacy";
@@ -163,7 +164,7 @@ function ClaimAllModal(props) {
     } else {
       setIsDeposit(true);
       const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
-      callContract(chainId, contract, "claimReward", [AGXAddress,account,Pool2ewards.toNumber()], {
+      callContract(chainId, contract, "claimReward", [AGXAddress,account,Pool2ewards], {
         sentMsg: t`Claim submitted.`,
         failMsg: t`Claim failed.`,
         successMsg: t`Claim completed!`,
@@ -203,7 +204,7 @@ function ClaimAllModal(props) {
               </Checkbox>
             </div>
             <div>
-              {Pool2ewards && Pool2ewards.toNumber()}
+              {Pool2ewards && (Number(Pool2ewards)/(10**18)).toFixed(4).toLocaleString()}
             </div>
           </div>
           <div className="tabBox">
@@ -1543,7 +1544,6 @@ export default function StakeV2() {
       fetcher: contractFetcher(signer, ReaderV2, [excludedEsGmxAccounts]),
     }
   );
-
   const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
 
   const maxBoostBasicPoints = useMaxBoostBasicPoints();
@@ -1816,7 +1816,7 @@ export default function StakeV2() {
   const { data: Pool2ewards } = useSWR([`StakeV2:rewards:${active}`, chainId, uniV3StakerAddress, "rewards"], {
     fetcher: contractFetcher(signer, UniV3Staker,[AGXAddress,account]),
   });
-  console.log(Pool2ewards)
+  // console.log(Number(Pool2ewards))
   const { data: Pooladdress } = useSWR([`StakeV2:getPool:${active}`, chainId, v3FactoryAddress, "getPool"], {
     fetcher: contractFetcher(signer, UniswapV3Factory,[AGXAddress,EthPoolAddress,10000]),
   });
@@ -1824,7 +1824,13 @@ export default function StakeV2() {
     let str = Buffer.from(base.split(',')[1], 'base64').toString('utf-8');
     return JSON.parse(str)
   })
-
+  const { data: rewardRate } = useSWR(
+    [`StakeV2:rewardRate:${active}`, chainId, yieldTrackerAddress, "rewardRate"],
+    {
+      fetcher: contractFetcher(signer, YieldEmission),
+    }
+  );
+  // console.log(Number(rewardRate)/(10**18))
   const { agxPrice } = useAGXPrice();
   const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address;
   const { data: ethPrice, mutate: updateEthPrice } = useSWR<BigNumber>(
@@ -1851,7 +1857,7 @@ export default function StakeV2() {
     setpoolValue(num)
     setstakeAllValue(num*Number(stakeliquidity)/Number(response.data.data.pool.liquidity))
     //   (agxprice * x)  / stake   TODO
-    let stakeAPRValue = ((agxPrice*365)/stakeAllValue).toFixed(2)
+    let stakeAPRValue = Number(stakeliquidity) === 0? '0':((agxPrice*365)/stakeAllValue).toFixed(2)
     setstakeAPRValue(Number(stakeAPRValue).toLocaleString())
   })
   .catch(error => {
@@ -2190,7 +2196,7 @@ export default function StakeV2() {
           <div className="StakeV2-title">Claimable Rewards</div>
           <div className="StakeV2-box">
             <div className="StakeV2-claimBox">
-              <div className="StakeV2-claimNum">0.00</div>
+              <div className="StakeV2-claimNum">{agxPrice && rewardRate &&(Number(rewardRate)/(10**18)*60*60*24*365* agxPrice).toLocaleString()}</div>
               <div className="StakeV2-claimToken">USDT</div>
             </div>
             <div className="StakeV2-claimBox">
@@ -2300,7 +2306,7 @@ export default function StakeV2() {
               </Button>
             </div>
           </div>
-          <div className={cx("addNow", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>Add liquidity to Uniswap AGX/ETH pool to receive your LP NFT. <a href={`https://novaswap.finance/?chain=nova_sepolia#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`} className="">Add now &gt;&gt;</a>
+          <div className={cx("addNow", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>Add liquidity to Uniswap AGX/ETH pool to receive your LP NFT. <a href={`https://novaswap.exchange/?chain=nova_sepolia#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`} className="">Add now &gt;&gt;</a>
           </div>
           <div className={cx("", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>
             <div className="StakeV2-stakeTitle padLeft">My deposit LP NFT</div>

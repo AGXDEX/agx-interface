@@ -39,6 +39,6 @@ export const SOCIAL_LINKS: SocialLink[] = [
   { link: "https://x.com/AGX_XYZ", name: "Twitter", icon: xIcon },
   { link: "https://agx-1.gitbook.io/agx/", name: "Substack", icon: substackIcon },
   { link: "https://github.com/AGXDEX/agx-interface", name: "Github", icon: githubIcon },
-  { link: "https://t.me/GMX_IO", name: "Telegram", icon: telegramIcon },
+  // { link: "https://t.me/GMX_IO", name: "Telegram", icon: telegramIcon },
   { link: "https://discord.gg/agxdefi", name: "Discord", icon: discordIcon },
 ];

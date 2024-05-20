@@ -66,8 +66,9 @@ export function HeaderLink({
   }
   if (to === '/referrals' || to === '/leaderboard') {
     return (
-      <a className={cx(className)} title='soon'>
+      <a className={cx(className)}>
         {children}
+        <span className="urlSoon">soon</span>
       </a>
     );
   }

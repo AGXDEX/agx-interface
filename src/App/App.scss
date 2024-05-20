@@ -685,8 +685,14 @@ button.App-connect-wallet:hover {
   font-size: var(--font-base);
   line-height: 1.8rem;
   font-weight: normal;
+  position: relative;
 }
-
+.App-header-container-left a .urlSoon{
+  position: absolute;
+  font-size: 10px;
+  top: 5px;
+  right: 0;
+}
 .App-header-container-left .a.active,
 .App-header-container-left a.active {
   color: white;

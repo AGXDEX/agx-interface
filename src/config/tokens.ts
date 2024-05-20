@@ -35,7 +35,7 @@ const ChainToken: Token[] = [
     coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
     isV1Available: true,
     l1Addresses: [
-      // 全是0x0000000000000000000000000000000000000000
+      // 0x0000000000000000000000000000000000000000
     ],
   },
   {
