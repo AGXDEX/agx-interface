@@ -152,7 +152,7 @@
   line-height: 21.6px;
   text-align: left;
   padding-bottom: 10px;
-  border-bottom: 3px solid #1d202e;
+  /* border-bottom: 3px solid #1d202e; */
   margin-bottom: 10px;
 }
 .StakeV2-box{
@@ -268,7 +268,7 @@
 .tabBox{
   width: 100%;
   padding-bottom: 10px;
-  border-bottom: 3px solid #1d202e;
+  /* border-bottom: 3px solid #1d202e; */
   margin-bottom: 10px;
   display: flex;
 }

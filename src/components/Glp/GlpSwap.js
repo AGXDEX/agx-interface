@@ -40,6 +40,7 @@ import VaultV2 from "abis/VaultV2.json";
 import Vester from "abis/Vester.json";
 import UniswapV3 from "abis/UniswapV3Factory.json";
 import UniPoolV3 from "abis/UniswapV3Pool.json";
+import YieldEmission from "abis/YieldEmission.json";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -220,6 +221,7 @@ export default function GlpSwap(props) {
   const usdgAddress = getContract(chainId, "USDG");
   const glpManagerAddress = getContract(chainId, "GlpManager");
   const glpRewardRouterAddress = getContract(chainId, "RewardRouter");
+  const yieldTrackerAddress = getContract(chainId, "YieldTracker");
 
   const tokensForBalanceAndSupplyQuery = [feeGlp, usdgAddress];
   const glpIcon = getIcon(chainId, "glp");
@@ -294,6 +296,13 @@ export default function GlpSwap(props) {
     }
   );
 
+  const { data: rewardRate } = useSWR(
+    [`StakeV2:rewardRate:${active}`, chainId, yieldTrackerAddress, "rewardRate"],
+    {
+      fetcher: contractFetcher(signer, YieldEmission),
+    }
+  );
+  const { agxPrice } = useAGXPrice();
   const glpVesterAddress = getContract(chainId, "GlpVester");
   const reservedAmount = 0;
   // const { data: reservedAmount } = useSWR(
@@ -351,7 +360,6 @@ export default function GlpSwap(props) {
   }
 
   const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, undefined);
-
   const swapToken = getToken(chainId, swapTokenAddress);
   const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
   const nativeTokenInfo = getTokenInfo(infoTokens, AddressZero);
@@ -474,7 +482,6 @@ export default function GlpSwap(props) {
 
         return;
       }
-
       if (!glpAmount) {
         setSwapValue("");
         setFeeBasisPoints("");
@@ -617,7 +624,6 @@ export default function GlpSwap(props) {
     if (!isBuying && inCooldownWindow) {
       return [t`Redemption time not yet reached`];
     }
-
     if (!swapAmount || swapAmount.eq(0)) {
       return [t`Enter an amount`];
     }
@@ -699,7 +705,6 @@ export default function GlpSwap(props) {
     if (isBuying && isSwapTokenCapReached) {
       return false;
     }
-
     return true;
   };
 
@@ -934,7 +939,7 @@ export default function GlpSwap(props) {
   }
   const chainKeyFromLocalStorage = localStorage.getItem(SELECTED_CHAIN_LOCAL_STORAGE_KEY);
   const bridgeUrl = `https://preview.portal.zklink.io/deposit-integrate?network=${chainKeyFromLocalStorage}&token=${swapTokenAddress}`;
-
+// console.log(Number(glpSupplyUsd)/(10**30))
   return (
     <div className="GlpSwap">
       <SwapErrorModal
@@ -977,7 +982,8 @@ export default function GlpSwap(props) {
                   <Trans>APR:</Trans>
                 </div>
                 <div className="value">
-                  ${formatAmount(totalApr, 2, 2, true)}%
+                ${Number(glpSupplyUsd) === 0? 0: (agxPrice && rewardRate &&((Number(rewardRate)/(10**18)*60*60*24*365* agxPrice)/Number(glpSupplyUsd)*(10**30)).toLocaleString())}
+                  {/* ${formatAmount(totalApr, 2, 2, true)}% */}
                   {/* <Tooltip
                     handle={`${formatAmount(totalApr, 2, 2, true)}%`}
                     position="bottom-end"

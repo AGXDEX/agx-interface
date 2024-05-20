@@ -60,7 +60,6 @@ import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePendingTxns } from "lib/usePendingTxns";
 const { AddressZero } = ethers.constants;
-
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
 const UPDATED_POSITION_VALID_DURATION = 60 * 1000;
 

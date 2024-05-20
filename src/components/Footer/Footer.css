@@ -104,7 +104,7 @@
     display: block;
   }
   .Footer-social-link-block {
-    margin-bottom: 1.4rem;
+    gap: 20px;
   }
   .Footer-wrapper {
     padding-top: 2.5rem;

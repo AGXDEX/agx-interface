@@ -37,6 +37,7 @@ export default function Tab(props) {
           >
             {icons && icons[opt] && <img className="Tab-option-icon" src={icons[opt]} alt={option} />}
             {label}
+            <span className={cx("Tab-soon", { showTab: disabledOptions.includes(opt) })}>soon</span>
           </div>
         );
       })}
