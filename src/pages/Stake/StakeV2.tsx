@@ -1361,6 +1361,7 @@ export default function StakeV2() {
   const [depNFTDataId, setDepNFTDataId] = useState<any[]>([]);
   const [showNFTdata, setshowNFTData] = useState<any[]>([]);
   const [stakeliquidity, setstakeliquidity] = useState('');
+  const [NFTClaimed, setNFTClaimed] = useState('');
   const [poolValue, setpoolValue] = useState(0);
   const [stakeAllValue, setstakeAllValue] = useState(0);
   const [stakeAPRValue, setstakeAPRValue] = useState('');
@@ -1433,6 +1434,13 @@ export default function StakeV2() {
     axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  incentives {\\n    liquidity\\n    }\\n}\"}")
       .then(response => {
         setstakeliquidity(response.data.data.incentives[0].liquidity)
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  incentives {\\n    id\\n    liquidity\\n    claimedToken\\n    }\\n}\"}")
+      .then(response => {
+        setNFTClaimed(response.data.data.incentives[0].claimedToken)
       })
       .catch(error => {
         console.error('Error:', error);
@@ -1521,7 +1529,7 @@ export default function StakeV2() {
     }
   );
   const { data: totalClaimed } = useSWR([`StakeV2:totalClaim:${active}`, chainId, yieldTrackerAddress, "totalClaim"], {
-    fetcher: contractFetcher(signer, YieldTracker),
+    fetcher: contractFetcher(signer, YieldEmission),
   });
   const { data: perinterval } = useSWR(
     [`StakeV2:getTokensPerInterval:${active}`, chainId, yieldTrackerAddress, "getTokensPerInterval"],
@@ -1802,10 +1810,22 @@ export default function StakeV2() {
   const { data: depBaselist } = useSWR([`StakeV2:getTokenURI:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
     fetcher: contractFetcher(signer, DexReader,[depNFTDataId]),
   });
-  const depUrlList = depBaselist && depBaselist.length> 0&&depBaselist.map((base)=>{
-    let str = Buffer.from(base.split(',')[1], 'base64').toString('utf-8');
-    return JSON.parse(str)
+  // console.log(depNFTDataId)
+  // console.log(depBaselist)
+  // const depUrlList = depBaselist && depBaselist[0] && depBaselist[0].length> 0&&depBaselist[0].map((base)=>{
+  //   let str = Buffer.from(base.split(',')[1], 'base64').toString('utf-8');
+  //   return JSON.parse(str)
+  // })
+  const depUrlList = depNFTlists && depNFTlists.map((id,ind) => {
+    let obj = {}
+    depBaselist && depBaselist[0] && depBaselist[0].length> 0&&depBaselist[0].map((base,index)=>{
+      if (Number(id) === Number(depBaselist[1][index])) {
+        obj = JSON.parse(Buffer.from(base.split(',')[1], 'base64').toString('utf-8'))
+      }
+    })
+    return obj
   })
+  // console.log(depUrlList)
   const { data: NFTlist } = useSWR([`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress, "getSpecificNftIds"], {
     fetcher: contractFetcher(signer, DexReader,[NFTdata,AGXAddress,wethAddress]),
   });
@@ -1820,10 +1840,19 @@ export default function StakeV2() {
   const { data: Pooladdress } = useSWR([`StakeV2:getPool:${active}`, chainId, v3FactoryAddress, "getPool"], {
     fetcher: contractFetcher(signer, UniswapV3Factory,[AGXAddress,EthPoolAddress,10000]),
   });
-  const urlList = baselist && baselist.length> 0&&baselist.map((base)=>{
-    let str = Buffer.from(base.split(',')[1], 'base64').toString('utf-8');
-    return JSON.parse(str)
+  // console.log(baselist)
+  // console.log(NFTlist)
+
+  const urlList = NFTlist && NFTlist.map((id,ind) => {
+    let obj = {}
+    baselist && baselist[0] && baselist[0].length> 0&&baselist[0].map((base,index)=>{
+      if (Number(id) === Number(baselist[1][index])) {
+        obj = JSON.parse(Buffer.from(base.split(',')[1], 'base64').toString('utf-8'))
+      }
+    })
+    return obj
   })
+  // console.log(urlList)
   const { data: rewardRate } = useSWR(
     [`StakeV2:rewardRate:${active}`, chainId, yieldTrackerAddress, "rewardRate"],
     {
@@ -1857,7 +1886,7 @@ export default function StakeV2() {
     setpoolValue(num)
     setstakeAllValue(num*Number(stakeliquidity)/Number(response.data.data.pool.liquidity))
     //   (agxprice * x)  / stake   TODO
-    let stakeAPRValue = Number(stakeliquidity) === 0? '0':((agxPrice*365)/stakeAllValue).toFixed(2)
+    let stakeAPRValue = Number(stakeliquidity) === 0? '0':((agxPrice*20000000)/stakeAllValue).toFixed(2)
     setstakeAPRValue(Number(stakeAPRValue).toLocaleString())
   })
   .catch(error => {
@@ -2180,7 +2209,7 @@ export default function StakeV2() {
             </div>
             <div className="StakeV2-totalBox">
               <div className="StakeV2-tit">Total Claimed</div>
-              <div>{formatAmount(totalClaimed, 18, 2, true)}</div>
+              <div>{NFTClaimed && ((Number(totalClaimed)/(10**18))+(Number(NFTClaimed)/(10**18))).toLocaleString()}</div>
             </div>
             <div className="StakeV2-totalBox">
               <div className="StakeV2-tit">Current Emisions</div>
@@ -2196,11 +2225,11 @@ export default function StakeV2() {
           <div className="StakeV2-title">Claimable Rewards</div>
           <div className="StakeV2-box">
             <div className="StakeV2-claimBox">
-              <div className="StakeV2-claimNum">{agxPrice && rewardRate &&(Number(rewardRate)/(10**18)*60*60*24*365* agxPrice).toLocaleString()}</div>
+              <div className="StakeV2-claimNum">{agxPrice && Pool2ewards && rewards && ((Number(Pool2ewards)/(10**18) + Number(rewards)/(10**18))*agxPrice).toFixed(2).toLocaleString()}</div>
               <div className="StakeV2-claimToken">USDT</div>
             </div>
             <div className="StakeV2-claimBox">
-              <div className="StakeV2-claimNum">{formatAmount(rewards, 18, 2, true)}</div>
+              <div className="StakeV2-claimNum">{Pool2ewards && rewards && (Number(Pool2ewards)/(10**18) + Number(rewards)/(10**18)).toFixed(2).toLocaleString()}</div>
               <div className="StakeV2-claimToken">AGX</div>
             </div>
             <Button
@@ -2287,7 +2316,7 @@ export default function StakeV2() {
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Claimable Rewards</div>
-                  <div>0</div>
+                  <div>{Pool2ewards && (Number(Pool2ewards)/(10**18)).toFixed(2).toLocaleString()}</div>
                 </div>
               </div>
             </div>
@@ -2306,7 +2335,7 @@ export default function StakeV2() {
               </Button>
             </div>
           </div>
-          <div className={cx("addNow", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>Add liquidity to Uniswap AGX/ETH pool to receive your LP NFT. <a href={`https://novaswap.exchange/?chain=nova_sepolia#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`} className="">Add now &gt;&gt;</a>
+          <div className={cx("addNow", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>Add liquidity to Uniswap AGX/ETH pool ( <span className="heightLight">full range</span> ) to receive your LP NFT. <a target="_blank" href={`https://novaswap.exchange/?chain=nova_sepolia#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`} className="">Add now &gt;&gt;</a>
           </div>
           <div className={cx("", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>
             <div className="StakeV2-stakeTitle padLeft">My deposit LP NFT</div>

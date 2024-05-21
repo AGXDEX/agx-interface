@@ -982,7 +982,7 @@ export default function GlpSwap(props) {
                   <Trans>APR:</Trans>
                 </div>
                 <div className="value">
-                ${Number(glpSupplyUsd) === 0? 0: (agxPrice && rewardRate &&((Number(rewardRate)/(10**18)*60*60*24*365* agxPrice)/Number(glpSupplyUsd)*(10**30)).toLocaleString())}
+                {Number(glpSupplyUsd) === 0? 0: (agxPrice && rewardRate &&((Number(rewardRate)/(10**18)*60*60*24*365* agxPrice)/Number(glpSupplyUsd)*(10**30)*100).toLocaleString())}%
                   {/* ${formatAmount(totalApr, 2, 2, true)}% */}
                   {/* <Tooltip
                     handle={`${formatAmount(totalApr, 2, 2, true)}%`}
