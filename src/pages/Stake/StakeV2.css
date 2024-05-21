@@ -317,9 +317,13 @@
 .addNow{
   padding-left: 12px;
   margin-bottom: 20px;
+  color: #929090;
 }
-.addNow span{
-  cursor: pointer;
+.addNow .heightLight{
+  color: #fff;
+}
+.addNow a{
+  color: #929090;
 }
 .addNow a:hover{
   color: #5D00FB;

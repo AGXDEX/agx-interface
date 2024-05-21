@@ -67,7 +67,7 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
         </HeaderLink>
       </div> */}
       <div className="App-header-link-container">
-        <ExternalLink href="https://docs.gmx.io/">
+        <ExternalLink href="https://agx-1.gitbook.io/agx/">
           <Trans>Docs</Trans>
         </ExternalLink>
       </div>
