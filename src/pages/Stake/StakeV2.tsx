@@ -1362,6 +1362,7 @@ export default function StakeV2() {
   const [showNFTdata, setshowNFTData] = useState<any[]>([]);
   const [stakeliquidity, setstakeliquidity] = useState('');
   const [NFTClaimed, setNFTClaimed] = useState('');
+  const [totalReward, setTotalReward] = useState('');
   const [poolValue, setpoolValue] = useState(0);
   const [stakeAllValue, setstakeAllValue] = useState(0);
   const [stakeAPRValue, setstakeAPRValue] = useState('');
@@ -1441,6 +1442,13 @@ export default function StakeV2() {
     axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  incentives {\\n    id\\n    liquidity\\n    claimedToken\\n    }\\n}\"}")
       .then(response => {
         setNFTClaimed(response.data.data.incentives[0].claimedToken)
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  totalRewards(where: {owner: \\\""+ account +"\\\"})  {\\n    owner\\n    reward\\n    }\\n}\"}")
+      .then(response => {
+        setTotalReward(response.data.data.totalRewards[0].reward)
       })
       .catch(error => {
         console.error('Error:', error);
@@ -2312,7 +2320,7 @@ export default function StakeV2() {
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Total Reward</div>
-                  <div>0</div>
+                  <div>{(Number(totalReward)/(10**18)).toFixed(2).toLocaleString()}</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Claimable Rewards</div>
