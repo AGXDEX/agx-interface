@@ -132,7 +132,7 @@ function ClaimAllModal(props) {
   const uniV3StakerAddress = getContract(chainId, "v3StakerAddress");
   const ALPAddress = getContract(chainId, "ALP");
   const AGXAddress = getContract(chainId, "AGX");
-  
+
   const [isDeposit, setIsDeposit] = useState(false);
   const goDeposit = () => {
     if (isDeposit || !tokenId) {
@@ -1360,13 +1360,13 @@ export default function StakeV2() {
   const [depNFTData, setDepNFTData] = useState<any[]>([]);
   const [depNFTDataId, setDepNFTDataId] = useState<any[]>([]);
   const [showNFTdata, setshowNFTData] = useState<any[]>([]);
-  const [stakeliquidity, setstakeliquidity] = useState('');
-  const [NFTClaimed, setNFTClaimed] = useState('');
-  const [totalReward, setTotalReward] = useState('');
+  const [stakeliquidity, setstakeliquidity] = useState("");
+  const [NFTClaimed, setNFTClaimed] = useState("");
+  const [totalReward, setTotalReward] = useState("");
   const [poolValue, setpoolValue] = useState(0);
   const [stakeAllValue, setstakeAllValue] = useState(0);
-  const [stakeAPRValue, setstakeAPRValue] = useState('');
-  const [AGXVFTValue, setAGXVFTValue] = useState('');
+  const [stakeAPRValue, setstakeAPRValue] = useState("");
+  const [AGXVFTValue, setAGXVFTValue] = useState("");
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
   const rewardReaderAddress = getContract(chainId, "RewardReader");
@@ -1413,45 +1413,66 @@ export default function StakeV2() {
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const wrappedTokenSymbol = getConstant(chainId, "wrappedTokenSymbol");
 
-
   useEffect(() => {
-    axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  nfts(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    }\\n}\"}")
-      .then(response => {
-        const array = response.data.data.nfts.map(item => item.tokenId);
+    axios
+      .post(
+        "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+        '{"query":"{\\n  nfts(where: {owner: \\"' + account + '\\"}) {\\n    tokenId\\n    owner\\n    }\\n}"}'
+      )
+      .then((response) => {
+        const array = response.data.data.nfts.map((item) => item.tokenId);
         setNFTData(array);
       })
-      .catch(error => {
-        console.error('Error:', error);
+      .catch((error) => {
+        console.error("Error:", error);
       });
-    axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  positions(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}\"}")
-      .then(response => {
-        const array = response.data.data.positions.map(item => item.tokenId);
+    axios
+      .post(
+        "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+        '{"query":"{\\n  positions(where: {owner: \\"' +
+          account +
+          '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n  liquidity\\n  incentiveId\\n    }\\n}"}'
+      )
+      .then((response) => {
+        const array = response.data.data.positions.map((item) => item.tokenId);
         setDepNFTData(response.data.data.positions);
-        setDepNFTDataId(array)
+        setDepNFTDataId(array);
       })
-      .catch(error => {
-        console.error('Error:', error);
+      .catch((error) => {
+        console.error("Error:", error);
       });
-    axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  incentives {\\n    liquidity\\n    }\\n}\"}")
-      .then(response => {
-        setstakeliquidity(response.data.data.incentives[0].liquidity)
+    axios
+      .post(
+        "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+        '{"query":"{\\n  incentives {\\n    liquidity\\n    }\\n}"}'
+      )
+      .then((response) => {
+        setstakeliquidity(response.data.data.incentives[0].liquidity);
       })
-      .catch(error => {
-        console.error('Error:', error);
+      .catch((error) => {
+        console.error("Error:", error);
       });
-    axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  incentives {\\n    id\\n    liquidity\\n    claimedToken\\n    }\\n}\"}")
-      .then(response => {
-        setNFTClaimed(response.data.data.incentives[0].claimedToken)
+    axios
+      .post(
+        "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+        '{"query":"{\\n  incentives {\\n    id\\n    liquidity\\n    claimedToken\\n    }\\n}"}'
+      )
+      .then((response) => {
+        setNFTClaimed(response.data.data.incentives[0].claimedToken);
       })
-      .catch(error => {
-        console.error('Error:', error);
+      .catch((error) => {
+        console.error("Error:", error);
       });
-    axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  totalRewards(where: {owner: \\\""+ account +"\\\"})  {\\n    owner\\n    reward\\n    }\\n}\"}")
-      .then(response => {
-        setTotalReward(response.data.data.totalRewards[0].reward)
+    axios
+      .post(
+        "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+        '{"query":"{\\n  totalRewards(where: {owner: \\"' + account + '\\"})  {\\n    owner\\n    reward\\n    }\\n}"}'
+      )
+      .then((response) => {
+        setTotalReward(response.data.data.totalRewards[0].reward);
       })
-      .catch(error => {
-        console.error('Error:', error);
+      .catch((error) => {
+        console.error("Error:", error);
       });
   }, []);
   const walletTokens = [gmxAddress, esGmxAddress, glpAddress, stakedGmxTrackerAddress];
@@ -1671,7 +1692,7 @@ export default function StakeV2() {
   }
 
   const showDepositModals = () => {
-    if (NFTlist.length >0) {
+    if (NFTlist.length > 0) {
       setDepositModalVisible(true);
     }
   };
@@ -1804,21 +1825,26 @@ export default function StakeV2() {
     return t`Claim`;
   };
   const onClickPrimary = () => {
-    setClaimModalVisible(true)
+    setClaimModalVisible(true);
   };
 
-  const { data: depNFTlist } = useSWR([`StakeV2:getSpecificNftId:${active}`, chainId, dexreaderAddress, "getSpecificNftIds"], {
-    fetcher: contractFetcher(signer, DexReader,[depNFTDataId,AGXAddress,wethAddress]),
-  });
+  const { data: depNFTlist } = useSWR(
+    [`StakeV2:getSpecificNftId:${active}`, chainId, dexreaderAddress, "getSpecificNftIds"],
+    {
+      fetcher: contractFetcher(signer, DexReader, [depNFTDataId, AGXAddress, wethAddress]),
+    }
+  );
   // console.log(depNFTlist)
-  let depNFTlists = depNFTlist && depNFTData.filter((it)=>{
-    return depNFTlist.some((i)=>{
-      return i.toNumber() == Number(it.tokenId) 
-    })
-  })
+  let depNFTlists =
+    depNFTlist &&
+    depNFTData.filter((it) => {
+      return depNFTlist.some((i) => {
+        return i.toNumber() == Number(it.tokenId);
+      });
+    });
   // console.log(depNFTlists)
   const { data: depBaselist } = useSWR([`StakeV2:getTokenURI:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
-    fetcher: contractFetcher(signer, DexReader,[depNFTDataId]),
+    fetcher: contractFetcher(signer, DexReader, [depNFTDataId]),
   });
   // console.log(depNFTDataId)
   // console.log(depBaselist)
@@ -1826,49 +1852,59 @@ export default function StakeV2() {
   //   let str = Buffer.from(base.split(',')[1], 'base64').toString('utf-8');
   //   return JSON.parse(str)
   // })
-  const depUrlList = depNFTlists && depNFTlists.map((it,ind) => {
-    let obj = {}
-    depBaselist && depBaselist[0] && depBaselist[0].length> 0&&depBaselist[0].map((base,index)=>{
-      if (Number(it.tokenId) === Number(depBaselist[1][index])) {
-        obj = JSON.parse(Buffer.from(base.split(',')[1], 'base64').toString('utf-8'))
-      }
-    })
-    return obj
-  })
+  const depUrlList =
+    depNFTlists &&
+    depNFTlists.map((it, ind) => {
+      let obj = {};
+      depBaselist &&
+        depBaselist[0] &&
+        depBaselist[0].length > 0 &&
+        depBaselist[0].map((base, index) => {
+          if (Number(it.tokenId) === Number(depBaselist[1][index])) {
+            obj = JSON.parse(Buffer.from(base.split(",")[1], "base64").toString("utf-8"));
+          }
+        });
+      return obj;
+    });
   // console.log(depUrlList)
-  const { data: NFTlist } = useSWR([`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress, "getSpecificNftIds"], {
-    fetcher: contractFetcher(signer, DexReader,[NFTdata,AGXAddress,wethAddress]),
-  });
+  const { data: NFTlist } = useSWR(
+    [`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress, "getSpecificNftIds"],
+    {
+      fetcher: contractFetcher(signer, DexReader, [NFTdata, AGXAddress, wethAddress]),
+    }
+  );
   // console.log(NFTlist)
   const { data: baselist } = useSWR([`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
-    fetcher: contractFetcher(signer, DexReader,[NFTdata]),
+    fetcher: contractFetcher(signer, DexReader, [NFTdata]),
   });
   const { data: Pool2ewards } = useSWR([`StakeV2:rewards:${active}`, chainId, uniV3StakerAddress, "rewards"], {
-    fetcher: contractFetcher(signer, UniV3Staker,[AGXAddress,account]),
+    fetcher: contractFetcher(signer, UniV3Staker, [AGXAddress, account]),
   });
   // console.log(Number(Pool2ewards))
   const { data: Pooladdress } = useSWR([`StakeV2:getPool:${active}`, chainId, v3FactoryAddress, "getPool"], {
-    fetcher: contractFetcher(signer, UniswapV3Factory,[AGXAddress,EthPoolAddress,10000]),
+    fetcher: contractFetcher(signer, UniswapV3Factory, [AGXAddress, EthPoolAddress, 10000]),
   });
   // console.log(baselist)
   // console.log(NFTlist)
 
-  const urlList = NFTlist && NFTlist.map((id,ind) => {
-    let obj = {}
-    baselist && baselist[0] && baselist[0].length> 0&&baselist[0].map((base,index)=>{
-      if (Number(id) === Number(baselist[1][index])) {
-        obj = JSON.parse(Buffer.from(base.split(',')[1], 'base64').toString('utf-8'))
-      }
-    })
-    return obj
-  })
+  const urlList =
+    NFTlist &&
+    NFTlist.map((id, ind) => {
+      let obj = {};
+      baselist &&
+        baselist[0] &&
+        baselist[0].length > 0 &&
+        baselist[0].map((base, index) => {
+          if (Number(id) === Number(baselist[1][index])) {
+            obj = JSON.parse(Buffer.from(base.split(",")[1], "base64").toString("utf-8"));
+          }
+        });
+      return obj;
+    });
   // console.log(urlList)
-  const { data: rewardRate } = useSWR(
-    [`StakeV2:rewardRate:${active}`, chainId, yieldTrackerAddress, "rewardRate"],
-    {
-      fetcher: contractFetcher(signer, YieldEmission),
-    }
-  );
+  const { data: rewardRate } = useSWR([`StakeV2:rewardRate:${active}`, chainId, yieldTrackerAddress, "rewardRate"], {
+    fetcher: contractFetcher(signer, YieldEmission),
+  });
   // console.log(Number(rewardRate)/(10**18))
   const { agxPrice } = useAGXPrice();
   const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address;
@@ -1878,101 +1914,140 @@ export default function StakeV2() {
       fetcher: contractFetcher(undefined, Vault) as any,
     }
   );
-  Pooladdress && axios.post('https://sepolia.graph.zklink.io/subgraphs/name/novasap-subgraph', "{\"query\":\"{\\n  pool(id: \\\""+ Pooladdress.toLowerCase() +"\\\") {\\n    token0 {\\nid\\n}\\n    token1 {\\nid\\n}\\n    liquidity\\n    totalValueLockedToken0\\n    totalValueLockedToken1\\n    }\\n}\"}")
-  .then(response => {
-    let num = 0
-    // console.log(agxPrice)
-    // console.log(Number(ethPrice)/(10**30))
-    if (response.data.data.pool.token0.id.toLowerCase() === AGXAddress) {
-      // (totalValueLockedToken0 * token0 price) + (totalValueLockedToken1 * token1 price)
-      num = (Number(response.data.data.pool.totalValueLockedToken0) * agxPrice) + (Number(response.data.data.pool.totalValueLockedToken1) * Number(ethPrice)/(10**30))
-      let AGXVFTValue = Number(stakeliquidity)/Number(response.data.data.pool.liquidity)*Number(response.data.data.pool.totalValueLockedToken0)
-      setAGXVFTValue(Number(AGXVFTValue.toFixed(2)).toLocaleString())
-    } else {
-      num = (Number(response.data.data.pool.totalValueLockedToken1) * agxPrice) + (Number(response.data.data.pool.totalValueLockedToken0) * Number(ethPrice)/(10**30))
-      let AGXVFTValue = Number(stakeliquidity)/Number(response.data.data.pool.liquidity)*Number(response.data.data.pool.totalValueLockedToken1)
-      setAGXVFTValue(Number(AGXVFTValue.toFixed(2)).toLocaleString())
-    }
-    setpoolValue(num)
-    setstakeAllValue(num*Number(stakeliquidity)/Number(response.data.data.pool.liquidity))
-    //   (agxprice * x)  / stake   TODO
-    let stakeAPRValue = Number(stakeliquidity) === 0? '0':((agxPrice*20000000)/stakeAllValue).toFixed(2)
-    setstakeAPRValue(Number(stakeAPRValue).toLocaleString())
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+  Pooladdress &&
+    axios
+      .post(
+        "https://sepolia.graph.zklink.io/subgraphs/name/novasap-subgraph",
+        '{"query":"{\\n  pool(id: \\"' +
+          Pooladdress.toLowerCase() +
+          '\\") {\\n    token0 {\\nid\\n}\\n    token1 {\\nid\\n}\\n    liquidity\\n    totalValueLockedToken0\\n    totalValueLockedToken1\\n    }\\n}"}'
+      )
+      .then((response) => {
+        let num = 0;
+        // console.log(agxPrice)
+        // console.log(Number(ethPrice)/(10**30))
+        if (response.data.data.pool.token0.id.toLowerCase() === AGXAddress) {
+          // (totalValueLockedToken0 * token0 price) + (totalValueLockedToken1 * token1 price)
+          num =
+            Number(response.data.data.pool.totalValueLockedToken0) * agxPrice +
+            (Number(response.data.data.pool.totalValueLockedToken1) * Number(ethPrice)) / 10 ** 30;
+          let AGXVFTValue =
+            (Number(stakeliquidity) / Number(response.data.data.pool.liquidity)) *
+            Number(response.data.data.pool.totalValueLockedToken0);
+          setAGXVFTValue(Number(AGXVFTValue.toFixed(2)).toLocaleString());
+        } else {
+          num =
+            Number(response.data.data.pool.totalValueLockedToken1) * agxPrice +
+            (Number(response.data.data.pool.totalValueLockedToken0) * Number(ethPrice)) / 10 ** 30;
+          let AGXVFTValue =
+            (Number(stakeliquidity) / Number(response.data.data.pool.liquidity)) *
+            Number(response.data.data.pool.totalValueLockedToken1);
+          setAGXVFTValue(Number(AGXVFTValue.toFixed(2)).toLocaleString());
+        }
+        setpoolValue(num);
+        setstakeAllValue((num * Number(stakeliquidity)) / Number(response.data.data.pool.liquidity));
+        //   (agxprice * x)  / stake   TODO
+        let stakeAPRValue = Number(stakeliquidity) === 0 ? "0" : ((agxPrice * 20000000) / stakeAllValue).toFixed(2);
+        setstakeAPRValue(Number(stakeAPRValue).toLocaleString());
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   const stake = (tokenId) => {
     const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
-    callContract(chainId, contract, "stakeToken", [IncentiveKeyAddress,tokenId], {
+    callContract(chainId, contract, "stakeToken", [IncentiveKeyAddress, tokenId], {
       sentMsg: t`Stake submitted.`,
       failMsg: t`Stake failed.`,
       successMsg: t`Stake completed!`,
       setPendingTxns,
     }).finally(() => {
-      axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  positions(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}\"}")
-      .then(response => {
-        const array = response.data.data.positions.map(item => item.tokenId);
-        setDepNFTData(response.data.data.positions);
-        setDepNFTDataId(array)
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-      depNFTlists = depNFTlist && depNFTData.filter((it)=>{
-        return depNFTlist.some((i)=>{
-          return i.toNumber() == Number(it.tokenId) 
+      axios
+        .post(
+          "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+          '{"query":"{\\n  positions(where: {owner: \\"' +
+            account +
+            '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}"}'
+        )
+        .then((response) => {
+          const array = response.data.data.positions.map((item) => item.tokenId);
+          setDepNFTData(response.data.data.positions);
+          setDepNFTDataId(array);
         })
-      })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+      depNFTlists =
+        depNFTlist &&
+        depNFTData.filter((it) => {
+          return depNFTlist.some((i) => {
+            return i.toNumber() == Number(it.tokenId);
+          });
+        });
     });
   };
   const Withdraw = (tokenId) => {
     const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
-    callContract(chainId, contract, "withdrawToken", [tokenId, account,'0x'], {
+    callContract(chainId, contract, "withdrawToken", [tokenId, account, "0x"], {
       sentMsg: t`Withdraw submitted.`,
       failMsg: t`Withdraw failed.`,
       successMsg: t`Withdraw completed!`,
       setPendingTxns,
     }).finally(() => {
-      axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  positions(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}\"}")
-      .then(response => {
-        const array = response.data.data.positions.map(item => item.tokenId);
-        setDepNFTData(response.data.data.positions);
-        setDepNFTDataId(array)
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-      depNFTlists = depNFTlist && depNFTData.filter((it)=>{
-        return depNFTlist.some((i)=>{
-          return i.toNumber() == Number(it.tokenId) 
+      axios
+        .post(
+          "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+          '{"query":"{\\n  positions(where: {owner: \\"' +
+            account +
+            '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}"}'
+        )
+        .then((response) => {
+          const array = response.data.data.positions.map((item) => item.tokenId);
+          setDepNFTData(response.data.data.positions);
+          setDepNFTDataId(array);
         })
-      })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+      depNFTlists =
+        depNFTlist &&
+        depNFTData.filter((it) => {
+          return depNFTlist.some((i) => {
+            return i.toNumber() == Number(it.tokenId);
+          });
+        });
     });
   };
 
   const Unstake = (tokenId) => {
     const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
-    callContract(chainId, contract, "unstakeToken", [IncentiveKeyAddress,tokenId], {
+    callContract(chainId, contract, "unstakeToken", [IncentiveKeyAddress, tokenId], {
       sentMsg: t`Unstake submitted.`,
       failMsg: t`Unstake failed.`,
       successMsg: t`Unstake completed!`,
       setPendingTxns,
     }).finally(() => {
-      axios.post('https://sepolia.graph.zklink.io/subgraphs/name/staker', "{\"query\":\"{\\n  positions(where: {owner: \\\""+ account +"\\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}\"}")
-      .then(response => {
-        const array = response.data.data.positions.map(item => item.tokenId);
-        setDepNFTData(response.data.data.positions);
-        setDepNFTDataId(array)
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-      depNFTlists = depNFTlist && depNFTData.filter((it)=>{
-        return depNFTlist.some((i)=>{
-          return i.toNumber() == Number(it.tokenId) 
+      axios
+        .post(
+          "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+          '{"query":"{\\n  positions(where: {owner: \\"' +
+            account +
+            '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}"}'
+        )
+        .then((response) => {
+          const array = response.data.data.positions.map((item) => item.tokenId);
+          setDepNFTData(response.data.data.positions);
+          setDepNFTDataId(array);
         })
-      })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+      depNFTlists =
+        depNFTlist &&
+        depNFTData.filter((it) => {
+          return depNFTlist.some((i) => {
+            return i.toNumber() == Number(it.tokenId);
+          });
+        });
     });
   };
 
@@ -2002,10 +2077,10 @@ export default function StakeV2() {
   const glpSupply = balancesAndSupplies ? balancesAndSupplies[1] : bigNumberify(0);
   let aum1;
   if (aums && aums.length > 0) {
-    aum1 = aums[0]
+    aum1 = aums[0];
   }
   const glpPrice =
-  aum1 && aum1.gt(0) && glpSupply.gt(0)
+    aum1 && aum1.gt(0) && glpSupply.gt(0)
       ? aum1.mul(expandDecimals(1, GLP_DECIMALS)).div(glpSupply)
       : expandDecimals(1, USD_DECIMALS);
   const glpSupplyUsd = glpSupply.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS));
@@ -2034,8 +2109,14 @@ export default function StakeV2() {
   const history = useHistory();
   const selectToken = (token) => {
     setSwapTokenAddress(token.address);
-    history.push('/buy');
+    history.push("/buy");
   };
+
+const totalUserStakedLiquidity = depNFTData.reduce(
+  (sum, { liquidity }) => sum + BigInt(liquidity),
+  BigInt(0)
+);
+const userStakedAGXAmount = (Number(totalUserStakedLiquidity) * Number(AGXVFTValue?.replace(/,/g, '') ?? '0') / Number(stakeliquidity)).toFixed(2);
   return (
     <div className="default-container page-layout">
       <ClaimAllModal
@@ -2067,7 +2148,7 @@ export default function StakeV2() {
         isVisible={depositModalVisible}
         setIsVisible={setDepositModalVisible}
         chainId={chainId}
-        title='Choose your AGX-ETH NFT'
+        title="Choose your AGX-ETH NFT"
         maxAmount={stakeModalMaxAmount}
         value={stakeValue}
         setValue={setStakeValue}
@@ -2219,11 +2300,16 @@ export default function StakeV2() {
             </div>
             <div className="StakeV2-totalBox">
               <div className="StakeV2-tit">Total Claimed</div>
-              <div>{NFTClaimed && Number(((Number(totalClaimed)/(10**18))+(Number(NFTClaimed)/(10**18))).toFixed(2)).toLocaleString()}</div>
+              <div>
+                {NFTClaimed &&
+                  Number((Number(totalClaimed) / 10 ** 18 + Number(NFTClaimed) / 10 ** 18).toFixed(2)).toLocaleString()}
+              </div>
             </div>
             <div className="StakeV2-totalBox">
               <div className="StakeV2-tit">Current Emisions</div>
-              <div>{rewardRate && Number(((Number(rewardRate)/(10**18)*86400)+59523).toFixed(2)).toLocaleString()} /day</div>
+              <div>
+                {rewardRate && Number(((Number(rewardRate) / 10 ** 18) * 86400 + 59523).toFixed(2)).toLocaleString()} /day
+              </div>
             </div>
             <Button variant="secondary" to="/buy" className="StakeV2-button">
               <Trans>Buy</Trans>
@@ -2235,19 +2321,25 @@ export default function StakeV2() {
           <div className="StakeV2-title">Claimable Rewards</div>
           <div className="StakeV2-box">
             <div className="StakeV2-claimBox">
-              <div className="StakeV2-claimNum">{agxPrice && Pool2ewards && rewards && ((Number(Pool2ewards)/(10**18) + Number(rewards)/(10**18))*agxPrice).toFixed(2).toLocaleString()}</div>
+              <div className="StakeV2-claimNum">
+                {agxPrice &&
+                  Pool2ewards &&
+                  rewards &&
+                  ((Number(Pool2ewards) / 10 ** 18 + Number(rewards) / 10 ** 18) * agxPrice)
+                    .toFixed(2)
+                    .toLocaleString()}
+              </div>
               <div className="StakeV2-claimToken">USDT</div>
             </div>
             <div className="StakeV2-claimBox">
-              <div className="StakeV2-claimNum">{Pool2ewards && rewards && Number((Number(Pool2ewards)/(10**18) + Number(rewards)/(10**18)).toFixed(2)).toLocaleString()}</div>
+              <div className="StakeV2-claimNum">
+                {Pool2ewards &&
+                  rewards &&
+                  Number((Number(Pool2ewards) / 10 ** 18 + Number(rewards) / 10 ** 18).toFixed(2)).toLocaleString()}
+              </div>
               <div className="StakeV2-claimToken">AGX</div>
             </div>
-            <Button
-              variant="secondary"
-              className="StakeV2-button"
-              onClick={onClickPrimary}
-              disabled={!rewards}
-            >
+            <Button variant="secondary" className="StakeV2-button" onClick={onClickPrimary} disabled={!rewards}>
               {getPrimaryText()}
             </Button>
           </div>
@@ -2255,14 +2347,20 @@ export default function StakeV2() {
 
         <div className="App-card App-card-space-between StakeV2-content">
           <div className="tabBox">
-            <div className={cx("tab", { 'active': selectTab === 'Pool2' })} onClick={()=>setselectTab('Pool2')}>Pool2 Mining</div>
-            <div className={cx("tab", { 'active': selectTab === 'Liquidity' })} onClick={()=>setselectTab('Liquidity')}>Liquidity Mining</div>
-            <div className={cx("tab", { 'active': selectTab === 'Staking' })} onClick={()=>setselectTab('Staking')}>Staking<span className="soons">soon</span></div>
+            <div className={cx("tab", { active: selectTab === "Pool2" })} onClick={() => setselectTab("Pool2")}>
+              Pool2 Mining
+            </div>
+            <div className={cx("tab", { active: selectTab === "Liquidity" })} onClick={() => setselectTab("Liquidity")}>
+              Liquidity Mining
+            </div>
+            <div className={cx("tab", { active: selectTab === "Staking" })} onClick={() => setselectTab("Staking")}>
+              Staking
+            </div>
           </div>
-          <div className={cx("StakeV2-box between", { 'ishide': selectTab === 'Liquidity' })}>
+          <div className={cx("StakeV2-box between", { ishide: selectTab === "Liquidity" })}>
             <div className="halfBox">
               <div className="StakeV2-stakeTitle padLeft">Overview</div>
-              <div className={cx("mobileBox", {'ishide': selectTab !== 'Staking','show': selectTab === 'Staking' })}>
+              <div className={cx("mobileBox", { ishide: selectTab !== "Staking", show: selectTab === "Staking" })}>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">APR</div>
                   <div>1,333,213</div>
@@ -2280,7 +2378,7 @@ export default function StakeV2() {
                   <div>0</div>
                 </div>
               </div>
-              <div className={cx("mobileBox", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>
+              <div className={cx("mobileBox", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">APR</div>
                   <div>{stakeAPRValue}</div>
@@ -2297,10 +2395,10 @@ export default function StakeV2() {
             </div>
             <div className="halfBox">
               <div className="StakeV2-stakeTitle padLeft">My Data</div>
-              <div className={cx("mobileBox", {'ishide': selectTab !== 'Staking','show': selectTab === 'Staking' })}>
+              <div className={cx("mobileBox", { ishide: selectTab !== "Staking", show: selectTab === "Staking" })}>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">AGX</div>
-                  <div>{formatAmount(AGXBalance, 18, 2, true)}</div>
+                  <div>0</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Staked AGX</div>
@@ -2315,30 +2413,41 @@ export default function StakeV2() {
                   <div>0</div>
                 </div>
               </div>
-              <div className={cx("mobileBox", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>
+              <div className={cx("mobileBox", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Staked AGX in LP NFT</div>
-                  <div>{formatAmount(AGXBalance, 18, 2, true)}</div>
+                  <div>{userStakedAGXAmount}</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Total Reward</div>
-                  <div>{(Number(totalReward)/(10**18)).toFixed(2).toLocaleString()}</div>
+                  <div>{(Number(totalReward) / 10 ** 18).toFixed(2).toLocaleString()}</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Claimable Rewards</div>
-                  <div>{Pool2ewards && (Number(Pool2ewards)/(10**18)).toFixed(2).toLocaleString()}</div>
+                  <div>{Pool2ewards && (Number(Pool2ewards) / 10 ** 18).toFixed(2).toLocaleString()}</div>
                 </div>
               </div>
             </div>
           </div>
-          <div className={cx("StakeV2-box marBottom", {'ishide': selectTab !== 'Staking','isShow': selectTab === 'Staking' })}>
+          <div
+            className={cx("StakeV2-box marBottom", {
+              ishide: selectTab !== "Staking",
+              isShow: selectTab === "Staking",
+            })}
+          >
             <div className="StakeV2-stakeTitle padLeft">Stake AGX</div>
             <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => showStakeGmxModals()}>
               <Trans>Stake AGX</Trans>
             </Button>
           </div>
           <div className="tolong">
-            <div className={cx("StakeV2-box marBottom", { 'ishide': selectTab !== 'Pool2' }, { 'isShow': selectTab === 'Pool2' })}>
+            <div
+              className={cx(
+                "StakeV2-box marBottom",
+                { ishide: selectTab !== "Pool2" },
+                { isShow: selectTab === "Pool2" }
+              )}
+            >
               <div className="StakeV2-stakeTitle padLeft">Stake AGX-ETH LP</div>
               <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => showDepositModals()} disabled={!NFTlist || NFTlist.length === 0}>
                 <TooltipWithPortal renderContent={DepositTooltipContent}>
@@ -2347,89 +2456,112 @@ export default function StakeV2() {
               </Button>
             </div>
           </div>
-          <div className={cx("addNow", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>Add liquidity to Novaswap AGX/ETH pool ( <span className="heightLight">full range</span> ) to receive your LP NFT. <a target="_blank" rel="noreferrer" href={`https://novaswap.exchange/?chain=nova_sepolia#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`} className="">Add now &gt;&gt;</a>
+          <div className={cx("addNow", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
+            Add liquidity to Uniswap AGX/ETH pool ( <span className="heightLight">full range</span> ) to receive your LP
+            NFT.{" "}
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href={`https://novaswap.exchange/?chain=nova_sepolia#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`}
+              className=""
+            >
+              Add now &gt;&gt;
+            </a>
           </div>
-          <div className={cx("", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>
+          <div className={cx("", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
             <div className="StakeV2-stakeTitle padLeft">My deposit LP NFT</div>
             <div className="NFTCard">
-              {depNFTlists && depNFTlists.length > 0 && depNFTlists.map((item,index) => {
-                return (
-                  <div key={item.tokenId}>
-                    <div className={cx("")}>
-                      <img src={depUrlList[index]?.image || ''}/>
+              {depNFTlists &&
+                depNFTlists.length > 0 &&
+                depNFTlists.map((item, index) => {
+                  return (
+                    <div key={item.tokenId}>
+                      <div className={cx("")}>
+                        <img src={depUrlList[index]?.image || ""} />
+                      </div>
+                      <div className="depButton">
+                        <Button
+                          variant="secondary"
+                          className={cx("stakeButton ishide", { show: !item.staked })}
+                          onClick={() => stake(Number(item.tokenId))}
+                        >
+                          <Trans>Stake</Trans>
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          className={cx("stakeButton ishide", { show: !item.staked })}
+                          onClick={() => Withdraw(Number(item.tokenId))}
+                        >
+                          <Trans>Withdraw</Trans>
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          className={cx("stakeButton ishide", { show: item.staked })}
+                          onClick={() => Unstake(Number(item.tokenId))}
+                        >
+                          <Trans>Unstake</Trans>
+                        </Button>
+                      </div>
                     </div>
+                  );
+                })}
+                {(!depNFTlists || depNFTlists.length === 0) && (
+                  <div>
+                    <div className="noNFT"></div>
                     <div className="depButton">
-                      <Button variant="secondary" className={cx("stakeButton ishide", { 'show': !item.staked})} onClick={() => stake(Number(item.tokenId))}>
+                      <Button variant="secondary" className={cx("stakeButton ishide show")}>
                         <Trans>Stake</Trans>
                       </Button>
-                      <Button variant="secondary" className={cx("stakeButton ishide", { 'show': !item.staked })} onClick={() => Withdraw(Number(item.tokenId))}>
+                      <Button variant="secondary" className={cx("stakeButton ishide show")}>
                         <Trans>Withdraw</Trans>
-                      </Button>
-                      <Button variant="secondary" className={cx("stakeButton ishide", { 'show': item.staked })} onClick={() => Unstake(Number(item.tokenId))}>
-                        <Trans>Unstake</Trans>
                       </Button>
                     </div>
                   </div>
-                  
-                );
-              })}
-              {(!depNFTlists || depNFTlists.length === 0) && (
-                <div>
-                  <div className="noNFT"></div>
-                  <div className="depButton">
-                    <Button variant="secondary" className={cx("stakeButton ishide show")}>
-                      <Trans>Stake</Trans>
-                    </Button>
-                    <Button variant="secondary" className={cx("stakeButton ishide show")}>
-                      <Trans>Withdraw</Trans>
+                )}
+            </div>
+          </div>
+          <div className={cx("liquidity", { ishide: selectTab !== "Liquidity", show: selectTab === "Liquidity" })}>
+            <div className="table-tr">
+              <div className="leftAlign">Pool</div>
+              <div className="rightAlign">Daily Emission</div>
+              <div className="rightAlign">Total Liquidity</div>
+              <div className="rightAlign"></div>
+            </div>
+            {visibleTokens.map((token) => {
+              let tokenFeeBps;
+              const obj = getBuyGlpFromAmount(
+                glpAmount,
+                token.address,
+                infoTokens,
+                glpPrice,
+                usdgSupply,
+                totalTokenWeights
+              );
+              if ("feeBasisPoints" in obj) {
+                tokenFeeBps = obj.feeBasisPoints;
+              }
+              const tokenInfo = getTokenInfo(infoTokens, token.address);
+              let managedUsd;
+              if (tokenInfo && tokenInfo.managedUsd) {
+                managedUsd = tokenInfo.managedUsd;
+              }
+              let manage = 1;
+              if (managedUsd) {
+                manage = managedUsd.mul(50000).div(glpSupplyUsd);
+              }
+              return (
+                <div className="table-td" key={token.symbol}>
+                  <div className="leftAlign">{token.symbol}/USDT</div>
+                  <div className="rightAlign">{formatAmount(manage, 0, 0, true)}</div>
+                  <div className="rightAlign">{`${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`}</div>
+                  <div className="rightAlign">
+                    <Button variant="secondary" onClick={() => selectToken(token)}>
+                      <Trans>Add</Trans>
                     </Button>
                   </div>
                 </div>
-              )}
-            </div>
-          </div>
-          <div className={cx("liquidity", {'ishide': selectTab !== 'Liquidity','show': selectTab === 'Liquidity' })}>
-              <div className="table-tr">
-                <div className="leftAlign">Pool</div>
-                <div className="rightAlign">Daily Emission</div>
-                <div className="rightAlign">Total Liquidity</div>
-                <div className="rightAlign"></div>
-              </div>
-              {visibleTokens.map((token)=>{
-                let tokenFeeBps;
-                const obj = getBuyGlpFromAmount(
-                  glpAmount,
-                  token.address,
-                  infoTokens,
-                  glpPrice,
-                  usdgSupply,
-                  totalTokenWeights
-                );
-                if ('feeBasisPoints' in obj) {
-                  tokenFeeBps = obj.feeBasisPoints;
-                }
-                const tokenInfo = getTokenInfo(infoTokens, token.address);
-                let managedUsd;
-                if (tokenInfo && tokenInfo.managedUsd) {
-                  managedUsd = tokenInfo.managedUsd;
-                }
-                let manage = 1
-                if (managedUsd) {
-                  manage = managedUsd.mul(50000).div(glpSupplyUsd)
-                }
-                return (
-                  <div className="table-td" key={token.symbol}>
-                    <div className="leftAlign">{token.symbol}/USDT</div>
-                    <div className="rightAlign">{formatAmount(manage, 0, 0, true)}</div>
-                    <div className="rightAlign">{`${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`}</div>
-                    <div className="rightAlign">
-                      <Button variant="secondary" onClick={() => selectToken(token)}>
-                        <Trans>Add</Trans>
-                      </Button>
-                    </div>
-                  </div>
-                )
-              })}
+              );
+            })}
           </div>
         </div>
       </div>
