@@ -42,7 +42,8 @@ const ChainToken: Token[] = [
     name: "Wrapped Ethereum",
     symbol: "WETH",
     decimals: 18,
-    address: "0xd7Da924AB56b87e7C1B1933c84992053FD824eA1",
+    //TODO: WETH9 address config
+    address: "0x6e42d10eB474a17b14f3cfeAC2590bfa604313C7",
     isWrapped: true,
     baseSymbol: "ETH",
     imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
@@ -253,7 +254,7 @@ const ChainToken: Token[] = [
         address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
       },
     ],
-  }
+  },
 ];
 const novaChain = [
     // {
@@ -978,7 +979,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
   //     name: "Wrapped Ethereum",
   //     symbol: "WETH",
   //     decimals: 18,
-  //     address: "0xd7Da924AB56b87e7C1B1933c84992053FD824eA1",
+  //     address: "0x6e42d10eB474a17b14f3cfeAC2590bfa604313C7",
   //     isWrapped: true,
   //     baseSymbol: "ETH",
   //     imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
