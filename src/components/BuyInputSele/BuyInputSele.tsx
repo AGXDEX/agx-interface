@@ -127,7 +127,7 @@ export default function BuyInputSele(props: Props) {
           </div>
         </div>
       </div>
-        <div className="dayNum">
+        {/* <div className="dayNum">
           <div className="day active">
             <div>30 days</div>
             <div>Multiplier 1x</div>
@@ -140,7 +140,7 @@ export default function BuyInputSele(props: Props) {
             <div>90 days</div>
             <div>Multiplier 3x</div>
           </div>
-        </div>
+        </div> */}
       {showPercentSelector && isPercentSelectorVisible && onPercentChange && (
         <ul className="PercentSelector">
           {PERCENTAGE_SUGGESTIONS.map((percentage) => (

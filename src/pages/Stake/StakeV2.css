@@ -279,6 +279,12 @@
   color: rgb(139, 145, 157);
   padding: 0 10px;
   cursor: pointer;
+  position: relative;
+}
+.tabBox .soons{
+  font-size: 10px;
+  position: absolute;
+  top: -5px;
 }
 .tabBox .active{
   color: #5D00FB;
@@ -360,4 +366,11 @@
 }
 .table-tr .rightAlign,.table-td .rightAlign{
   text-align: right;
+}
+.noNFT{
+  width: 170px;
+  height: 293px;
+  border: 1px solid #3b0c8c;
+  border-radius: 16px;
+  background-color: #170339;
 }
