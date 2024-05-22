@@ -1887,11 +1887,11 @@ export default function StakeV2() {
       // (totalValueLockedToken0 * token0 price) + (totalValueLockedToken1 * token1 price)
       num = (Number(response.data.data.pool.totalValueLockedToken0) * agxPrice) + (Number(response.data.data.pool.totalValueLockedToken1) * Number(ethPrice)/(10**30))
       let AGXVFTValue = Number(stakeliquidity)/Number(response.data.data.pool.liquidity)*Number(response.data.data.pool.totalValueLockedToken0)
-      setAGXVFTValue(AGXVFTValue.toLocaleString())
+      setAGXVFTValue(Number(AGXVFTValue.toFixed(2)).toLocaleString())
     } else {
       num = (Number(response.data.data.pool.totalValueLockedToken1) * agxPrice) + (Number(response.data.data.pool.totalValueLockedToken0) * Number(ethPrice)/(10**30))
       let AGXVFTValue = Number(stakeliquidity)/Number(response.data.data.pool.liquidity)*Number(response.data.data.pool.totalValueLockedToken1)
-      setAGXVFTValue(AGXVFTValue.toLocaleString())
+      setAGXVFTValue(Number(AGXVFTValue.toFixed(2)).toLocaleString())
     }
     setpoolValue(num)
     setstakeAllValue(num*Number(stakeliquidity)/Number(response.data.data.pool.liquidity))
@@ -2291,7 +2291,7 @@ export default function StakeV2() {
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">TVL</div>
-                  <div>0</div>
+                  <div>{Number(poolValue.toFixed(2)).toLocaleString()}</div>
                 </div>
               </div>
             </div>
