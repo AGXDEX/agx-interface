@@ -101,6 +101,7 @@ import {
 } from "lib/legacy";
 
 import { useLocalStorageByChainId } from "lib/localStorage";
+import { DepositTooltipContent } from "components/Synthetics/MarketsList/DepositTooltipContent";
 const { AddressZero } = ethers.constants;
 function ClaimAllModal(props) {
   const {
@@ -431,7 +432,7 @@ function StakeModal(props) {
             <img
               className="mr-xs icon"
               height="22"
-              src={icons[stakingTokenSymbol.toLowerCase()]}
+              src={icons['glp']}
               alt={stakingTokenSymbol}
             />
             {stakingTokenSymbol}
@@ -471,7 +472,6 @@ function UnstakeModal(props) {
   } = props;
   const [isUnstaking, setIsUnstaking] = useState(false);
   const icons = getIcons(chainId)!;
-
   let amount = parseValue(value, 18);
   let burnAmount;
 
@@ -1355,7 +1355,7 @@ export default function StakeV2() {
   const [isCompoundModalVisible, setIsCompoundModalVisible] = useState(false);
   const [isClaimModalVisible, setIsClaimModalVisible] = useState(false);
   const [isAffiliateClaimModalVisible, setIsAffiliateClaimModalVisible] = useState(false);
-  const [selectTab, setselectTab] = useState('Staking');
+  const [selectTab, setselectTab] = useState('Pool2');
   const [NFTdata, setNFTData] = useState<any[]>([]);
   const [depNFTData, setDepNFTData] = useState<any[]>([]);
   const [depNFTDataId, setDepNFTDataId] = useState<any[]>([]);
@@ -1677,10 +1677,10 @@ export default function StakeV2() {
   };
   const showStakeGmxModals = () => {
     setIsStakeModalVisible(true);
-    setStakeModalTitle(t`Stake FOM`);
+    setStakeModalTitle(t`Stake AGX`);
     setStakeModalMaxAmount(processedData?.gmxBalance);
     setStakeValue("");
-    setStakingTokenSymbol("GMX");
+    setStakingTokenSymbol("AGX");
     setStakingTokenAddress(gmxAddress);
     setStakingFarmAddress(stakedGmxTrackerAddress);
     setStakeMethodName("stakeGmx");
@@ -1801,7 +1801,7 @@ export default function StakeV2() {
     if (isClaiming) {
       return t`Claiming...`;
     }
-    return t`Claim All`;
+    return t`Claim`;
   };
   const onClickPrimary = () => {
     setClaimModalVisible(true)
@@ -2042,7 +2042,7 @@ export default function StakeV2() {
         isVisible={claimModalVisible}
         setIsVisible={setClaimModalVisible}
         chainId={chainId}
-        title='Claim All'
+        title='Claim'
         maxAmount={stakeModalMaxAmount}
         value={stakeValue}
         setValue={setStakeValue}
@@ -2223,7 +2223,7 @@ export default function StakeV2() {
             </div>
             <div className="StakeV2-totalBox">
               <div className="StakeV2-tit">Current Emisions</div>
-              <div>{rewardRate && Number(((Number(rewardRate)/(10**18)*86400)+59523).toFixed(2)).toLocaleString()}</div>
+              <div>{rewardRate && Number(((Number(rewardRate)/(10**18)*86400)+59523).toFixed(2)).toLocaleString()} /day</div>
             </div>
             <Button variant="secondary" to="/buy" className="StakeV2-button">
               <Trans>Buy</Trans>
@@ -2255,9 +2255,9 @@ export default function StakeV2() {
 
         <div className="App-card App-card-space-between StakeV2-content">
           <div className="tabBox">
-            <div className={cx("tab", { 'active': selectTab === 'Staking' })} onClick={()=>setselectTab('Staking')}>Staking</div>
             <div className={cx("tab", { 'active': selectTab === 'Pool2' })} onClick={()=>setselectTab('Pool2')}>Pool2 Mining</div>
             <div className={cx("tab", { 'active': selectTab === 'Liquidity' })} onClick={()=>setselectTab('Liquidity')}>Liquidity Mining</div>
+            <div className={cx("tab", { 'active': selectTab === 'Staking' })} onClick={()=>setselectTab('Staking')}>Staking<span className="soons">soon</span></div>
           </div>
           <div className={cx("StakeV2-box between", { 'ishide': selectTab === 'Liquidity' })}>
             <div className="halfBox">
@@ -2291,7 +2291,7 @@ export default function StakeV2() {
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">TVL</div>
-                  <div>{Number(poolValue.toFixed(2)).toLocaleString()}</div>
+                  <div>${Number(poolValue.toFixed(2)).toLocaleString()}</div>
                 </div>
               </div>
             </div>
@@ -2341,11 +2341,13 @@ export default function StakeV2() {
             <div className={cx("StakeV2-box marBottom", { 'ishide': selectTab !== 'Pool2' }, { 'isShow': selectTab === 'Pool2' })}>
               <div className="StakeV2-stakeTitle padLeft">Stake AGX-ETH LP</div>
               <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => showDepositModals()} disabled={!NFTlist || NFTlist.length === 0}>
-                <Trans>Deposit AGX-ETH LP</Trans>
+                <TooltipWithPortal renderContent={DepositTooltipContent}>
+                  <Trans>Deposit AGX-ETH LP</Trans>
+                </TooltipWithPortal>
               </Button>
             </div>
           </div>
-          <div className={cx("addNow", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>Add liquidity to Uniswap AGX/ETH pool ( <span className="heightLight">full range</span> ) to receive your LP NFT. <a target="_blank" rel="noreferrer" href={`https://novaswap.exchange/?chain=nova_sepolia#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`} className="">Add now &gt;&gt;</a>
+          <div className={cx("addNow", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>Add liquidity to Novaswap AGX/ETH pool ( <span className="heightLight">full range</span> ) to receive your LP NFT. <a target="_blank" rel="noreferrer" href={`https://novaswap.exchange/?chain=nova_sepolia#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`} className="">Add now &gt;&gt;</a>
           </div>
           <div className={cx("", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>
             <div className="StakeV2-stakeTitle padLeft">My deposit LP NFT</div>
@@ -2371,6 +2373,19 @@ export default function StakeV2() {
                   
                 );
               })}
+              {(!depNFTlists || depNFTlists.length === 0) && (
+                <div>
+                  <div className="noNFT"></div>
+                  <div className="depButton">
+                    <Button variant="secondary" className={cx("stakeButton ishide show")}>
+                      <Trans>Stake</Trans>
+                    </Button>
+                    <Button variant="secondary" className={cx("stakeButton ishide show")}>
+                      <Trans>Withdraw</Trans>
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           <div className={cx("liquidity", {'ishide': selectTab !== 'Liquidity','show': selectTab === 'Liquidity' })}>
