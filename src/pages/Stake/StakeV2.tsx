@@ -1810,11 +1810,13 @@ export default function StakeV2() {
   const { data: depNFTlist } = useSWR([`StakeV2:getSpecificNftId:${active}`, chainId, dexreaderAddress, "getSpecificNftIds"], {
     fetcher: contractFetcher(signer, DexReader,[depNFTDataId,AGXAddress,wethAddress]),
   });
+  // console.log(depNFTlist)
   let depNFTlists = depNFTlist && depNFTData.filter((it)=>{
     return depNFTlist.some((i)=>{
       return i.toNumber() == Number(it.tokenId) 
     })
   })
+  // console.log(depNFTlists)
   const { data: depBaselist } = useSWR([`StakeV2:getTokenURI:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
     fetcher: contractFetcher(signer, DexReader,[depNFTDataId]),
   });
@@ -1824,10 +1826,10 @@ export default function StakeV2() {
   //   let str = Buffer.from(base.split(',')[1], 'base64').toString('utf-8');
   //   return JSON.parse(str)
   // })
-  const depUrlList = depNFTlists && depNFTlists.map((id,ind) => {
+  const depUrlList = depNFTlists && depNFTlists.map((it,ind) => {
     let obj = {}
     depBaselist && depBaselist[0] && depBaselist[0].length> 0&&depBaselist[0].map((base,index)=>{
-      if (Number(id) === Number(depBaselist[1][index])) {
+      if (Number(it.tokenId) === Number(depBaselist[1][index])) {
         obj = JSON.parse(Buffer.from(base.split(',')[1], 'base64').toString('utf-8'))
       }
     })
