@@ -1876,7 +1876,7 @@ export default function StakeV2() {
       fetcher: contractFetcher(undefined, Vault) as any,
     }
   );
-  Pooladdress && axios.post('http://13.115.181.197:8000/subgraphs/name/novasap-subgraph', "{\"query\":\"{\\n  pool(id: \\\""+ Pooladdress.toLowerCase() +"\\\") {\\n    token0 {\\nid\\n}\\n    token1 {\\nid\\n}\\n    liquidity\\n    totalValueLockedToken0\\n    totalValueLockedToken1\\n    }\\n}\"}")
+  Pooladdress && axios.post('https://sepolia.graph.zklink.io/subgraphs/name/novasap-subgraph', "{\"query\":\"{\\n  pool(id: \\\""+ Pooladdress.toLowerCase() +"\\\") {\\n    token0 {\\nid\\n}\\n    token1 {\\nid\\n}\\n    liquidity\\n    totalValueLockedToken0\\n    totalValueLockedToken1\\n    }\\n}\"}")
   .then(response => {
     let num = 0
     // console.log(agxPrice)
