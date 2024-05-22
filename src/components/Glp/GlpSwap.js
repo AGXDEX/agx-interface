@@ -93,6 +93,7 @@ import Checkbox from "components/Checkbox/Checkbox";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePendingTxns } from "lib/usePendingTxns";
 import { SELECTED_CHAIN_LOCAL_STORAGE_KEY } from "config/localStorage";
+import {calculateAlpAPR} from "./utils";
 
 const { AddressZero } = ethers.constants;
 
@@ -939,7 +940,9 @@ export default function GlpSwap(props) {
   }
   const chainKeyFromLocalStorage = localStorage.getItem(SELECTED_CHAIN_LOCAL_STORAGE_KEY);
   const bridgeUrl = `https://preview.portal.zklink.io/deposit-integrate?network=${chainKeyFromLocalStorage}&token=${swapTokenAddress}`;
-// console.log(Number(glpSupplyUsd)/(10**30))
+
+const alpApr = calculateAlpAPR(glpSupplyUsd, rewardRate, agxPrice);
+
   return (
     <div className="GlpSwap">
       <SwapErrorModal
@@ -982,7 +985,7 @@ export default function GlpSwap(props) {
                   <Trans>APR:</Trans>
                 </div>
                 <div className="value">
-                {Number(glpSupplyUsd) === 0? 0: (agxPrice && rewardRate &&((Number(rewardRate)/(10**18)*60*60*24*365* agxPrice)/Number(glpSupplyUsd)*(10**30)*100).toLocaleString())}%
+                  {alpApr}
                   {/* ${formatAmount(totalApr, 2, 2, true)}% */}
                   {/* <Tooltip
                     handle={`${formatAmount(totalApr, 2, 2, true)}%`}
@@ -1194,10 +1197,13 @@ export default function GlpSwap(props) {
             </div>
             {minutesToNextEpoch && renderEpochEndingCheckbox(minutesToNextEpoch)}
             <div className="GlpSwap-cta Exchange-swap-button-container">
-              <div
-                className={cx({ 'hideButton': (!chainKeyFromLocalStorage || chainKeyFromLocalStorage === 'nova') })}
-              >
-                <Button type="button" variant="secondary" className="w-full bridge-to-nova" onClick={()=>setbridgeIsVisible(true)}>
+              <div className={cx({ hideButton: !chainKeyFromLocalStorage || chainKeyFromLocalStorage === "nova" })}>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="w-full bridge-to-nova"
+                  onClick={() => setbridgeIsVisible(true)}
+                >
                   Bridge to Nova
                 </Button>
               </div>
