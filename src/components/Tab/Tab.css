@@ -22,7 +22,7 @@
   cursor: pointer;
   position: relative;
 }
-.Tab.block .Tab-option .Tab-soon{
+.Tab-option .Tab-soon{
   position: absolute;
   top: 0;
   right: 10px;

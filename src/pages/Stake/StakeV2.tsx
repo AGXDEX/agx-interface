@@ -2217,11 +2217,11 @@ export default function StakeV2() {
             </div>
             <div className="StakeV2-totalBox">
               <div className="StakeV2-tit">Total Claimed</div>
-              <div>{NFTClaimed && ((Number(totalClaimed)/(10**18))+(Number(NFTClaimed)/(10**18))).toLocaleString()}</div>
+              <div>{NFTClaimed && Number(((Number(totalClaimed)/(10**18))+(Number(NFTClaimed)/(10**18))).toFixed(2)).toLocaleString()}</div>
             </div>
             <div className="StakeV2-totalBox">
               <div className="StakeV2-tit">Current Emisions</div>
-              <div>{formatAmount(perinter, 18, 2, true)}</div>
+              <div>{rewardRate && Number(((Number(rewardRate)/(10**18)*86400)+59523).toFixed(2)).toLocaleString()}</div>
             </div>
             <Button variant="secondary" to="/buy" className="StakeV2-button">
               <Trans>Buy</Trans>
@@ -2237,7 +2237,7 @@ export default function StakeV2() {
               <div className="StakeV2-claimToken">USDT</div>
             </div>
             <div className="StakeV2-claimBox">
-              <div className="StakeV2-claimNum">{Pool2ewards && rewards && (Number(Pool2ewards)/(10**18) + Number(rewards)/(10**18)).toFixed(2).toLocaleString()}</div>
+              <div className="StakeV2-claimNum">{Pool2ewards && rewards && Number((Number(Pool2ewards)/(10**18) + Number(rewards)/(10**18)).toFixed(2)).toLocaleString()}</div>
               <div className="StakeV2-claimToken">AGX</div>
             </div>
             <Button
@@ -2343,7 +2343,7 @@ export default function StakeV2() {
               </Button>
             </div>
           </div>
-          <div className={cx("addNow", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>Add liquidity to Uniswap AGX/ETH pool ( <span className="heightLight">full range</span> ) to receive your LP NFT. <a target="_blank" href={`https://novaswap.exchange/?chain=nova_sepolia#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`} className="">Add now &gt;&gt;</a>
+          <div className={cx("addNow", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>Add liquidity to Uniswap AGX/ETH pool ( <span className="heightLight">full range</span> ) to receive your LP NFT. <a target="_blank" rel="noreferrer" href={`https://novaswap.exchange/?chain=nova_sepolia#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`} className="">Add now &gt;&gt;</a>
           </div>
           <div className={cx("", {'ishide': selectTab !== 'Pool2','show': selectTab === 'Pool2' })}>
             <div className="StakeV2-stakeTitle padLeft">My deposit LP NFT</div>

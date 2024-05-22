@@ -24,7 +24,6 @@ export default function Tab(props) {
       }
     }
   };
-
   return (
     <div className={cx("Tab", type, className)}>
       {options.map((opt) => {
