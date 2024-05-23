@@ -52,6 +52,11 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
+        <a href="https://portal.zklink.io/" target="_blank" rel="noreferrer">
+          <Trans>Bridge</Trans>
+        </a>
+      </div>
+      <div className="App-header-link-container">
         <HeaderLink to="/referrals" showRedirectModal={showRedirectModal}>
           <Trans>Referrals</Trans>
         </HeaderLink>
