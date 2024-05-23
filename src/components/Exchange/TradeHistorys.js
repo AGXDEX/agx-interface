@@ -246,7 +246,9 @@ export default function TradeHistory(props) {
                       </ExternalLink>
                       </th>
                       <th>
-                      <Trans>{tokenIn.symbol}&#8594;{tokenOut.symbol}</Trans>
+                      {tokenIn.symbol}
+                      {tokenIn.symbol}&#8594;{tokenOut.symbol}
+                      (<Trans>{tokenIn.symbol}&#8594;{tokenOut.symbol}</Trans>)
                       </th>
                       <th>
                         <Trans>{formatAmount(trade.amountIn, tokenIn.decimals, 4, true)} {tokenIn.symbol} to{" "}
