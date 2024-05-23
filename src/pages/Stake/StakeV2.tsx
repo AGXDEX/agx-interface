@@ -1,7 +1,7 @@
+/* eslint-disable react/hook-use-state */
 import { Trans, t } from "@lingui/macro";
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 
-import Tooltip from "components/Tooltip/Tooltip";
 import cx from "classnames";
 import { useHistory } from "react-router-dom";
 
@@ -10,18 +10,15 @@ import ReaderV2 from "abis/ReaderV2.json";
 import RewardReader from "abis/RewardReader.json";
 import Token from "abis/Token.json";
 import Vault from "abis/Vault.json";
-import TimeDistributor from "abis/TimeDistributor.json";
 import YieldTracker from "abis/YieldTracker.json";
-import GLP from "abis/GLP.json";
 import UniV3Staker from "abis/UniV3Staker.json";
 import UniswapV3Factory from "abis/UniswapV3Factory.json";
 import DexReader from "abis/DexReader.json";
 import VaultV2 from "abis/VaultV2.json";
 import YieldEmission from "abis/YieldEmission.json";
 
-import { ARBITRUM, AVALANCHE, getConstant } from "config/chains";
-import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply,useAGXPrice } from "domain/legacy";
-import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
+import { ARBITRUM, getConstant } from "config/chains";
+import { useGmxPrice, useAGXPrice } from "domain/legacy";
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
 import { useMaxBoostBasicPoints } from "domain/rewards/useMaxBoostBasisPoints";
 import { BigNumber, ethers } from "ethers";
@@ -41,12 +38,10 @@ import useSWR from "swr";
 import { getContract } from "config/contracts";
 
 import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { getIcons } from "config/icons";
 import { getServerUrl } from "config/backend";
-import { getTotalGmInfo, useMarketTokensData, useMarketsInfoRequest } from "domain/synthetics/markets";
-import { useMarketTokensAPR } from "domain/synthetics/markets/useMarketTokensAPR";
+import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import {
@@ -58,9 +53,7 @@ import {
 } from "lib/numbers";
 import "./StakeV2.css";
 import useWallet from "lib/wallets/useWallet";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import PageTitle from "components/PageTitle/PageTitle";
-import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import useVestingData from "domain/vesting/useVestingData";
 import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 import { usePendingTxns } from "lib/usePendingTxns";
@@ -77,15 +70,13 @@ import {
   getBuyGlpFromAmount,
 } from "lib/legacy";
 
-import {getEmissionData} from "./utilts";
+import { getEmissionData, calculateManage } from "./utilts";
 
 import { useLocalStorageByChainId } from "lib/localStorage";
 import { DepositTooltipContent } from "components/Synthetics/MarketsList/DepositTooltipContent";
 const { AddressZero } = ethers.constants;
 
 import {
-  StakeModal,
-  UnstakeModal,
   VesterDepositModal,
   VesterWithdrawModal,
   ClaimAllModal,
@@ -100,8 +91,6 @@ import {
 export default function StakeV2() {
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
-  const { openConnectModal } = useConnectModal();
-  const incentiveStats = useIncentiveStats(chainId);
 
   const [, setPendingTxns] = usePendingTxns();
 
@@ -118,13 +107,13 @@ export default function StakeV2() {
   const [stakingFarmAddress, setStakingFarmAddress] = useState("");
   const [stakeMethodName, setStakeMethodName] = useState("");
 
-  const [isUnstakeModalVisible, setIsUnstakeModalVisible] = useState(false);
-  const [unstakeModalTitle, setUnstakeModalTitle] = useState("");
-  const [unstakeModalMaxAmount, setUnstakeModalMaxAmount] = useState<BigNumber | undefined>(undefined);
-  const [unstakeModalReservedAmount, setUnstakeModalReservedAmount] = useState<BigNumber | undefined>(undefined);
-  const [unstakeValue, setUnstakeValue] = useState("");
-  const [unstakingTokenSymbol, setUnstakingTokenSymbol] = useState("");
-  const [unstakeMethodName, setUnstakeMethodName] = useState("");
+  // const [isUnstakeModalVisible, setIsUnstakeModalVisible] = useState(false);
+  // const [unstakeModalTitle, setUnstakeModalTitle] = useState("");
+  // const [unstakeModalMaxAmount, setUnstakeModalMaxAmount] = useState<BigNumber | undefined>(undefined);
+  // const [unstakeModalReservedAmount, setUnstakeModalReservedAmount] = useState<BigNumber | undefined>(undefined);
+  // const [unstakeValue, setUnstakeValue] = useState("");
+  // const [unstakingTokenSymbol, setUnstakingTokenSymbol] = useState("");
+  // const [unstakeMethodName, setUnstakeMethodName] = useState("");
 
   const [isVesterDepositModalVisible, setIsVesterDepositModalVisible] = useState(false);
   const [vesterDepositTitle, setVesterDepositTitle] = useState("");
@@ -184,10 +173,7 @@ export default function StakeV2() {
 
   const glpManagerAddress = getContract(chainId, "GlpManager");
 
-  const timeDistributorAddress = getContract(chainId, "TimeDistributor");
   const yieldTrackerAddress = getContract(chainId, "YieldTracker");
-
-  const NFTPositionsManagerAddress = getContract(chainId, "nonfungibleTokenPositionManagerAddress");
   const dexreaderAddress = getContract(chainId, "dexreader");
   const uniV3StakerAddress = getContract(chainId, "v3StakerAddress");
   const v3FactoryAddress = getContract(chainId, "v3Factory");
@@ -196,9 +182,6 @@ export default function StakeV2() {
   const stakedGmxDistributorAddress = getContract(chainId, "StakedGmxDistributor");
   const stakedGlpDistributorAddress = getContract(chainId, "StakedGlpDistributor");
 
-  const gmxVesterAddress = getContract(chainId, "GmxVester");
-  const glpVesterAddress = getContract(chainId, "GlpVester");
-  const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
   const AGXAddress = getContract(chainId, "AGX");
   const wethAddress = getContract(chainId, "WethSwap");
   const ALPAddress = getContract(chainId, "ALP");
@@ -269,7 +252,7 @@ export default function StakeV2() {
       .catch((error) => {
         console.error("Error:", error);
       });
-  }, []);
+  }, [account]);
   const walletTokens = [gmxAddress, esGmxAddress, glpAddress, stakedGmxTrackerAddress];
   const depositTokens = [
     gmxAddress,
@@ -295,9 +278,7 @@ export default function StakeV2() {
     feeGlpTrackerAddress,
   ];
   const stakedBnGmxSupply = useStakedBnGMXAmount(chainId);
-  const { marketsInfoData, tokensData } = useMarketsInfoRequest(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, { isDeposit: false });
-  const { marketsTokensAPRData, marketsTokensIncentiveAprData } = useMarketTokensAPR(chainId);
   const vestingData = useVestingData(account);
 
   const { data: walletBalances } = useSWR(
@@ -339,19 +320,9 @@ export default function StakeV2() {
       fetcher: contractFetcher(signer, Token),
     }
   );
-  const { data: AGXBalance } = useSWR([`GlpSwap:glpBalance:${active}`, chainId, AGXAddress, "balanceOf", account], {
-    fetcher: contractFetcher(signer, GLP),
-  });
   const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
     fetcher: contractFetcher(signer, GlpManager),
   });
-
-  const { data: totalEmissions } = useSWR(
-    [`StakeV2:totalEmission:${active}`, chainId, timeDistributorAddress, "totalEmission"],
-    {
-      fetcher: contractFetcher(signer, TimeDistributor),
-    }
-  );
   const { data: startTime } = useSWR([`StakeV2:startTime:${active}`, chainId, yieldTrackerAddress, "startTime"], {
     fetcher: contractFetcher(signer, YieldEmission),
   });
@@ -391,17 +362,17 @@ export default function StakeV2() {
     active
   );
 
-  let { total: totalGmxSupply } = useTotalGmxSupply();
+  // let { total: totalGmxSupply } = useTotalGmxSupply();
 
-  const stakedGMXInfo = useTotalGmxStaked();
-  const { [AVALANCHE]: avaxGmxStaked, [ARBITRUM]: arbitrumGmxStaked, total: totalGmxStaked } = stakedGMXInfo;
+  // const stakedGMXInfo = useTotalGmxStaked();
+  // const { [AVALANCHE]: avaxGmxStaked, [ARBITRUM]: arbitrumGmxStaked, total: totalGmxStaked } = stakedGMXInfo;
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
   const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
     fetcher: (args) => fetch(...args).then((res) => res.text()),
   });
 
-  const isGmxTransferEnabled = true;
+  // const isGmxTransferEnabled = true;
 
   let esGmxSupplyUsd;
   if (esGmxSupply && gmxPrice) {
@@ -465,32 +436,6 @@ export default function StakeV2() {
 
   const bonusGmxInFeeGmx = processedData ? processedData.bonusGmxInFeeGmx : undefined;
 
-  let stakedGmxSupplyUsd;
-  if (!totalGmxStaked.isZero() && gmxPrice) {
-    stakedGmxSupplyUsd = totalGmxStaked.mul(gmxPrice).div(expandDecimals(1, 18));
-  }
-
-  let totalSupplyUsd;
-  if (totalGmxSupply && !totalGmxSupply.isZero() && gmxPrice) {
-    totalSupplyUsd = totalGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
-  }
-
-  let maxUnstakeableGmx = bigNumberify(0);
-  if (
-    totalRewardTokens &&
-    vestingData &&
-    vestingData.gmxVesterPairAmount &&
-    multiplierPointsAmount &&
-    processedData?.bonusGmxInFeeGmx
-  ) {
-    const availableTokens = totalRewardTokens.sub(vestingData.gmxVesterPairAmount);
-    const stakedTokens = processedData.bonusGmxInFeeGmx;
-    const divisor = multiplierPointsAmount.add(stakedTokens);
-    if (divisor.gt(0)) {
-      maxUnstakeableGmx = availableTokens.mul(stakedTokens).div(divisor);
-    }
-  }
-
   const showDepositModals = () => {
     if (NFTlist.length > 0) {
       setDepositModalVisible(true);
@@ -506,70 +451,6 @@ export default function StakeV2() {
     setStakingFarmAddress(stakedGmxTrackerAddress);
     setStakeMethodName("stakeGmx");
   };
-  const recommendStakeGmx = useRecommendStakeGmxAmount(
-    {
-      accumulatedGMX: processedData?.totalVesterRewards,
-      accumulatedBnGMX: accumulatedBnGMXAmount,
-      accumulatedEsGMX: processedData?.totalEsGmxRewards,
-      stakedGMX: processedData?.gmxInStakedGmx,
-      stakedBnGMX: processedData?.bnGmxInFeeGmx,
-      stakedEsGMX: processedData?.esGmxInStakedGmx,
-    },
-    {
-      shouldStakeGmx: true,
-      shouldStakeEsGmx: true,
-    }
-  );
-
-  const renderBoostPercentageTooltip = useCallback(() => {
-    return (
-      <div>
-        <Trans>
-          You are earning {formatAmount(processedData?.boostBasisPoints, 2, 2, false)}% more {nativeTokenSymbol} rewards
-          using {formatAmount(processedData?.bnGmxInFeeGmx, 18, 4, true)} Staked Multiplier Points.
-        </Trans>
-        <br />
-        <br />
-        {recommendStakeGmx.gt(0) ? (
-          <Trans>
-            You have reached the maximum Boost Percentage. Stake an additional{" "}
-            {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}
-            {formatAmount(accumulatedBnGMXAmount, 18, 4, true)} Multiplier Points using the "Compound" button.
-          </Trans>
-        ) : (
-          <Trans>Use the "Compound" button to stake your Multiplier Points.</Trans>
-        )}
-      </div>
-    );
-  }, [nativeTokenSymbol, processedData, recommendStakeGmx, accumulatedBnGMXAmount]);
-
-  const gmxAvgAprText = useMemo(() => {
-    return `${formatAmount(processedData?.avgGMXAprForNativeToken, 2, 2, true)}%`;
-  }, [processedData?.avgGMXAprForNativeToken]);
-
-  const renderMultiplierPointsLabel = useCallback(() => {
-    return t`Multiplier Points APR`;
-  }, []);
-
-  const renderMultiplierPointsValue = useCallback(() => {
-    return (
-      <Tooltip
-        handle={`100.00%`}
-        position="bottom-end"
-        renderContent={() => {
-          return (
-            <Trans>
-              Boost your rewards with Multiplier Points.&nbsp;
-              <ExternalLink href="https://docs.gmx.io/docs/tokenomics/rewards#multiplier-points">
-                Read more
-              </ExternalLink>
-              .
-            </Trans>
-          );
-        }}
-      />
-    );
-  }, []);
 
   let earnMsg;
   if (totalRewardAndLpTokens && totalRewardAndLpTokens.gt(0)) {
@@ -604,14 +485,6 @@ export default function StakeV2() {
       </div>
     );
   }
-
-  const stakedEntries = useMemo(
-    () => ({
-      "Staked on Arbitrum": arbitrumGmxStaked,
-      "Staked on Avalanche": avaxGmxStaked,
-    }),
-    [arbitrumGmxStaked, avaxGmxStaked]
-  );
 
   const [isClaiming, setIsClaiming] = useState(false);
   const isPrimaryEnabled = () => {
@@ -651,9 +524,6 @@ export default function StakeV2() {
         fetcher: contractFetcher(signer, DexReader, [IncentiveKeyAddress, stakedTokens]),
       }
     );
-
-
-  console.log(stakedTokens,depNFTDataId, depNFTlists, "depNFTDataId---->");
   const { data: depBaselist } = useSWR([`StakeV2:getTokenURI:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
     fetcher: contractFetcher(signer, DexReader, [depNFTDataId]),
   });
@@ -692,14 +562,12 @@ export default function StakeV2() {
       fetcher: contractFetcher(signer, DexReader, [NFTdata, AGXAddress, wethAddress]),
     }
   );
-  // console.log(NFTlist)
   const { data: baselist } = useSWR([`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
     fetcher: contractFetcher(signer, DexReader, [NFTdata]),
   });
   const { data: Pool2ewards } = useSWR([`StakeV2:rewards:${active}`, chainId, uniV3StakerAddress, "rewards"], {
     fetcher: contractFetcher(signer, UniV3Staker, [AGXAddress, account]),
   });
-  // console.log(Number(Pool2ewards))
   const { data: Pooladdress } = useSWR([`StakeV2:getPool:${active}`, chainId, v3FactoryAddress, "getPool"], {
     fetcher: contractFetcher(signer, UniswapV3Factory, [AGXAddress, EthPoolAddress, 10000]),
   });
@@ -926,7 +794,10 @@ export default function StakeV2() {
     history.push("/buy");
   };
 
-  const totalUserStakedLiquidity = depNFTData.reduce((sum, { liquidity }) => sum + BigInt(liquidity), BigInt(0));
+  const totalUserStakedLiquidity = depNFTData
+    .filter((entry) => entry && typeof entry.liquidity !== "undefined")
+    .reduce((sum, { liquidity }) => sum + BigInt(liquidity), BigInt(0));
+
   const userStakedAGXAmount = (
     (Number(totalUserStakedLiquidity) * Number(AGXVFTValue?.replace(/,/g, "") ?? "0")) /
     Number(stakeliquidity)
@@ -982,7 +853,7 @@ export default function StakeV2() {
         URLlist={urlList}
         setNFTData={setNFTData}
       />
-      <StakeModal
+      {/* <StakeModal
         isVisible={isStakeModalVisible}
         setIsVisible={setIsStakeModalVisible}
         chainId={chainId}
@@ -1002,8 +873,8 @@ export default function StakeV2() {
         setPendingTxns={setPendingTxns}
         nativeTokenSymbol={nativeTokenSymbol}
         wrappedTokenSymbol={wrappedTokenSymbol}
-      />
-      <UnstakeModal
+      /> */}
+      {/* <UnstakeModal
         setPendingTxns={setPendingTxns}
         isVisible={isUnstakeModalVisible}
         setIsVisible={setIsUnstakeModalVisible}
@@ -1021,7 +892,7 @@ export default function StakeV2() {
         bonusGmxInFeeGmx={bonusGmxInFeeGmx}
         processedData={processedData}
         nativeTokenSymbol={nativeTokenSymbol}
-      />
+      /> */}
       <VesterDepositModal
         isVisible={isVesterDepositModalVisible}
         setIsVisible={setIsVesterDepositModalVisible}
@@ -1377,9 +1248,7 @@ export default function StakeV2() {
                 managedUsd = tokenInfo.managedUsd;
               }
               let manage = 1;
-              if (managedUsd) {
-                manage = managedUsd.mul(50000).div(glpSupplyUsd);
-              }
+              manage = calculateManage(managedUsd, glpSupplyUsd);
               return (
                 <div className="table-td" key={token.symbol}>
                   <div className="leftAlign">{token.symbol}/USDT</div>
