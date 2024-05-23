@@ -374,9 +374,18 @@
   text-align: right;
 }
 .noNFT{
-  width: 170px;
-  height: 293px;
-  border: 1px solid #3b0c8c;
-  border-radius: 16px;
-  background-color: #170339;
+  width: 100%;
+  padding: 40px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.noNFT img{
+  filter: invert(1);
+  width: 60px;
+  margin-bottom: 20px;
+}
+.noNFT .noNFTInner{
+  width: 300px;
+  text-align: center;
 }

@@ -96,6 +96,7 @@ import {
   DepositModal,
 } from "./components/modals";
 
+import noNFT from "img/noNFT.svg";
 
 export default function StakeV2() {
   const { active, signer, account } = useWallet();
@@ -1338,16 +1339,9 @@ export default function StakeV2() {
                   );
                 })}
               {(!mergedDepNFTlists || mergedDepNFTlists.length === 0) && (
-                <div>
-                  <div className="noNFT"></div>
-                  <div className="depButton">
-                    <Button variant="secondary" className={cx("stakeButton ishide show")}>
-                      <Trans>Stake</Trans>
-                    </Button>
-                    <Button variant="secondary" className={cx("stakeButton ishide show")}>
-                      <Trans>Withdraw</Trans>
-                    </Button>
-                  </div>
+                <div className="noNFT">
+                  <img src={noNFT} alt="" />
+                  <div className="noNFTInner">Your active V3 liquidity positions will appear here.</div>
                 </div>
               )}
             </div>
