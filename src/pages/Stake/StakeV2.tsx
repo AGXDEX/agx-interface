@@ -828,6 +828,7 @@ export default function StakeV2() {
         URLlist={urlList}
         setNFTData={setNFTData}
         Pool2ewards={Pool2ewards}
+        rewards={rewards}
       />
       <DepositModal
         isVisible={depositModalVisible}
@@ -1137,7 +1138,7 @@ export default function StakeV2() {
               <div className="StakeV2-stakeTitle padLeft">Stake AGX-ETH LP</div>
               <Button
                 variant="secondary"
-                className="StakeV2-stakeButton"
+                className={cx("StakeV2-stakeButton", { 'StakeV2-disabledButton': (!NFTlist || NFTlist.length === 0) })}
                 onClick={() => showDepositModals()}
                 disabled={!NFTlist || NFTlist.length === 0}
               >

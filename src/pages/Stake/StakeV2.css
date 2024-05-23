@@ -259,6 +259,9 @@
 .StakeV2-stakeButton .Tooltip-handle{
   cursor: pointer;
 }
+.StakeV2-disabledButton .Tooltip-handle{
+  cursor: not-allowed;
+}
 .bigModal .Modal-content{
   width: 50rem;
 }

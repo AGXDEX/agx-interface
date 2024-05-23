@@ -71,7 +71,8 @@ function ClaimAllModal(props) {
     showNFTdata,
     URLlist,
     setNFTData,
-    Pool2ewards
+    Pool2ewards,
+    rewards
   } = props;
   const [tokenId, setTokenId] = useState('');
   const NFTPositionsManagerAddress = getContract(chainId, "nonfungibleTokenPositionManagerAddress");
@@ -152,7 +153,7 @@ function ClaimAllModal(props) {
               </Checkbox>
             </div>
             <div>
-              {Pool2ewards && (Number(Pool2ewards)/(10**18)).toFixed(4).toLocaleString()} AGX
+              {Pool2ewards && Number((Number(Pool2ewards)/(10**18)).toFixed(2)).toLocaleString()} AGX
             </div>
           </div>
           <div className="tabBox">
@@ -166,7 +167,7 @@ function ClaimAllModal(props) {
               </Checkbox>
             </div>
             <div>
-              0 AGX
+              {rewards && Number((Number(rewards)/(10**18)).toFixed(2)).toLocaleString()} AGX
             </div>
           </div>
         </div>
