@@ -100,6 +100,8 @@ import {
   getBuyGlpFromAmount,
 } from "lib/legacy";
 
+import {getEmissionData} from "./utilts";
+
 import { useLocalStorageByChainId } from "lib/localStorage";
 import { DepositTooltipContent } from "components/Synthetics/MarketsList/DepositTooltipContent";
 const { AddressZero } = ethers.constants;
@@ -1557,6 +1559,12 @@ export default function StakeV2() {
       fetcher: contractFetcher(signer, TimeDistributor),
     }
   );
+    const { data: startTime } = useSWR(
+    [`StakeV2:startTime:${active}`, chainId, yieldTrackerAddress, "startTime"],
+    {
+      fetcher: contractFetcher(signer, YieldEmission),
+    }
+  );
   const { data: totalClaimed } = useSWR([`StakeV2:totalClaim:${active}`, chainId, yieldTrackerAddress, "totalClaim"], {
     fetcher: contractFetcher(signer, YieldEmission),
   });
@@ -1584,6 +1592,8 @@ export default function StakeV2() {
   const accumulatedBnGMXAmount = useAccumulatedBnGMXAmount();
 
   const maxBoostBasicPoints = useMaxBoostBasicPoints();
+
+  const emissionData = getEmissionData(Number(startTime?.toString()));
 
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
     chainId,
@@ -2296,7 +2306,7 @@ const userStakedAGXAmount = (Number(totalUserStakedLiquidity) * Number(AGXVFTVal
           <div className="StakeV2-box">
             <div className="StakeV2-totalBox">
               <div className="StakeV2-tit">Total Emissions</div>
-              <div>{formatAmount(totalEmissions, 18, 2, true)}</div>
+              <div>{emissionData?.totalEmissions}</div>
             </div>
             <div className="StakeV2-totalBox">
               <div className="StakeV2-tit">Total Claimed</div>
