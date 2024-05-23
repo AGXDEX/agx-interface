@@ -86,7 +86,7 @@ const ChainToken: Token[] = [
   },
   {
     name: "Bitcoin (WBTC)",
-    symbol: "BTC",
+    symbol: "WBTC",
     assetSymbol: "WBTC",
     decimals: 8,
     address: "0xbEacb61e11940e38EAdCf41860b9ea31E2a90deC",
@@ -292,7 +292,7 @@ const novaChain = [
     },
     {
       name: "Bitcoin (WBTC)",
-      symbol: "BTC",
+      symbol: "WBTC",
       assetSymbol: "WBTC",
       decimals: 8,
       address: "0xbEacb61e11940e38EAdCf41860b9ea31E2a90deC",

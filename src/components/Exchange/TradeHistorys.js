@@ -228,16 +228,10 @@ export default function TradeHistory(props) {
                     obj[key.toLowerCase()] = infoTokens[key];
                     return obj;
                   }, {});
-                  console.log(lowerCaseInfoTokens)
-                  console.log(trade.tokenIn)
-                  console.log(nativeTokenAddress)
-                  console.log(trade.tokenOut)
                   const tokenIn = getTokenInfo(lowerCaseInfoTokens, trade.tokenIn.toLowerCase(), true, nativeTokenAddress);
                   const tokenOut = getTokenInfo(lowerCaseInfoTokens, trade.tokenOut.toLowerCase(), true, nativeTokenAddress);
                   const price = (Number(trade.amountIn)/(10**tokenIn.decimals))/(Number(trade.amountOut)/(10**tokenOut.decimals))
-                  console.log(tokenIn)
-                  console.log(tokenOut)
-                  console.log(price)
+                  
                   return (
                     <tr key={index}>
                       <th>
@@ -246,16 +240,14 @@ export default function TradeHistory(props) {
                       </ExternalLink>
                       </th>
                       <th>
-                      {tokenIn.symbol}
                       {tokenIn.symbol}&#8594;{tokenOut.symbol}
-                      (<Trans>{tokenIn.symbol}&#8594;{tokenOut.symbol}</Trans>)
                       </th>
                       <th>
-                        <Trans>{formatAmount(trade.amountIn, tokenIn.decimals, 4, true)} {tokenIn.symbol} to{" "}
-                        {formatAmount(trade.amountOut, tokenOut.decimals, 4, true)} {tokenOut.symbol}</Trans>
+                        {formatAmount(trade.amountIn, tokenIn.decimals, 4, true)} {tokenIn.symbol} to{" "}
+                        {formatAmount(trade.amountOut, tokenOut.decimals, 4, true)} {tokenOut.symbol}
                       </th>
                       <th className="TradeHistorySynthetics-price-header">
-                        <Trans>{price.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}</Trans>
+                        {price.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}
                       </th>
                     </tr>
                   );

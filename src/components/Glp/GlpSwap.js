@@ -766,7 +766,8 @@ export default function GlpSwap(props) {
       value,
       sentMsg: t`Buy submitted.`,
       failMsg: t`Buy failed.`,
-      successMsg: t`${formatAmount(glpAmount, 18, 4, true)} ALP bought with ${formatAmount(
+      successMsg: 
+      `${formatAmount(glpAmount, 18, 4, true)} ALP bought with ${formatAmount(
         swapAmount,
         swapTokenInfo.decimals,
         4,

@@ -256,6 +256,9 @@
   right: 0px;
   top: -5px;
 }
+.StakeV2-stakeButton .Tooltip-handle{
+  cursor: pointer;
+}
 .bigModal .Modal-content{
   width: 50rem;
 }

@@ -18,6 +18,7 @@ import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { chainList } from "config/networks";
+import { helperToast } from "lib/helperToast";
 
 type Props = {
   openSettings: () => void;
@@ -77,6 +78,11 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
           <img className="network-dropdown-icon network-img" src={icon} alt={selectorLabel} />
         </div> */}
         <div>Nova Points:</div>
+        <div
+          className=""
+        >
+          Add Nova to Metamask
+        </div>
         <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
         <div className={cx("", { "homepage-header": isHomeSite() })}>
           <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
@@ -106,11 +112,61 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
 
   const accountUrl = getAccountUrl(chainId, account);
 
+  const addEvmChain= async(chain) => {
+    if (!window.ethereum) {
+      helperToast.error('Please install a wallet first.');
+      throw new Error('Please install a wallet first.');
+    }
+    const chainId = await window.ethereum.request({
+        method:"eth_chainId",
+    });
+    if (chainId === ('0x' + ARBITRUM.toString(16))) {
+      helperToast.success(
+        <div>
+          <Trans>
+          You have already added the zkLink Nova Network to your wallet.
+          </Trans>
+          <br />
+        </div>
+      );
+    } else {
+        await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [chain],
+        });
+        const nowChainId = await window.ethereum.request({
+            method:"eth_chainId",
+        });
+        if (nowChainId === ('0x' + ARBITRUM.toString(16))) {
+          helperToast.error('You have successfully add zkLink Nova Network to your wallet.');
+        }
+    }
+  }
+  const addNovaChain=async() => {
+    await addEvmChain({
+      chainId: '0x' + ARBITRUM.toString(16),
+      chainName: process.env.REACT_APP_ENV === "development" ? "zkLink Nova Testnet":'zkLink Nova',
+      rpcUrls: [process.env.REACT_APP_ENV === "development" ? "https://sepolia.rpc.zklink.io" : 'https://rpc.zklink.io'],
+      iconUrls: [],
+      nativeCurrency: {
+        name: 'ETH',
+        symbol: 'ETH',
+        decimals: 18,
+      },
+      blockExplorerUrls: [(process.env.REACT_APP_ENV === "development" ? "https://sepolia.explorer.zklink.io":'https://explorer.zklink.io') ?? ''],
+    });
+  }
   return (
     <div className="App-header-user">
       {/* <div className="network-img-box">
         <img className="network-dropdown-icon network-img" src={icon} alt={selectorLabel} />
       </div> */}
+      <div
+        className="addNova"
+        onClick={()=>addNovaChain()}
+      >
+        Add Nova to Metamask
+      </div>
       <div>Nova Points:</div>
       <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
       <div className={cx("App-header-trade-link")}>
