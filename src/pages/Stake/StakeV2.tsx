@@ -762,7 +762,7 @@ export default function StakeV2() {
         setstakeAllValue((num * Number(stakeliquidity)) / Number(response.data.data.pool.liquidity));
         //   (agxprice * x)  / stake   TODO
         let stakeAPRValue = Number(stakeliquidity) === 0 ? "0" : ((agxPrice * 20000000) / stakeAllValue).toFixed(2);
-        setstakeAPRValue(Number(stakeAPRValue).toLocaleString());
+        setstakeAPRValue(Number((Number(stakeAPRValue)*100).toFixed(2)).toLocaleString());
       })
       .catch((error) => {
         console.error("Error:", error);
