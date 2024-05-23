@@ -131,7 +131,7 @@ const ChainToken: Token[] = [
     ],
   },
   {
-    name: "pufETH",
+    name: "pufETH (Ethereum)",
     symbol: "pufETH",
     decimals: 18,
     address: "0x1569046dC6D4bd5d06cA5fa2fb83D2885bd87b20",
@@ -148,7 +148,7 @@ const ChainToken: Token[] = [
     ],
   },
   {
-    name: "ezETH",
+    name: "ezETH (Arbitrum)",
     symbol: "ezETH",
     decimals: 18,
     address: "0xD7C43Ef14bb17C8bBD6575992aa35d9EBBfc512D",
@@ -303,7 +303,7 @@ const novaChain = [
       isV1Available: true,
     },
     {
-      name: "pufETH",
+      name: "pufETH (Ethereum)",
       symbol: "pufETH",
       decimals: 18,
       address: "0x1569046dC6D4bd5d06cA5fa2fb83D2885bd87b20",
@@ -314,7 +314,7 @@ const novaChain = [
       isV1Available: true,
     },
     {
-      name: "ezETH",
+      name: "ezETH (Arbitrum)",
       symbol: "ezETH",
       decimals: 18,
       address: "0xD7C43Ef14bb17C8bBD6575992aa35d9EBBfc512D",
