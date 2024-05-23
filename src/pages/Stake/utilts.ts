@@ -1,3 +1,5 @@
+import { BigNumber } from "ethers";
+
 const alpData = [
   300000.0, 597000.0, 891030.0, 1182119.7, 1470298.5, 1755595.52, 2038039.56, 2317659.17, 2594482.58, 2868537.75,
   3139852.37, 3408453.85, 3674369.31, 3937625.62, 4198249.36, 4456266.87, 4711704.2, 4964587.16, 5214941.28, 5462791.87,
@@ -31,4 +33,22 @@ export function getEmissionData(startTimestamp) {
     accumulate: totalAccumulate,
     totalEmissions: localizedEmissions,
   };
+}
+
+
+
+
+
+export function calculateManage(managedUsd, glpSupplyUsd) {
+  if (!managedUsd || managedUsd.isZero()) {
+    console.error("Error: managedUsd is zero or undefined.");
+    return BigNumber.from(0);
+  }
+
+  if (!glpSupplyUsd || glpSupplyUsd.isZero()) {
+    console.error("Error: division by zero. 'glpSupplyUsd' is zero or undefined.");
+    return BigNumber.from(0);
+  }
+
+  return managedUsd.mul(BigNumber.from(50000)).div(glpSupplyUsd);
 }
