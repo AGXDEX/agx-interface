@@ -191,7 +191,7 @@ function ClaimAllModal(props) {
               </Checkbox>
             </div>
             <div>
-              1
+              0 AGX
             </div>
           </div>
           <div className="tabBox">
@@ -205,7 +205,7 @@ function ClaimAllModal(props) {
               </Checkbox>
             </div>
             <div>
-              {Pool2ewards && (Number(Pool2ewards)/(10**18)).toFixed(4).toLocaleString()}
+              {Pool2ewards && (Number(Pool2ewards)/(10**18)).toFixed(4).toLocaleString()} AGX
             </div>
           </div>
           <div className="tabBox">
@@ -219,7 +219,7 @@ function ClaimAllModal(props) {
               </Checkbox>
             </div>
             <div>
-              1
+              0 AGX
             </div>
           </div>
         </div>
@@ -2381,7 +2381,7 @@ const userStakedAGXAmount = (Number(totalUserStakedLiquidity) * Number(AGXVFTVal
               <div className={cx("mobileBox", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">APR</div>
-                  <div>{stakeAPRValue}</div>
+                  <div>{stakeAPRValue}%</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Stake AGX in LP NFT:</div>
@@ -2457,7 +2457,7 @@ const userStakedAGXAmount = (Number(totalUserStakedLiquidity) * Number(AGXVFTVal
             </div>
           </div>
           <div className={cx("addNow", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
-            Add liquidity to Uniswap AGX/ETH pool ( <span className="heightLight">full range</span> ) to receive your LP
+            Add liquidity to Novaswap AGX/ETH pool ( <span className="heightLight">full range</span> ) to receive your LP
             NFT.{" "}
             <a
               target="_blank"
