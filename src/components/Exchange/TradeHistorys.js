@@ -228,9 +228,16 @@ export default function TradeHistory(props) {
                     obj[key.toLowerCase()] = infoTokens[key];
                     return obj;
                   }, {});
+                  console.log(lowerCaseInfoTokens)
+                  console.log(trade.tokenIn)
+                  console.log(nativeTokenAddress)
+                  console.log(trade.tokenOut)
                   const tokenIn = getTokenInfo(lowerCaseInfoTokens, trade.tokenIn.toLowerCase(), true, nativeTokenAddress);
                   const tokenOut = getTokenInfo(lowerCaseInfoTokens, trade.tokenOut.toLowerCase(), true, nativeTokenAddress);
                   const price = (Number(trade.amountIn)/(10**tokenIn.decimals))/(Number(trade.amountOut)/(10**tokenOut.decimals))
+                  console.log(tokenIn)
+                  console.log(tokenOut)
+                  console.log(price)
                   return (
                     <tr key={index}>
                       <th>

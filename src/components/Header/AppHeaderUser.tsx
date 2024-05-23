@@ -76,6 +76,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
         {/* <div className="network-img-box">
           <img className="network-dropdown-icon network-img" src={icon} alt={selectorLabel} />
         </div> */}
+        <div>Nova Points:</div>
         <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
         <div className={cx("", { "homepage-header": isHomeSite() })}>
           <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
@@ -110,6 +111,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
       {/* <div className="network-img-box">
         <img className="network-dropdown-icon network-img" src={icon} alt={selectorLabel} />
       </div> */}
+      <div>Nova Points:</div>
       <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
       <div className={cx("App-header-trade-link")}>
         <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
