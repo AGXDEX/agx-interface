@@ -44,13 +44,7 @@ import { getServerUrl } from "config/backend";
 import { getTotalGmInfo, useMarketTokensData } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
-import {
-  BN_ZERO,
-  bigNumberify,
-  expandDecimals,
-  formatAmount,
-  parseValue,
-} from "lib/numbers";
+import { BN_ZERO, bigNumberify, expandDecimals, formatAmount, parseValue } from "lib/numbers";
 import "./StakeV2.css";
 import useWallet from "lib/wallets/useWallet";
 import PageTitle from "components/PageTitle/PageTitle";
@@ -58,17 +52,12 @@ import useVestingData from "domain/vesting/useVestingData";
 import { useStakedBnGMXAmount } from "domain/rewards/useStakedBnGMXAmount";
 import { usePendingTxns } from "lib/usePendingTxns";
 import axios from "axios";
-import {
-  getV1Tokens,
-  getWhitelistedV1Tokens,
-} from "config/tokens";
+import { getV1Tokens, getWhitelistedV1Tokens } from "config/tokens";
 import { getTokenBySymbol } from "config/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
 
 import { useInfoTokens } from "domain/tokens";
-import {
-  getBuyGlpFromAmount,
-} from "lib/legacy";
+import { getBuyGlpFromAmount } from "lib/legacy";
 
 import { getEmissionData, calculateManage } from "./utilts";
 
@@ -153,6 +142,11 @@ export default function StakeV2() {
   const [stakeAPRValue, setstakeAPRValue] = useState("");
   const [AGXVFTValue, setAGXVFTValue] = useState("");
 
+  const [isUnstaking, setIsUnstakeLoading] = useState(false);
+  const [isStaking, setIsStaking] = useState(false);
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
+
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
   const rewardReaderAddress = getContract(chainId, "RewardReader");
   const readerAddress = getContract(chainId, "Reader");
@@ -185,7 +179,6 @@ export default function StakeV2() {
 
   const AGXAddress = getContract(chainId, "AGX");
   const wethAddress = getContract(chainId, "WethSwap");
-  const ALPAddress = getContract(chainId, "ALP");
 
   const excludedEsGmxAccounts = [stakedGmxDistributorAddress, stakedGlpDistributorAddress];
 
@@ -253,7 +246,7 @@ export default function StakeV2() {
       .catch((error) => {
         console.error("Error:", error);
       });
-  }, [account]);
+  }, [account, depositModalVisible, isWithdrawing]);
   const walletTokens = [gmxAddress, esGmxAddress, glpAddress, stakedGmxTrackerAddress];
   const depositTokens = [
     gmxAddress,
@@ -502,7 +495,7 @@ export default function StakeV2() {
     setClaimModalVisible(true);
   };
 
-  const { data: depNFTlist } = useSWR(
+  const { data: depNFTlist, mutate: refetchDepNFTlist } = useSWR(
     [`StakeV2:getSpecificNftId:${active}`, chainId, dexreaderAddress, "getSpecificNftIds"],
     {
       fetcher: contractFetcher(signer, DexReader, [depNFTDataId, AGXAddress, wethAddress]),
@@ -517,14 +510,14 @@ export default function StakeV2() {
       });
     });
 
-  const stakedTokens = depNFTlist && depNFTlists?.filter((nft) => nft.staked).map((nft) => nft.tokenId) || [];
+  const stakedTokens = (depNFTlist && depNFTlists?.filter((nft) => nft.staked).map((nft) => nft.tokenId)) || [];
 
-    const { data: stakedRewardInfos } = useSWR(
-      [`StakeV2:getRewardInfos:${active}`, chainId, dexreaderAddress, "getRewardInfos"],
-      {
-        fetcher: contractFetcher(signer, DexReader, [IncentiveKeyAddress, stakedTokens]),
-      }
-    );
+  const { data: stakedRewardInfos } = useSWR(
+    [`StakeV2:getRewardInfos:${active}`, chainId, dexreaderAddress, "getRewardInfos"],
+    {
+      fetcher: contractFetcher(signer, DexReader, [IncentiveKeyAddress, stakedTokens]),
+    }
+  );
   const { data: depBaselist } = useSWR([`StakeV2:getTokenURI:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
     fetcher: contractFetcher(signer, DexReader, [depNFTDataId]),
   });
@@ -557,15 +550,18 @@ export default function StakeV2() {
         return index !== -1 ? { ...nft, reward: tokenRewards[index] } : nft;
       })
     : [];
-  const { data: NFTlist } = useSWR(
+  const { data: NFTlist, mutate: refetchSpecificNftIds } = useSWR(
     [`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress, "getSpecificNftIds"],
     {
       fetcher: contractFetcher(signer, DexReader, [NFTdata, AGXAddress, wethAddress]),
     }
   );
-  const { data: baselist } = useSWR([`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
-    fetcher: contractFetcher(signer, DexReader, [NFTdata]),
-  });
+  const { data: baselist, mutate: refetchTokenURIs } = useSWR(
+    [`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, "getTokenURIs"],
+    {
+      fetcher: contractFetcher(signer, DexReader, [NFTdata]),
+    }
+  );
   const { data: Pool2ewards } = useSWR([`StakeV2:rewards:${active}`, chainId, uniV3StakerAddress, "rewards"], {
     fetcher: contractFetcher(signer, UniV3Staker, [AGXAddress, account]),
   });
@@ -631,34 +627,42 @@ export default function StakeV2() {
         setstakeAllValue((num * Number(stakeliquidity)) / Number(response.data.data.pool.liquidity));
         //   (agxprice * x)  / stake   TODO
         let stakeAPRValue = Number(stakeliquidity) === 0 ? "0" : ((agxPrice * 20000000) / stakeAllValue).toFixed(2);
-        setstakeAPRValue(Number((Number(stakeAPRValue)*100).toFixed(2)).toLocaleString());
+        setstakeAPRValue(Number((Number(stakeAPRValue) * 100).toFixed(2)).toLocaleString());
       })
       .catch((error) => {
         console.error("Error:", error);
       });
-  const stake = (tokenId) => {
-    const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
-    callContract(chainId, contract, "stakeToken", [IncentiveKeyAddress, tokenId], {
-      sentMsg: t`Stake submitted.`,
-      failMsg: t`Stake failed.`,
-      successMsg: t`Stake completed!`,
-      setPendingTxns,
-    }).finally(() => {
-      axios
-        .post(
+
+  const stake = async (tokenId) => {
+     setIsStaking(true);
+     setSelectedCard(tokenId);
+    try {
+      const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
+      await callContract(chainId, contract, "stakeToken", [IncentiveKeyAddress, tokenId], {
+        sentMsg: t`Stake submitted.`,
+        failMsg: t`Stake failed.`,
+        successMsg: t`Stake completed!`,
+        setPendingTxns,
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      refetchDepNFTlist();
+
+      try {
+        const response = await axios.post(
           "https://sepolia.graph.zklink.io/subgraphs/name/staker",
-          '{"query":"{\\n  positions(where: {owner: \\"' +
+          '{"query":"{\\n positions(where: {owner: \\"' +
             account +
-            '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}"}'
-        )
-        .then((response) => {
-          const array = response.data.data.positions.map((item) => item.tokenId);
-          setDepNFTData(response.data.data.positions);
-          setDepNFTDataId(array);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+            '\\"}) {\\n tokenId\\n owner\\n staked\\n incentiveId\\n }\\n}"}'
+        );
+        const array = response.data.data.positions.map((item) => item.tokenId);
+        setDepNFTData(response.data.data.positions);
+        setDepNFTDataId(array);
+        refetchDepNFTlist();
+      } catch (error) {
+        console.error("Error:", error);
+      }
+
       depNFTlists =
         depNFTlist &&
         depNFTData.filter((it) => {
@@ -666,75 +670,118 @@ export default function StakeV2() {
             return i.toNumber() == Number(it.tokenId);
           });
         });
-    });
-  };
-  const Withdraw = (tokenId) => {
-    const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
-    callContract(chainId, contract, "withdrawToken", [tokenId, account, "0x"], {
-      sentMsg: t`Withdraw submitted.`,
-      failMsg: t`Withdraw failed.`,
-      successMsg: t`Withdraw completed!`,
-      setPendingTxns,
-    }).finally(() => {
-      axios
-        .post(
-          "https://sepolia.graph.zklink.io/subgraphs/name/staker",
-          '{"query":"{\\n  positions(where: {owner: \\"' +
-            account +
-            '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}"}'
-        )
-        .then((response) => {
-          const array = response.data.data.positions.map((item) => item.tokenId);
-          setDepNFTData(response.data.data.positions);
-          setDepNFTDataId(array);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-      depNFTlists =
-        depNFTlist &&
-        depNFTData.filter((it) => {
-          return depNFTlist.some((i) => {
-            return i.toNumber() == Number(it.tokenId);
-          });
-        });
-    });
+
+
+      refetchDepNFTlist();
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      refetchDepNFTlist();
+      setIsStaking(false);
+      setSelectedCard(null);
+    }
   };
 
-  const Unstake = (tokenId) => {
-    const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
-    callContract(chainId, contract, "unstakeToken", [IncentiveKeyAddress, tokenId], {
-      sentMsg: t`Unstake submitted.`,
-      failMsg: t`Unstake failed.`,
-      successMsg: t`Unstake completed!`,
-      setPendingTxns,
-    }).finally(() => {
-      axios
-        .post(
+  const withdraw = async (tokenId) => {
+    setIsWithdrawing(true);
+    setSelectedCard(tokenId);
+    try {
+      const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
+      await callContract(chainId, contract, "withdrawToken", [tokenId, account, "0x"], {
+        sentMsg: t`Withdraw submitted.`,
+        failMsg: t`Withdraw failed.`,
+        successMsg: t`Withdraw completed!`,
+        setPendingTxns,
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      refetchDepNFTlist();
+      refetchSpecificNftIds();
+      refetchTokenURIs();
+
+      try {
+        const response = await axios.post(
           "https://sepolia.graph.zklink.io/subgraphs/name/staker",
           '{"query":"{\\n  positions(where: {owner: \\"' +
             account +
             '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}"}'
-        )
-        .then((response) => {
-          const array = response.data.data.positions.map((item) => item.tokenId);
-          setDepNFTData(response.data.data.positions);
-          setDepNFTDataId(array);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-      depNFTlists =
-        depNFTlist &&
-        depNFTData.filter((it) => {
-          return depNFTlist.some((i) => {
-            return i.toNumber() == Number(it.tokenId);
+        );
+
+        const { positions } = response.data.data;
+        const tokenIds = positions.map((item) => item.tokenId);
+        setDepNFTData(positions);
+        setDepNFTDataId(tokenIds);
+
+        depNFTlists =
+          depNFTlist &&
+          positions.filter((position) => {
+            return depNFTlist.some((tokenId) => tokenId.toNumber() === Number(position.tokenId));
           });
-        });
-    });
+      } catch (error) {
+        console.error("Error fetching positions:", error);
+      }
+    } catch (error) {
+      console.error("Error withdrawing token:", error);
+    } finally {
+      setIsWithdrawing(false);
+      setSelectedCard(null);
+      refetchSpecificNftIds();
+      refetchTokenURIs();
+    }
   };
 
-  const [feeBasisPoints, setFeeBasisPoints] = useState("");
+  const unstake = async (tokenId) => {
+    setIsUnstakeLoading(true);
+    setSelectedCard(tokenId);
+
+    try {
+      const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
+      await callContract(chainId, contract, "unstakeToken", [IncentiveKeyAddress, tokenId], {
+        sentMsg: t`Unstake submitted.`,
+        failMsg: t`Unstake failed.`,
+        successMsg: t`Unstake completed!`,
+        setPendingTxns,
+      });
+
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      refetchDepNFTlist();
+
+      try {
+        const response = await axios.post(
+          "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+          '{"query":"{\\n positions(where: {owner: \\"' +
+            account +
+            '\\"}) {\\n tokenId\\n owner\\n staked\\n incentiveId\\n }\\n}"}'
+        );
+        const array = response.data.data.positions.map((item) => item.tokenId);
+        setDepNFTData(response.data.data.positions);
+        setDepNFTDataId(array);
+        refetchDepNFTlist();
+
+        depNFTlists =
+          depNFTlist &&
+          depNFTData.filter((it) => {
+            return depNFTlist.some((i) => {
+              return i.toNumber() == Number(it.tokenId);
+            });
+          });
+
+
+        refetchDepNFTlist();
+      } catch (error) {
+        console.error("Error fetching positions:", error);
+      }
+
+
+      refetchDepNFTlist();
+    } catch (error) {
+      console.error("Error unstaking token:", error);
+    } finally {
+      setIsUnstakeLoading(false);
+      setSelectedCard(null);
+    }
+  };
   const { data: totalTokenWeights } = useSWR(
     [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
@@ -803,6 +850,7 @@ export default function StakeV2() {
     (Number(totalUserStakedLiquidity) * Number(AGXVFTValue?.replace(/,/g, "") ?? "0")) /
     Number(stakeliquidity)
   ).toFixed(2);
+
   return (
     <div className="default-container page-layout">
       <ClaimAllModal
@@ -854,6 +902,7 @@ export default function StakeV2() {
         showNFTdata={NFTlist}
         URLlist={urlList}
         setNFTData={setNFTData}
+        refetchDepNFTlist={refetchDepNFTlist}
       />
       {/* <StakeModal
         isVisible={isStakeModalVisible}
@@ -1052,7 +1101,7 @@ export default function StakeV2() {
               <div className={cx("mobileBox", { ishide: selectTab !== "Staking", show: selectTab === "Staking" })}>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">APR</div>
-                  <div>1,333,213</div>
+                  <div>0</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Stake APR</div>
@@ -1140,7 +1189,7 @@ export default function StakeV2() {
               <div className="StakeV2-stakeTitle padLeft">Stake AGX-ETH LP</div>
               <Button
                 variant="secondary"
-                className={cx("StakeV2-stakeButton", { 'StakeV2-disabledButton': (!NFTlist || NFTlist.length === 0) })}
+                className={cx("StakeV2-stakeButton", { "StakeV2-disabledButton": !NFTlist || NFTlist.length === 0 })}
                 onClick={() => showDepositModals()}
                 disabled={!NFTlist || NFTlist.length === 0}
               >
@@ -1178,27 +1227,30 @@ export default function StakeV2() {
                           variant="secondary"
                           className={cx("stakeButton ishide", { show: !item.staked })}
                           onClick={() => stake(Number(item.tokenId))}
+                          loading={isStaking && Number(selectedCard) === Number(item.tokenId)}
                         >
                           <Trans>Stake</Trans>
                         </Button>
                         <Button
                           variant="secondary"
                           className={cx("stakeButton ishide", { show: !item.staked })}
-                          onClick={() => Withdraw(Number(item.tokenId))}
+                          onClick={() => withdraw(Number(item.tokenId))}
+                          loading={isWithdrawing && Number(selectedCard) === Number(item.tokenId)}
                         >
                           <Trans>Withdraw</Trans>
                         </Button>
                         <Button
                           variant="secondary"
                           className={cx("stakeButton ishide", { show: item.staked })}
-                          onClick={() => Unstake(Number(item.tokenId))}
+                          onClick={() => unstake(Number(item.tokenId))}
+                          loading={isUnstaking && Number(selectedCard) === Number(item.tokenId)}
                         >
                           <TooltipWithPortal
                             renderContent={() => {
                               return (
                                 <>
-                                  Accumulative Profit: {item?.reward ? item?.reward : 0} AGX <br />please unstake NFT to make
-                                  it claimable
+                                  Accumulative Profit: {item?.reward ? item?.reward : 0} AGX <br />
+                                  please unstake NFT to make it claimable
                                 </>
                               );
                             }}
