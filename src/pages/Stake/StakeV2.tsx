@@ -671,7 +671,7 @@ export default function StakeV2() {
           });
         });
 
-      // 触发重新获取数据
+
       refetchDepNFTlist();
     } catch (error) {
       console.error("Error:", error);
@@ -694,7 +694,6 @@ export default function StakeV2() {
         setPendingTxns,
       });
 
-      // 使用 Promise 和 setTimeout 延迟执行
       await new Promise((resolve) => setTimeout(resolve, 2000));
       refetchDepNFTlist();
       refetchSpecificNftIds();
@@ -768,13 +767,13 @@ export default function StakeV2() {
             });
           });
 
-        // 触发重新获取数据
+
         refetchDepNFTlist();
       } catch (error) {
         console.error("Error fetching positions:", error);
       }
 
-      // 觸發重新獲取數據
+
       refetchDepNFTlist();
     } catch (error) {
       console.error("Error unstaking token:", error);
