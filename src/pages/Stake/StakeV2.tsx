@@ -1043,6 +1043,7 @@ export default function StakeV2() {
             </div>
             <div className={cx("tab", { active: selectTab === "Staking" })} onClick={() => setselectTab("Staking")}>
               Staking
+              <span className="soons">soon</span>
             </div>
           </div>
           <div className={cx("StakeV2-box between", { ishide: selectTab === "Liquidity" })}>
@@ -1124,7 +1125,7 @@ export default function StakeV2() {
             })}
           >
             <div className="StakeV2-stakeTitle padLeft">Stake AGX</div>
-            <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => showStakeGmxModals()}>
+            <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => showStakeGmxModals()} disabled>
               <Trans>Stake AGX</Trans>
             </Button>
           </div>
@@ -1196,7 +1197,7 @@ export default function StakeV2() {
                             renderContent={() => {
                               return (
                                 <>
-                                  Accumulative Profit: {item?.reward ? item?.reward : 0} AGX please unstake NFT to make
+                                  Accumulative Profit: {item?.reward ? item?.reward : 0} AGX <br />please unstake NFT to make
                                   it claimable
                                 </>
                               );

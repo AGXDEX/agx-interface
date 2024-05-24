@@ -541,7 +541,7 @@ table.Exchange-list th,
 table.Exchange-list td {
   font-weight: normal;
   text-align: left;
-  padding: 1.05rem;
+  padding: 0.5rem;
 }
 
 table.Exchange-list th:first-child,
@@ -1045,6 +1045,10 @@ table.Exchange-list-small td {
 @media (max-width: 1500px) {
   .Exchange-swap-box {
     width: 38.75rem;
+  }
+
+  .ExchangeChart {
+    height: 64rem;
   }
 }
 

@@ -792,7 +792,7 @@ export default function GlpSwap(props) {
     callContract(chainId, contract, method, params, {
       sentMsg: t`Sell submitted!`,
       failMsg: t`Sell failed.`,
-      successMsg: t`${formatAmount(glpAmount, 18, 4, true)} ALP sold for ${formatAmount(
+      successMsg: `${formatAmount(glpAmount, 18, 4, true)} ALP sold for ${formatAmount(
         swapAmount,
         swapTokenInfo.decimals,
         4,
