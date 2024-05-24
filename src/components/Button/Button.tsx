@@ -1,8 +1,6 @@
 import { HTMLProps, MouseEvent as ReactMouseEvent, ReactNode, RefObject } from "react";
 import cx from "classnames";
-
 import ButtonLink from "./ButtonLink";
-
 import "./Button.scss";
 
 type ButtonVariant = "primary" | "primary-action" | "secondary";
@@ -16,12 +14,10 @@ type ButtonProps = HTMLProps<HTMLButtonElement> & {
   onClick?: (event: ReactMouseEvent) => void;
   to?: string;
   type?: "button" | "submit" | "reset";
-  imgInfo?: {
-    src: string;
-    alt?: string;
-  };
+  imgInfo?: { src: string; alt?: string };
   newTab?: boolean;
   buttonRef?: RefObject<HTMLButtonElement>;
+  loading?: boolean;
 };
 
 export default function Button({
@@ -36,21 +32,21 @@ export default function Button({
   type,
   newTab,
   buttonRef,
+  loading = false,
   ...rest
 }: ButtonProps) {
-  const classNames = cx("button", variant, className, textAlign);
+  const classNames = cx("button", variant, className, textAlign, { loading });
+
   const showExternalLinkArrow = variant === "secondary";
 
   function handleClick(event: ReactMouseEvent) {
-    if (disabled || !onClick) {
+    if (disabled || loading || !onClick) {
       return;
     }
-
     if (onClick) {
       onClick(event);
     }
   }
-
   if (to) {
     return (
       <ButtonLink
@@ -68,20 +64,35 @@ export default function Button({
       </ButtonLink>
     );
   }
-
-  if (onClick) {
-    return (
-      <button ref={buttonRef} className={classNames} onClick={handleClick} disabled={disabled} {...rest}>
-        {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
-        {children}
-      </button>
-    );
-  }
+  //  if (onClick) {
+  //    return (
+  //      <button ref={buttonRef} className={classNames} onClick={handleClick} disabled={disabled} {...rest}>
+  //        {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
+  //        {children}
+  //      </button>
+  //    );
+  //  }
 
   return (
-    <button ref={buttonRef} type={type} className={classNames} disabled={disabled} {...rest}>
+    <button
+      ref={buttonRef}
+      className={classNames}
+      onClick={handleClick}
+      disabled={disabled || loading}
+      type={type}
+      {...rest}
+    >
       {imgInfo && <img className="btn-image" src={imgInfo.src} alt={imgInfo.alt || ""} />}
-      {children}
+      {loading ? (
+        <div className="lds-ring">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      ) : (
+        children
+      )}
     </button>
   );
 }
