@@ -192,7 +192,7 @@ export default function StakeV2() {
         '{"query":"{\\n  nfts(where: {owner: \\"' + account + '\\"}) {\\n    tokenId\\n    owner\\n    }\\n}"}'
       )
       .then((response) => {
-        const array = response.data.data.nfts.map((item) => item.tokenId);
+        const array = response.data.data.nfts.map((item) => Number(item.tokenId));
         setNFTData(array);
       })
       .catch((error) => {
@@ -559,7 +559,7 @@ export default function StakeV2() {
   const { data: baselist, mutate: refetchTokenURIs } = useSWR(
     [`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, "getTokenURIs"],
     {
-      fetcher: contractFetcher(signer, DexReader, [NFTdata]),
+      fetcher: contractFetcher(signer, DexReader, [NFTlist?NFTlist.map((i)=> Number(i)):[]]),
     }
   );
   const { data: Pool2ewards } = useSWR([`StakeV2:rewards:${active}`, chainId, uniV3StakerAddress, "rewards"], {
