@@ -519,7 +519,7 @@ export default function StakeV2() {
     }
   );
   const { data: depBaselist } = useSWR([`StakeV2:getTokenURI:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
-    fetcher: contractFetcher(signer, DexReader, [depNFTDataId]),
+    fetcher: contractFetcher(signer, DexReader, [depNFTDataId?depNFTDataId.map((i)=> Number(i)):[]]),
   });
   const depUrlList =
     depNFTlists &&
