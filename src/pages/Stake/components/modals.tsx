@@ -199,6 +199,7 @@ function DepositModal(props) {
     farmAddress,
     rewardRouterAddress,
     stakeMethodName,
+    refetchDepNFTlist,
     setPendingTxns,
     showNFTdata,
     URLlist,
@@ -210,34 +211,46 @@ function DepositModal(props) {
   const uniV3StakerAddress = getContract(chainId, "v3StakerAddress");
   const ALPAddress = getContract(chainId, "ALP");
   const [isDeposit, setIsDeposit] = useState(false);
-  const goDeposit = () => {
+
+  const goDeposit = async () => {
     if (isDeposit || !tokenId) {
       return;
     }
+
     setIsDeposit(true);
-    const contract = new ethers.Contract(NFTPositionsManagerAddress, NFTPositionsManager.abi, signer);
-    callContract(chainId, contract, "safeTransferFrom", [account, uniV3StakerAddress, tokenId], {
-      sentMsg: t`Deposit submitted.`,
-      failMsg: t`Deposit failed.`,
-      successMsg: t`Deposit completed!`,
-      setPendingTxns,
-    }).finally(() => {
-      axios
-        .post(
+
+    try {
+      const contract = new ethers.Contract(NFTPositionsManagerAddress, NFTPositionsManager.abi, signer);
+      await callContract(chainId, contract, "safeTransferFrom", [account, uniV3StakerAddress, tokenId], {
+        sentMsg: t`Deposit submitted.`,
+        failMsg: t`Deposit failed.`,
+        successMsg: t`Deposit completed!`,
+        setPendingTxns,
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      refetchDepNFTlist();
+
+      try {
+        const response = await axios.post(
           "https://sepolia.graph.zklink.io/subgraphs/name/staker",
           '{"query":"{\\n  nfts(where: {owner: \\"' + account + '\\"}) {\\n    tokenId\\n    owner\\n    }\\n}"}'
         )
-        .then((response) => {
-          const array = response.data.data.nfts.map((item) => item.tokenId);
-          setNFTData(array);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+
+        const tokenIds = response.data.data.nfts.map((item) => item.tokenId);
+        setNFTData(tokenIds);
+        refetchDepNFTlist();
+      } catch (error) {
+        console.error("Error fetching NFTs:", error);
+      }
+    } catch (error) {
+      console.error("Error depositing token:", error);
+    } finally {
       setTokenId(null);
       setIsDeposit(false);
       setIsVisible(false);
-    });
+      refetchDepNFTlist();
+    }
   };
   return (
     <div className="StakeModal largeModal">
@@ -260,7 +273,7 @@ function DepositModal(props) {
             })}
         </div>
         <div className="Exchange-swap-button-container depositButton">
-          <Button variant="primary-action" onClick={goDeposit}>
+          <Button variant="primary-action" onClick={goDeposit} loading={isDeposit}>
             {/* {getPrimaryText()} */}
             Deposit
           </Button>

@@ -246,7 +246,7 @@ export default function StakeV2() {
       .catch((error) => {
         console.error("Error:", error);
       });
-  }, [account]);
+  }, [account, depositModalVisible, isWithdrawing]);
   const walletTokens = [gmxAddress, esGmxAddress, glpAddress, stakedGmxTrackerAddress];
   const depositTokens = [
     gmxAddress,
@@ -550,15 +550,18 @@ export default function StakeV2() {
         return index !== -1 ? { ...nft, reward: tokenRewards[index] } : nft;
       })
     : [];
-  const { data: NFTlist } = useSWR(
+  const { data: NFTlist, mutate: refetchSpecificNftIds } = useSWR(
     [`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress, "getSpecificNftIds"],
     {
       fetcher: contractFetcher(signer, DexReader, [NFTdata, AGXAddress, wethAddress]),
     }
   );
-  const { data: baselist } = useSWR([`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
-    fetcher: contractFetcher(signer, DexReader, [NFTdata]),
-  });
+  const { data: baselist, mutate: refetchTokenURIs } = useSWR(
+    [`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, "getTokenURIs"],
+    {
+      fetcher: contractFetcher(signer, DexReader, [NFTdata]),
+    }
+  );
   const { data: Pool2ewards } = useSWR([`StakeV2:rewards:${active}`, chainId, uniV3StakerAddress, "rewards"], {
     fetcher: contractFetcher(signer, UniV3Staker, [AGXAddress, account]),
   });
@@ -694,6 +697,8 @@ export default function StakeV2() {
       // 使用 Promise 和 setTimeout 延迟执行
       await new Promise((resolve) => setTimeout(resolve, 2000));
       refetchDepNFTlist();
+      refetchSpecificNftIds();
+      refetchTokenURIs();
 
       try {
         const response = await axios.post(
@@ -721,6 +726,8 @@ export default function StakeV2() {
     } finally {
       setIsWithdrawing(false);
       setSelectedCard(null);
+      refetchSpecificNftIds();
+      refetchTokenURIs();
     }
   };
 
@@ -896,6 +903,7 @@ export default function StakeV2() {
         showNFTdata={NFTlist}
         URLlist={urlList}
         setNFTData={setNFTData}
+        refetchDepNFTlist={refetchDepNFTlist}
       />
       {/* <StakeModal
         isVisible={isStakeModalVisible}
