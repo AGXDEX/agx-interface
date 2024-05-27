@@ -19,6 +19,8 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { chainList } from "config/networks";
 import { helperToast } from "lib/helperToast";
+import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
+import { switchChain } from '@wagmi/core'
 
 type Props = {
   openSettings: () => void;
@@ -85,7 +87,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
       </div>
       {/* <div>Nova Points:</div> */}
         <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
-        <div className={cx("", { "homepage-header": isHomeSite() })}>
+        <div className={cx("App-header-trade-link")}>
           <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
           </HeaderLink>
@@ -135,6 +137,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
             method: 'wallet_addEthereumChain',
             params: [chain],
         });
+        // await switchChain(rainbowKitConfig, { chainId: chain.chainId })
         const nowChainId = await window.ethereum.request({
             method:"eth_chainId",
         });
