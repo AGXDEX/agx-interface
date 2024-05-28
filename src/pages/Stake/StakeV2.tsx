@@ -428,7 +428,7 @@ export default function StakeV2() {
     totalRewardAndLpTokens = totalRewardAndLpTokens.add(userTotalGmInfo.balance);
   }
 
-  const bonusGmxInFeeGmx = processedData ? processedData.bonusGmxInFeeGmx : undefined;
+  // const bonusGmxInFeeGmx = processedData ? processedData.bonusGmxInFeeGmx : undefined;
 
   const showDepositModals = () => {
     if (NFTlist.length > 0) {
@@ -519,7 +519,7 @@ export default function StakeV2() {
     }
   );
   const { data: depBaselist } = useSWR([`StakeV2:getTokenURI:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
-    fetcher: contractFetcher(signer, DexReader, [depNFTDataId?depNFTDataId.map((i)=> Number(i)):[]]),
+    fetcher: contractFetcher(signer, DexReader, [depNFTDataId ? depNFTDataId.map((i) => Number(i)) : []]),
   });
   const depUrlList =
     depNFTlists &&
@@ -556,11 +556,10 @@ export default function StakeV2() {
       fetcher: contractFetcher(signer, DexReader, [NFTdata, AGXAddress, wethAddress]),
     }
   );
-  console.log(NFTlist, "NFTlist");
   const { data: baselist, mutate: refetchTokenURIs } = useSWR(
     [`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, "getTokenURIs"],
     {
-      fetcher: contractFetcher(signer, DexReader, [NFTlist?NFTlist.map((i)=> Number(i)):[]]),
+      fetcher: contractFetcher(signer, DexReader, [NFTlist ? NFTlist.map((i) => Number(i)) : []]),
     }
   );
   const { data: Pool2ewards } = useSWR([`StakeV2:rewards:${active}`, chainId, uniV3StakerAddress, "rewards"], {
@@ -594,49 +593,49 @@ export default function StakeV2() {
       fetcher: contractFetcher(undefined, Vault) as any,
     }
   );
-  Pooladdress &&
-    axios
-      .post(
-        "https://graph.zklink.io/subgraphs/name/novaswap",
-        '{"query":"{\\n  pool(id: \\"' +
-          Pooladdress.toLowerCase() +
-          '\\") {\\n    token0 {\\nid\\n}\\n    token1 {\\nid\\n}\\n    liquidity\\n    totalValueLockedToken0\\n    totalValueLockedToken1\\n    }\\n}"}'
-      )
-      .then((response) => {
-        let num = 0;
-        // console.log(agxPrice)
-        // console.log(Number(ethPrice)/(10**30))
-        if (response.data.data.pool.token0.id.toLowerCase() === AGXAddress) {
-          // (totalValueLockedToken0 * token0 price) + (totalValueLockedToken1 * token1 price)
-          num =
-            Number(response.data.data.pool.totalValueLockedToken0) * agxPrice +
-            (Number(response.data.data.pool.totalValueLockedToken1) * Number(ethPrice)) / 10 ** 30;
-          let AGXVFTValue =
-            (Number(stakeliquidity) / Number(response.data.data.pool.liquidity)) *
-            Number(response.data.data.pool.totalValueLockedToken0);
-          setAGXVFTValue(Number(AGXVFTValue.toFixed(2)).toLocaleString());
-        } else {
-          num =
-            Number(response.data.data.pool.totalValueLockedToken1) * agxPrice +
-            (Number(response.data.data.pool.totalValueLockedToken0) * Number(ethPrice)) / 10 ** 30;
-          let AGXVFTValue =
-            (Number(stakeliquidity) / Number(response.data.data.pool.liquidity)) *
-            Number(response.data.data.pool.totalValueLockedToken1);
-          setAGXVFTValue(Number(AGXVFTValue.toFixed(2)).toLocaleString());
-        }
-        setpoolValue(num);
-        setstakeAllValue((num * Number(stakeliquidity)) / Number(response.data.data.pool.liquidity));
-        //   (agxprice * x)  / stake   TODO
-        let stakeAPRValue = Number(stakeliquidity) === 0 ? "0" : ((agxPrice * 20000000) / stakeAllValue).toFixed(2);
-        setstakeAPRValue(Number((Number(stakeAPRValue) * 100).toFixed(2)).toLocaleString());
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+
+  useEffect(() => {
+    if (Pooladdress) {
+      axios
+        .post(
+          "https://graph.zklink.io/subgraphs/name/novaswap",
+          '{"query":"{\\n pool(id: \\"' +
+            Pooladdress.toLowerCase() +
+            '\\") {\\n token0 {\\nid\\n}\\n token1 {\\nid\\n}\\n liquidity\\n totalValueLockedToken0\\n totalValueLockedToken1\\n }\\n}"}'
+        )
+        .then((response) => {
+          let num = 0;
+          const { token0, token1, liquidity, totalValueLockedToken0, totalValueLockedToken1 } = response.data.data.pool;
+
+          if (token0.id.toLowerCase() === AGXAddress) {
+            num =
+              Number(totalValueLockedToken0) * agxPrice +
+              (Number(totalValueLockedToken1) * Number(ethPrice)) / 10 ** 30;
+            const AGXVFTValue = (Number(stakeliquidity) / Number(liquidity)) * Number(totalValueLockedToken0);
+            setAGXVFTValue(Number(AGXVFTValue.toFixed(2)).toLocaleString());
+          } else {
+            num =
+              Number(totalValueLockedToken1) * agxPrice +
+              (Number(totalValueLockedToken0) * Number(ethPrice)) / 10 ** 30;
+            const AGXVFTValue = (Number(stakeliquidity) / Number(liquidity)) * Number(totalValueLockedToken1);
+            setAGXVFTValue(Number(AGXVFTValue.toFixed(2)).toLocaleString());
+          }
+
+          setpoolValue(num);
+          setstakeAllValue((num * Number(stakeliquidity)) / Number(liquidity));
+
+          const stakeAPRValue = Number(stakeliquidity) === 0 ? "0" : ((agxPrice * 20000000) / stakeAllValue).toFixed(2);
+          setstakeAPRValue(Number((Number(stakeAPRValue) * 100).toFixed(2)).toLocaleString());
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+  }, [Pooladdress, agxPrice, ethPrice, stakeliquidity, stakeAllValue]);
 
   const stake = async (tokenId) => {
-     setIsStaking(true);
-     setSelectedCard(tokenId);
+    setIsStaking(true);
+    setSelectedCard(tokenId);
     try {
       const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
       await callContract(chainId, contract, "stakeToken", [IncentiveKeyAddress, tokenId], {
@@ -646,7 +645,7 @@ export default function StakeV2() {
         setPendingTxns,
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
       refetchDepNFTlist();
 
       try {
@@ -672,7 +671,6 @@ export default function StakeV2() {
           });
         });
 
-
       refetchDepNFTlist();
     } catch (error) {
       console.error("Error:", error);
@@ -695,7 +693,7 @@ export default function StakeV2() {
         setPendingTxns,
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
       refetchDepNFTlist();
       refetchSpecificNftIds();
       refetchTokenURIs();
@@ -744,8 +742,7 @@ export default function StakeV2() {
         setPendingTxns,
       });
 
-
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
       refetchDepNFTlist();
 
       try {
@@ -768,12 +765,10 @@ export default function StakeV2() {
             });
           });
 
-
         refetchDepNFTlist();
       } catch (error) {
         console.error("Error fetching positions:", error);
       }
-
 
       refetchDepNFTlist();
     } catch (error) {
