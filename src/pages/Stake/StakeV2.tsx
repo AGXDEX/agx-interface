@@ -188,7 +188,7 @@ export default function StakeV2() {
   useEffect(() => {
     axios
       .post(
-        "https://graph.zklink.io/subgraphs/name/staker",
+        "https://graph.zklink.io/subgraphs/name/agx-staker",
         '{"query":"{\\n  nfts(where: {owner: \\"' + account + '\\"}) {\\n    tokenId\\n    owner\\n    }\\n}"}'
       )
       .then((response) => {
@@ -200,7 +200,7 @@ export default function StakeV2() {
       });
     axios
       .post(
-        "https://graph.zklink.io/subgraphs/name/staker",
+        "https://graph.zklink.io/subgraphs/name/agx-staker",
         '{"query":"{\\n  positions(where: {owner: \\"' +
           account +
           '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n  liquidity\\n  incentiveId\\n    }\\n}"}'
@@ -215,7 +215,7 @@ export default function StakeV2() {
       });
     axios
       .post(
-        "https://graph.zklink.io/subgraphs/name/staker",
+        "https://graph.zklink.io/subgraphs/name/agx-staker",
         '{"query":"{\\n  incentives {\\n    liquidity\\n    }\\n}"}'
       )
       .then((response) => {
@@ -226,7 +226,7 @@ export default function StakeV2() {
       });
     axios
       .post(
-        "https://graph.zklink.io/subgraphs/name/staker",
+        "https://graph.zklink.io/subgraphs/name/agx-staker",
         '{"query":"{\\n  incentives {\\n    id\\n    liquidity\\n    claimedToken\\n    }\\n}"}'
       )
       .then((response) => {
@@ -237,7 +237,7 @@ export default function StakeV2() {
       });
     axios
       .post(
-        "https://graph.zklink.io/subgraphs/name/staker",
+        "https://graph.zklink.io/subgraphs/name/agx-staker",
         '{"query":"{\\n  totalRewards(where: {owner: \\"' + account + '\\"})  {\\n    owner\\n    reward\\n    }\\n}"}'
       )
       .then((response) => {
@@ -556,6 +556,7 @@ export default function StakeV2() {
       fetcher: contractFetcher(signer, DexReader, [NFTdata, AGXAddress, wethAddress]),
     }
   );
+  console.log(NFTlist, "NFTlist");
   const { data: baselist, mutate: refetchTokenURIs } = useSWR(
     [`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, "getTokenURIs"],
     {
@@ -650,7 +651,7 @@ export default function StakeV2() {
 
       try {
         const response = await axios.post(
-          "https://graph.zklink.io/subgraphs/name/staker",
+          "https://graph.zklink.io/subgraphs/name/agx-staker",
           '{"query":"{\\n positions(where: {owner: \\"' +
             account +
             '\\"}) {\\n tokenId\\n owner\\n staked\\n incentiveId\\n }\\n}"}'
@@ -701,7 +702,7 @@ export default function StakeV2() {
 
       try {
         const response = await axios.post(
-          "https://graph.zklink.io/subgraphs/name/staker",
+          "https://graph.zklink.io/subgraphs/name/agx-staker",
           '{"query":"{\\n  positions(where: {owner: \\"' +
             account +
             '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}"}'
@@ -749,7 +750,7 @@ export default function StakeV2() {
 
       try {
         const response = await axios.post(
-          "https://graph.zklink.io/subgraphs/name/staker",
+          "https://graph.zklink.io/subgraphs/name/agx-staker",
           '{"query":"{\\n positions(where: {owner: \\"' +
             account +
             '\\"}) {\\n tokenId\\n owner\\n staked\\n incentiveId\\n }\\n}"}'
@@ -1205,7 +1206,7 @@ export default function StakeV2() {
             <a
               target="_blank"
               rel="noreferrer"
-              href={`https://novaswap.exchange/?chain=nova_sepolia#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`}
+              href={`https://novaswap.exchange/?chain=nova_mainnet#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`}
               className=""
             >
               Add now &gt;&gt;

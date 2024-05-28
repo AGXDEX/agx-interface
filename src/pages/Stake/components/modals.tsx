@@ -233,7 +233,7 @@ function DepositModal(props) {
 
       try {
         const response = await axios.post(
-          "https://graph.zklink.io/subgraphs/name/staker",
+          "https://graph.zklink.io/subgraphs/name/agx-staker",
           '{"query":"{\\n  nfts(where: {owner: \\"' + account + '\\"}) {\\n    tokenId\\n    owner\\n    }\\n}"}'
         )
 
