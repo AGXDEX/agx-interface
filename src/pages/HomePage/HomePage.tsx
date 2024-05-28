@@ -23,7 +23,7 @@ function HomePage() {
       <div className="topBox">
         <div className="header">
           <Link className="" to="/">
-            <img src={logoImg} alt="GMX Logo" />
+            <img src={logoImg} alt="AGX Logo" />
           </Link>
           <div className="nav">
             <a href="https://agx-1.gitbook.io/agx/" target="block">whitepaper</a>

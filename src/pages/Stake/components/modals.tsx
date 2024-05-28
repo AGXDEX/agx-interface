@@ -670,7 +670,7 @@ function VesterDepositModal(props) {
           >
             <div className="Stake-modal-icons">
               <img className="mr-xs icon" height="22" src={icons.esgmx} alt="esGMX" />
-              esGMX
+              esAGX
             </div>
           </BuyInputSele>
 
@@ -679,7 +679,7 @@ function VesterDepositModal(props) {
               <div className="Exchange-info-label">
                 <Trans>Wallet</Trans>
               </div>
-              <div className="align-right">{formatAmount(balance, 18, 2, true)} esGMX</div>
+              <div className="align-right">{formatAmount(balance, 18, 2, true)} esAGX</div>
             </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">
@@ -935,10 +935,10 @@ function CompoundModal(props) {
 
   const getPrimaryText = () => {
     if (isApproving) {
-      return t`Approving GMX...`;
+      return t`Approving AGX...`;
     }
     if (needApproval) {
-      return t`Approve GMX`;
+      return t`Approve AGX`;
     }
     if (isCompounding) {
       return t`Compounding...`;
@@ -1034,7 +1034,7 @@ function CompoundModal(props) {
           <AlertInfo type="info">
             <Trans>
               You have reached the maximum Boost Percentage. Stake an additional{" "}
-              {formatAmount(recommendStakeGmx, 18, 2, true)} GMX or esGMX to be able to stake your unstaked{" "}
+              {formatAmount(recommendStakeGmx, 18, 2, true)} AGX or esAGX to be able to stake your unstaked{" "}
               {formatAmount(accumulatedBnGMXAmount, 18, 4, true)} Multiplier Points.
             </Trans>
           </AlertInfo>
@@ -1051,22 +1051,22 @@ function CompoundModal(props) {
           </div>
           <div>
             <Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx} disabled={shouldStakeGmx}>
-              <Trans>Claim GMX Rewards</Trans>
+              <Trans>Claim AGX Rewards</Trans>
             </Checkbox>
           </div>
           <div>
             <Checkbox isChecked={shouldStakeGmx} setIsChecked={toggleShouldStakeGmx}>
-              <Trans>Stake GMX Rewards</Trans>
+              <Trans>Stake AGX Rewards</Trans>
             </Checkbox>
           </div>
           <div>
             <Checkbox isChecked={shouldClaimEsGmx} setIsChecked={setShouldClaimEsGmx} disabled={shouldStakeEsGmx}>
-              <Trans>Claim esGMX Rewards</Trans>
+              <Trans>Claim esAGX Rewards</Trans>
             </Checkbox>
           </div>
           <div>
             <Checkbox isChecked={shouldStakeEsGmx} setIsChecked={toggleShouldStakeEsGmx}>
-              <Trans>Stake esGMX Rewards</Trans>
+              <Trans>Stake esAGX Rewards</Trans>
             </Checkbox>
           </div>
           <div>
@@ -1177,12 +1177,12 @@ function ClaimModal(props) {
         <div className="CompoundModal-menu">
           <div>
             <Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx}>
-              <Trans>Claim GMX Rewards</Trans>
+              <Trans>Claim AGX Rewards</Trans>
             </Checkbox>
           </div>
           <div>
             <Checkbox isChecked={shouldClaimEsGmx} setIsChecked={setShouldClaimEsGmx}>
-              <Trans>Claim esGMX Rewards</Trans>
+              <Trans>Claim esAGX Rewards</Trans>
             </Checkbox>
           </div>
           <div>
@@ -1252,10 +1252,10 @@ function AffiliateClaimModal(props) {
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Affiliate Vault Rewards`}>
         <Trans>
           <div>
-            This will claim {formatAmount(totalVesterRewards, 18, 4, true)} GMX.
+            This will claim {formatAmount(totalVesterRewards, 18, 4, true)} AGX.
             <br />
             <br />
-            After claiming, you can stake these GMX tokens by using the "Stake" button in the GMX section of this Earn
+            After claiming, you can stake these AGX tokens by using the "Stake" button in the AGX section of this Earn
             page.
             <br />
             <br />

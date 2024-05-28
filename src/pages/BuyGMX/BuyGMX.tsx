@@ -181,7 +181,7 @@ export default function BuyGMX() {
   );
 }
 
-const UNISWAP_IMG_INFO = { src: uniswapArbitrumIcon, alt: "Uniswap" };
+const UNISWAP_IMG_INFO = { src: uniswapArbitrumIcon, alt: "Novaswap" };
 const TRADERJOE_IMG_INFO = { src: traderjoeIcon, alt: "Traderjoe" };
 const BOND_PROTOCOL_IMG_INFO = { src: bondProtocolIcon, alt: "Bond Protocol" };
 
@@ -193,7 +193,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
         {isArbitrum ? (
           <div className="exchange-info-group">
             <div className="BuyGMXGLP-description">
-              <Trans>Buy GMX from Uniswap (make sure to select Arbitrum):</Trans>
+              <Trans>Buy AGX from Novaswap (make sure to select Arbitrum):</Trans>
             </div>
             <div className="buttons-group col-1">
               <Button
@@ -203,7 +203,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
                 to={externalLinks.buyGmx.uniswap}
                 newTab
               >
-                Uniswap
+                Novaswap
               </Button>
             </div>
           </div>

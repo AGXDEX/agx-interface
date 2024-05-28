@@ -119,7 +119,7 @@ export function NetworkFeeRow({ executionFee }: Props) {
           renderContent={() => (
             <div>
               <Trans>
-                Maximum execution fee paid to the network. This fee is a blockchain cost not specific to GMX, and it
+                Maximum execution fee paid to the network. This fee is a blockchain cost not specific to AGX, and it
                 does not impact your collateral.
               </Trans>
             </div>

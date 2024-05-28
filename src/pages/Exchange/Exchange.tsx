@@ -1083,7 +1083,7 @@ export const Exchange = forwardRef(
             </div>
           </div>
           <div className="Exchange-lists small">{getListSection()}</div>
-          <UsefulLinks className="Useful-links-exchange" />
+          {/* <UsefulLinks className="Useful-links-exchange" /> */}
         </div>
       </div>
     );

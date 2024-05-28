@@ -450,11 +450,11 @@ export default function StakeV2() {
   if (totalRewardAndLpTokens && totalRewardAndLpTokens.gt(0)) {
     let gmxAmountStr;
     if (processedData?.gmxInStakedGmx?.gt(0)) {
-      gmxAmountStr = formatAmount(processedData.gmxInStakedGmx, 18, 2, true) + " GMX";
+      gmxAmountStr = formatAmount(processedData.gmxInStakedGmx, 18, 2, true) + " AGX";
     }
     let esGmxAmountStr;
     if (processedData?.esGmxInStakedGmx?.gt(0)) {
-      esGmxAmountStr = formatAmount(processedData.esGmxInStakedGmx, 18, 2, true) + " esGMX";
+      esGmxAmountStr = formatAmount(processedData.esGmxInStakedGmx, 18, 2, true) + " esAGX";
     }
     let mpAmountStr;
     if (processedData?.bnGmxInFeeGmx?.gt(0)) {
@@ -659,6 +659,23 @@ export default function StakeV2() {
         setDepNFTData(response.data.data.positions);
         setDepNFTDataId(array);
         refetchDepNFTlist();
+
+        axios
+        .post(
+          "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+          '{"query":"{\\n  positions(where: {owner: \\"' +
+            account +
+            '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n  liquidity\\n  incentiveId\\n    }\\n}"}'
+        )
+        .then((response) => {
+          const array = response.data.data.positions.map((item) => item.tokenId);
+          setDepNFTData(response.data.data.positions);
+          setDepNFTDataId(array);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+        
       } catch (error) {
         console.error("Error:", error);
       }
@@ -1225,7 +1242,7 @@ export default function StakeV2() {
                       <div className="depButton">
                         <Button
                           variant="secondary"
-                          className={cx("stakeButton ishide", { show: !item.staked })}
+                          className={cx("stakeButton ishide", { show: !item.staked }, { showMobile: !item.staked })}
                           onClick={() => stake(Number(item.tokenId))}
                           loading={isStaking && Number(selectedCard) === Number(item.tokenId)}
                         >
@@ -1233,7 +1250,7 @@ export default function StakeV2() {
                         </Button>
                         <Button
                           variant="secondary"
-                          className={cx("stakeButton ishide", { show: !item.staked })}
+                          className={cx("stakeButton ishide", { show: !item.staked }, { showMobile: !item.staked })}
                           onClick={() => withdraw(Number(item.tokenId))}
                           loading={isWithdrawing && Number(selectedCard) === Number(item.tokenId)}
                         >
@@ -1241,7 +1258,7 @@ export default function StakeV2() {
                         </Button>
                         <Button
                           variant="secondary"
-                          className={cx("stakeButton ishide", { show: item.staked })}
+                          className={cx("stakeButton ishide", { show: item.staked }, { showMobile: item.staked })}
                           onClick={() => unstake(Number(item.tokenId))}
                           loading={isUnstaking && Number(selectedCard) === Number(item.tokenId)}
                         >
@@ -1299,7 +1316,7 @@ export default function StakeV2() {
               manage = calculateManage(managedUsd, glpSupplyUsd);
               return (
                 <div className="table-td" key={token.symbol}>
-                  <div className="leftAlign">{token.symbol}/USDT</div>
+                  <div className="leftAlign">{token.symbol}/ALP</div>
                   <div className="rightAlign">{formatAmount(manage, 0, 0, true)}</div>
                   <div className="rightAlign">{`${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`}</div>
                   <div className="rightAlign">

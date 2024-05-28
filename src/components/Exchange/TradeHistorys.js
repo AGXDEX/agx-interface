@@ -109,10 +109,12 @@ function getLiquidationData(liquidationsDataMap, key, timestamp) {
 
 export default function TradeHistory(props) {
   const [startDate, endDate, setDateRange] = useDateRange();
+  startDate && localStorage.setItem('trade-startDate', startDate);
+  endDate && localStorage.setItem('trade-endDate', endDate);
   const { account, infoTokens, getTokenInfo, chainId, nativeTokenAddress, shouldShowPaginationButtons } = props;
 
   // const { trades, setSize, size } = useTrades(chainId, account);
-  const { trades, pageIndex: size, setPageIndex: setSize } = useHistoryTradeData(chainId, account, TRADES_PAGE_SIZE,startDate && startDate.getTime()/1000, endDate && endDate.getTime()/1000);
+  const { trades, pageIndex: size, setPageIndex: setSize } = useHistoryTradeData(chainId, account, TRADES_PAGE_SIZE,localStorage.getItem('trade-startDate') && new Date(localStorage.getItem('trade-startDate')).getTime()/1000, localStorage.getItem('trade-endDate') && new Date(localStorage.getItem('trade-endDate')).getTime()/1000);
   const { currentPage, setCurrentPage, getCurrentData, pageCount } = usePagination(
     account,
     trades,
@@ -176,7 +178,7 @@ export default function TradeHistory(props) {
       ...trade,
     }));
   }, [currentPageData, getMsg]);
-
+console.log(tradesWithMessages)
   return (
     <div className="TradeHistory">
       <div className="TradeHistorySynthetics-controls">
@@ -215,6 +217,9 @@ export default function TradeHistory(props) {
                 <th>
                   <Trans>SIZE</Trans>
                 </th>
+                <th>
+                  <Trans>Time</Trans>
+                </th>
                 <th className="TradeHistorySynthetics-price-header">
                   <Trans>PRICE</Trans>
                 </th>
@@ -231,7 +236,13 @@ export default function TradeHistory(props) {
                   const tokenIn = getTokenInfo(lowerCaseInfoTokens, trade.tokenIn.toLowerCase(), true, nativeTokenAddress);
                   const tokenOut = getTokenInfo(lowerCaseInfoTokens, trade.tokenOut.toLowerCase(), true, nativeTokenAddress);
                   const price = (Number(trade.amountIn)/(10**tokenIn.decimals))/(Number(trade.amountOut)/(10**tokenOut.decimals))
-                  
+                  const time = new Date(Number(trade.blockTimestamp)*1000)
+                  const year = time.getFullYear();
+                  const month = time.getMonth()+1 <10? '0'+ (time.getMonth()+1): (time.getMonth()+1);
+                  const day = time.getDate() <10? '0'+ time.getDate(): time.getDate();
+                  const hours = time.getHours() <10? '0'+ time.getHours(): time.getHours();
+                  const minutes = time.getMinutes() <10? '0'+ time.getMinutes(): time.getMinutes();
+                  const seconds = time.getSeconds() <10? '0'+ time.getSeconds(): time.getSeconds();
                   return (
                     <tr key={index}>
                       <th>
@@ -245,6 +256,9 @@ export default function TradeHistory(props) {
                       <th>
                         {formatAmount(trade.amountIn, tokenIn.decimals, 4, true)} {tokenIn.symbol} to{" "}
                         {formatAmount(trade.amountOut, tokenOut.decimals, 4, true)} {tokenOut.symbol}
+                      </th> 
+                      <th>
+                      {`${year}-${month}-${day} ${hours}:${minutes}:${seconds}`}
                       </th>
                       <th className="TradeHistorySynthetics-price-header">
                         {price.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}

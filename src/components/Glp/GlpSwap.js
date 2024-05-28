@@ -466,7 +466,7 @@ export default function GlpSwap(props) {
           );
           const nextValue = formatAmountFree(nextAmount, GLP_DECIMALS, GLP_DECIMALS);
           setGlpValue(nextValue);
-          setFeeBasisPoints(feeBps);
+          setFeeBasisPoints(Number(nextAmount)?feeBps: 0);
         } else {
           const { amount: nextAmount, feeBasisPoints: feeBps } = getSellGlpFromAmount(
             swapAmount,
@@ -478,7 +478,7 @@ export default function GlpSwap(props) {
           );
           const nextValue = formatAmountFree(nextAmount, GLP_DECIMALS, GLP_DECIMALS);
           setGlpValue(nextValue);
-          setFeeBasisPoints(feeBps);
+          setFeeBasisPoints(Number(nextAmount)?feeBps: 0);
         }
 
         return;
@@ -501,7 +501,7 @@ export default function GlpSwap(props) {
           );
           const nextValue = formatAmountFree(nextAmount, swapToken.decimals, swapToken.decimals);
           setSwapValue(nextValue);
-          setFeeBasisPoints(feeBps);
+          setFeeBasisPoints(Number(nextAmount)?feeBps: 0);
         } else {
           const { amount: nextAmount, feeBasisPoints: feeBps } = getSellGlpToAmount(
             glpAmount,
@@ -515,7 +515,7 @@ export default function GlpSwap(props) {
 
           const nextValue = formatAmountFree(nextAmount, swapToken.decimals, swapToken.decimals);
           setSwapValue(nextValue);
-          setFeeBasisPoints(feeBps);
+          setFeeBasisPoints(Number(nextAmount)?feeBps: 0);
         }
       }
     };
@@ -854,7 +854,6 @@ export default function GlpSwap(props) {
     setSwapTokenAddress(token.address);
     helperToast.success(t`${token.symbol} selected in order form`);
   };
-
   let feePercentageText = formatAmount(feeBasisPoints, 2, 2, true, "-");
   if (feeBasisPoints !== undefined && feeBasisPoints.toString().length > 0) {
     feePercentageText += "%";

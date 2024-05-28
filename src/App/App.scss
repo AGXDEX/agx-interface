@@ -918,6 +918,13 @@ button.App-button-option:disabled {
 .App-header-user {
   display: flex;
   align-items: center;
+  position: relative;
+}
+.App-header-user .moreButton{
+  display: flex;
+}
+.App-header-user .moreButton .novaPoints{
+  padding-top: 7px;
 }
 .App-header-user .addNova{
   background: #262831;
@@ -1319,6 +1326,10 @@ button.App-button {
     padding-bottom: 0;
   }
 
+  .App-header-user .moreButton{
+    position: absolute;
+    bottom: -50px;
+  }
   .App-header-container-right {
     display: flex;
     align-items: center;
@@ -1415,7 +1426,7 @@ button.App-button {
   }
 
   .page-layout {
-    padding-top: 2.5rem;
+    padding-top: 4rem;
   }
 }
 
