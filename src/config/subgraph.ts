@@ -9,7 +9,7 @@ const SUBGRAPH_URLS = {
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
     leaderboard: "https://squid.subsquid.io/gmx-synthetics-arbitrum/graphql",
-    endpoint: "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+    endpoint: "https://graph.zklink.io/subgraphs/name/staker",
   },
 
   [ARBITRUM_GOERLI]: {

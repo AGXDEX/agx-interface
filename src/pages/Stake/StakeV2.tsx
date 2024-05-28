@@ -188,7 +188,7 @@ export default function StakeV2() {
   useEffect(() => {
     axios
       .post(
-        "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+        "https://graph.zklink.io/subgraphs/name/staker",
         '{"query":"{\\n  nfts(where: {owner: \\"' + account + '\\"}) {\\n    tokenId\\n    owner\\n    }\\n}"}'
       )
       .then((response) => {
@@ -200,7 +200,7 @@ export default function StakeV2() {
       });
     axios
       .post(
-        "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+        "https://graph.zklink.io/subgraphs/name/staker",
         '{"query":"{\\n  positions(where: {owner: \\"' +
           account +
           '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n  liquidity\\n  incentiveId\\n    }\\n}"}'
@@ -215,7 +215,7 @@ export default function StakeV2() {
       });
     axios
       .post(
-        "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+        "https://graph.zklink.io/subgraphs/name/staker",
         '{"query":"{\\n  incentives {\\n    liquidity\\n    }\\n}"}'
       )
       .then((response) => {
@@ -226,7 +226,7 @@ export default function StakeV2() {
       });
     axios
       .post(
-        "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+        "https://graph.zklink.io/subgraphs/name/staker",
         '{"query":"{\\n  incentives {\\n    id\\n    liquidity\\n    claimedToken\\n    }\\n}"}'
       )
       .then((response) => {
@@ -237,7 +237,7 @@ export default function StakeV2() {
       });
     axios
       .post(
-        "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+        "https://graph.zklink.io/subgraphs/name/staker",
         '{"query":"{\\n  totalRewards(where: {owner: \\"' + account + '\\"})  {\\n    owner\\n    reward\\n    }\\n}"}'
       )
       .then((response) => {
@@ -596,7 +596,7 @@ export default function StakeV2() {
   Pooladdress &&
     axios
       .post(
-        "https://sepolia.graph.zklink.io/subgraphs/name/novasap-subgraph",
+        "https://graph.zklink.io/subgraphs/name/novaswap",
         '{"query":"{\\n  pool(id: \\"' +
           Pooladdress.toLowerCase() +
           '\\") {\\n    token0 {\\nid\\n}\\n    token1 {\\nid\\n}\\n    liquidity\\n    totalValueLockedToken0\\n    totalValueLockedToken1\\n    }\\n}"}'
@@ -650,7 +650,7 @@ export default function StakeV2() {
 
       try {
         const response = await axios.post(
-          "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+          "https://graph.zklink.io/subgraphs/name/staker",
           '{"query":"{\\n positions(where: {owner: \\"' +
             account +
             '\\"}) {\\n tokenId\\n owner\\n staked\\n incentiveId\\n }\\n}"}'
@@ -701,7 +701,7 @@ export default function StakeV2() {
 
       try {
         const response = await axios.post(
-          "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+          "https://graph.zklink.io/subgraphs/name/staker",
           '{"query":"{\\n  positions(where: {owner: \\"' +
             account +
             '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}"}'
@@ -749,7 +749,7 @@ export default function StakeV2() {
 
       try {
         const response = await axios.post(
-          "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+          "https://graph.zklink.io/subgraphs/name/staker",
           '{"query":"{\\n positions(where: {owner: \\"' +
             account +
             '\\"}) {\\n tokenId\\n owner\\n staked\\n incentiveId\\n }\\n}"}'
