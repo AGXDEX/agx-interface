@@ -296,6 +296,7 @@ export default function GlpSwap(props) {
       fetcher: contractFetcher(signer, GLP),
     }
   );
+  console.log(glpBalance, "glpBalance");
 
   const { data: rewardRate } = useSWR(
     [`StakeV2:rewardRate:${active}`, chainId, yieldTrackerAddress, "rewardRate"],
@@ -766,7 +767,7 @@ export default function GlpSwap(props) {
       value,
       sentMsg: t`Buy submitted.`,
       failMsg: t`Buy failed.`,
-      successMsg: 
+      successMsg:
       `${formatAmount(glpAmount, 18, 4, true)} ALP bought with ${formatAmount(
         swapAmount,
         swapTokenInfo.decimals,
