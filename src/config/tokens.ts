@@ -40,7 +40,7 @@ const ChainToken: Token[] = [
   },
   {
     name: "Wrapped Ethereum",
-    symbol: "WETH",
+    symbol: "wETH",
     decimals: 18,
     //TODO: WETH9 address config
     address: "0x6e42d10eB474a17b14f3cfeAC2590bfa604313C7",
@@ -281,7 +281,7 @@ const novaChain = [
     },
     {
       name: "Wrapped Ethereum",
-      symbol: "WETH",
+      symbol: "wETH",
       decimals: 18,
       address: "0x6e42d10eB474a17b14f3cfeAC2590bfa604313C7",
       isWrapped: true,
@@ -580,7 +580,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Wrapped Ethereum",
-      symbol: "WETH",
+      symbol: "wETH",
       decimals: 18,
       address: "0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
       isWrapped: true,
@@ -690,7 +690,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/polkadot",
     },
     {
-      name: "Uniswap",
+      name: "Novaswap",
       symbol: "UNI",
       decimals: 18,
       priceDecimals: 3,
@@ -892,7 +892,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       coingeckoUrl: "https://www.coingecko.com/en/coins/polkadot",
     },
     {
-      name: "Uniswap",
+      name: "Novaswap",
       symbol: "UNI",
       decimals: 18,
       priceDecimals: 3,

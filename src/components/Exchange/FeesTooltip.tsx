@@ -112,25 +112,12 @@ function FeesTooltip({
   const totalFees = getTotalFees([executionFees?.feeUsd, swapFee, positionFee, depositFee, fundingFee]);
 
   return (
-    <Tooltip
-      position="top-end"
-      className="PositionSeller-fees-tooltip"
-      handle={<div>{totalFees?.gt(0) ? `$${formatAmount(totalFees, USD_DECIMALS, 2, true)}` : "-"}</div>}
-      renderContent={() => (
-        <div>
-          {titleText && <p>{titleText}</p>}
+    <div className="PositionSeller-fees-tooltip">
           {feesRows.map(({ label, value }) => (
             <StatsTooltipRow key={label} label={label} showDollar={false} value={value} />
           ))}
           <br />
-          <div className="PositionSeller-fee-item">
-            <Trans>
-              <ExternalLink href="https://docs.gmx.io/docs/trading/v1#fees">Read more</ExternalLink> about fees.
-            </Trans>
-          </div>
         </div>
-      )}
-    />
   );
 }
 

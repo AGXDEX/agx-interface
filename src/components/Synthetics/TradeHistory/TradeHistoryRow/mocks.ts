@@ -2771,7 +2771,7 @@ export const executeOrderDecreaseShort = prepare({
     data: "",
     isDisabled: false,
     longToken: {
-      name: "Uniswap",
+      name: "Novaswap",
       symbol: "UNI",
       decimals: 18,
       priceDecimals: 3,
@@ -2823,7 +2823,7 @@ export const executeOrderDecreaseShort = prepare({
       },
     },
     indexToken: {
-      name: "Uniswap",
+      name: "Novaswap",
       symbol: "UNI",
       decimals: 18,
       priceDecimals: 3,
@@ -3095,7 +3095,7 @@ export const executeOrderDecreaseShort = prepare({
     virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
   },
   indexToken: {
-    name: "Uniswap",
+    name: "Novaswap",
     symbol: "UNI",
     decimals: 18,
     priceDecimals: 3,

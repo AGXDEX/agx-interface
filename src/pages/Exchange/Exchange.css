@@ -542,10 +542,11 @@ table.Exchange-list td {
   font-weight: normal;
   text-align: left;
   padding: 0.5rem;
+  width: 20%;
 }
 
-table.Exchange-list th:first-child,
-table.Exchange-list td:first-child {
+table.Exchange-list tr th:first-child,
+table.Exchange-list tr td:first-child {
   padding-left: 1.4rem;
 }
 
@@ -1042,7 +1043,7 @@ table.Exchange-list-small td {
   padding: 1.5rem;
 }
 
-@media (max-width: 1500px) {
+@media (max-width: 1450px) {
   .Exchange-swap-box {
     width: 38.75rem;
   }
@@ -1052,6 +1053,11 @@ table.Exchange-list-small td {
   }
 }
 
+@media (max-width: 1500px)and (min-width: 1450px) {
+  .ExchangeChart {
+    height: 66rem;
+  }
+}
 @media (max-width: 1300px) {
   .Exchange-list.large {
     display: none;
@@ -1253,6 +1259,9 @@ table.Exchange-list-small td {
   }
   .Confirmation-box .Modal-content {
     min-width: 36rem;
+  }
+  .Exchange-left{
+    padding-top: 40px;
   }
 }
 

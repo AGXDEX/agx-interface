@@ -204,7 +204,7 @@ export function getFeeBasisPoints(
 
 export function getBuyGlpToAmount(fromAmount, swapTokenAddress, infoTokens, glpPrice, usdgSupply, totalTokenWeights) {
   const defaultValue = { amount: bigNumberify(0), feeBasisPoints: 0 };
-  if (!fromAmount || !swapTokenAddress || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
+  if ((!Number(fromAmount) && Number(fromAmount) !== 0)|| !swapTokenAddress || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
     return defaultValue;
   }
 

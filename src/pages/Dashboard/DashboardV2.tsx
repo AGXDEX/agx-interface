@@ -590,7 +590,7 @@ export default function DashboardV2() {
                       handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                       position="bottom-end"
                       renderContent={() => (
-                        <span>{t`Assets Under Management: GMX staked (All chains) + GLP pool (${chainName}) +  GM Pools (${chainName}).`}</span>
+                        <span>{t`Assets Under Management: AGX staked (All chains) + GLP pool (${chainName}) +  GM Pools (${chainName}).`}</span>
                       )}
                     />
                   </div>
@@ -814,24 +814,24 @@ export default function DashboardV2() {
               tradePageVersion === 1 ? (
                 <>
                   <Trans>
-                    GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees,
+                    AGX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees,
                     respectively.
                   </Trans>
                   <br />
                   <Trans>
-                    GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated
+                    GLP is the liquidity provider token for AGX V1 markets. Accrues 70% of the V1 markets generated
                     fees.
                   </Trans>
                 </>
               ) : (
                 <>
                   <Trans>
-                    GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees,
+                    AGX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees,
                     respectively.
                   </Trans>
                   <br />
                   <Trans>
-                    GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees.
+                    GM is the liquidity provider token for AGX V2 markets. Accrues 63% of the V2 markets generated fees.
                   </Trans>
                 </>
               )
@@ -844,14 +844,14 @@ export default function DashboardV2() {
                   <div className="App-card-title">
                     <div className="App-card-title-mark">
                       <div className="App-card-title-mark-icon">
-                        <img src={currentIcons.gmx} width="40" alt="GMX Token Icon" />
+                        <img src={currentIcons.gmx} width="40" alt="AGX Token Icon" />
                       </div>
                       <div className="App-card-title-mark-info">
-                        <div className="App-card-title-mark-title">GMX</div>
-                        <div className="App-card-title-mark-subtitle">GMX</div>
+                        <div className="App-card-title-mark-title">AGX</div>
+                        <div className="App-card-title-mark-subtitle">AGX</div>
                       </div>
                       <div>
-                        <AssetDropdown assetSymbol="GMX" />
+                        <AssetDropdown assetSymbol="AGX" />
                       </div>
                     </div>
                   </div>
@@ -890,7 +890,7 @@ export default function DashboardV2() {
                       <div className="label">
                         <Trans>Supply</Trans>
                       </div>
-                      <div>{formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true)} GMX</div>
+                      <div>{formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true)} AGX</div>
                     </div>
                     <div className="App-card-row">
                       <div className="label">

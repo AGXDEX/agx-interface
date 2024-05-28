@@ -31,17 +31,17 @@ export default function SyntheticsActions() {
       {checkSummedAccount && (
         <div className="Actions-section">
           <PageTitle
-            title={t`GMX V2 Account`}
+            title={t`AGX V2 Account`}
             subtitle={
               <>
                 <Trans>
-                  GMX V2 {networkName} information for account: {checkSummedAccount}
+                  AGX V2 {networkName} information for account: {checkSummedAccount}
                 </Trans>
                 {getIsV1Supported(chainId) && (
                   <Trans>
                     <div>
                       <ExternalLink newTab={false} href={`/#/actions/v1/${checkSummedAccount}`}>
-                        Check on GMX V1 {networkName}
+                        Check on AGX V1 {networkName}
                       </ExternalLink>{" "}
                       or{" "}
                       <span className="underline cursor-pointer" onClick={toggleNetwork}>
@@ -87,16 +87,16 @@ export default function SyntheticsActions() {
           ) : (
             <PageTitle
               isTop
-              title={t`GMX V2 Actions`}
+              title={t`AGX V2 Actions`}
               subtitle={
                 <>
-                  <Trans>GMX V2 {networkName} actions for all accounts.</Trans>
+                  <Trans>AGX V2 {networkName} actions for all accounts.</Trans>
 
                   {getIsV1Supported(chainId) && (
                     <Trans>
                       <div>
                         <ExternalLink newTab={false} href="/#/actions/v1">
-                          Check on GMX V1 {networkName}
+                          Check on AGX V1 {networkName}
                         </ExternalLink>{" "}
                         or{" "}
                         <span className="underline cursor-pointer" onClick={toggleNetwork}>
