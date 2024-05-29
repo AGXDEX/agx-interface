@@ -797,7 +797,9 @@ export default function StakeV2() {
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Total Reward</div>
-                  <div>{(Number(totalReward) / 10 ** 18).toFixed(2).toLocaleString()}</div>
+                  <div>
+                    {(isNaN(Number(totalReward)) ? 0 : Number(totalReward) / 10 ** 18).toFixed(2).toLocaleString()}
+                  </div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Claimable Rewards</div>
