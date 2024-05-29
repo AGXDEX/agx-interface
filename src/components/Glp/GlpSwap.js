@@ -1209,7 +1209,13 @@ const alpApr = calculateAlpAPR(glpSupplyUsd, rewardRate, agxPrice);
                   Bridge to Nova
                 </Button>
               </div>
-              <Button type="submit" variant="primary-action" className="w-full" disabled={!isPrimaryEnabled()}>
+              <Button
+                type="submit"
+                variant="primary-action"
+                className="w-full"
+                disabled={!isPrimaryEnabled()}
+                loading={isSubmitting || isApproving}
+              >
                 {getPrimaryText()}
               </Button>
             </div>
