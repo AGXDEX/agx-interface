@@ -842,10 +842,12 @@ export default function StakeV2() {
     .filter((entry) => entry && typeof entry.liquidity !== "undefined")
     .reduce((sum, { liquidity }) => sum + BigInt(liquidity), BigInt(0));
 
-  const userStakedAGXAmount = (
+  const stakedAGXAmount = (
     (Number(totalUserStakedLiquidity) * Number(AGXVFTValue?.replace(/,/g, "") ?? "0")) /
     Number(stakeliquidity)
   ).toFixed(2);
+
+  const userStakedAGXAmount = stakedAGXAmount === "NaN" ? "0.00" : stakedAGXAmount;
 
   return (
     <div className="default-container page-layout">
@@ -1216,7 +1218,7 @@ export default function StakeV2() {
                   return (
                     <div key={item.tokenId}>
                       <div className={cx("")}>
-                        <img src={depUrlList[index]?.image || ""} />
+                        <img src={depUrlList[index]?.image || ""} alt="" />
                       </div>
                       <div className="depButton">
                         <Button

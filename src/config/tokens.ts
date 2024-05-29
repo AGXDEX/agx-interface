@@ -331,6 +331,7 @@ const novaChain = [
     },
   ]
 
+  //TODO: Different chain token config
 const tokens: any[] = chainKeyFromLocalStorage === 'nova'? novaChain: ChainToken.filter((token) => {
   return token.symbol === "ETH" || token.l1Addresses?.some((address) => address.key === chainKeyFromLocalStorage);
 }).map((item) => {
