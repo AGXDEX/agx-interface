@@ -85,7 +85,6 @@ export default function StakeV2() {
   const [NFTdata, setNFTData] = useState<any[]>([]);
   const [depNFTData, setDepNFTData] = useState<any[]>([]);
   const [depNFTDataId, setDepNFTDataId] = useState<any[]>([]);
-  const [showNFTdata, setshowNFTData] = useState<any[]>([]);
   const [stakeliquidity, setstakeliquidity] = useState("");
   const [NFTClaimed, setNFTClaimed] = useState("");
   const [totalReward, setTotalReward] = useState("");
@@ -226,17 +225,6 @@ export default function StakeV2() {
     setStakeMethodName("stakeGmx");
   };
 
-  const [isClaiming, setIsClaiming] = useState(false);
-  const isPrimaryEnabled = () => {
-    return !isClaiming;
-  };
-
-  const getPrimaryText = () => {
-    if (isClaiming) {
-      return t`Claiming...`;
-    }
-    return t`Claim`;
-  };
   const onClickPrimary = () => {
     setClaimModalVisible(true);
   };
@@ -353,16 +341,16 @@ export default function StakeV2() {
           let num = 0;
           const { token0, token1, liquidity, totalValueLockedToken0, totalValueLockedToken1 } = response.data.data.pool;
 
-          if (token0.id.toLowerCase() === AGXAddress) {
+          if (token0.id.toLowerCase() === AGXAddress?.toLowerCase()) {
             num =
               Number(totalValueLockedToken0) * agxPrice +
-              (Number(totalValueLockedToken1) * Number(ethPrice)) / 10 ** 30;
+              Number(totalValueLockedToken1) * (Number(ethPrice) / 10 ** 30);
             const AGXVFTValue = (Number(stakeliquidity) / Number(liquidity)) * Number(totalValueLockedToken0);
             setAGXVFTValue(Number(AGXVFTValue.toFixed(2)).toLocaleString());
           } else {
             num =
               Number(totalValueLockedToken1) * agxPrice +
-              (Number(totalValueLockedToken0) * Number(ethPrice)) / 10 ** 30;
+              Number(totalValueLockedToken0) * (Number(ethPrice) / 10 ** 30);
             const AGXVFTValue = (Number(stakeliquidity) / Number(liquidity)) * Number(totalValueLockedToken1);
             setAGXVFTValue(Number(AGXVFTValue.toFixed(2)).toLocaleString());
           }
@@ -611,6 +599,8 @@ export default function StakeV2() {
   ).toFixed(2);
 
   const userStakedAGXAmount = stakedAGXAmount === "NaN" ? "0.00" : stakedAGXAmount;
+  const formattedPoolValue = isNaN(poolValue) ? 0 : poolValue;
+
 
   return (
     <div className="default-container page-layout">
@@ -726,7 +716,7 @@ export default function StakeV2() {
               <div className="StakeV2-claimToken">AGX</div>
             </div>
             <Button variant="secondary" className="StakeV2-button" onClick={onClickPrimary} disabled={!rewards}>
-              {getPrimaryText()}
+              Claim
             </Button>
           </div>
         </div>
@@ -768,7 +758,7 @@ export default function StakeV2() {
               <div className={cx("mobileBox", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">APR</div>
-                  <div>{stakeAPRValue}%</div>
+                  <div>{stakeAPRValue === "NaN" ? "0.00" : stakeAPRValue}%</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Stake AGX in LP NFT:</div>
@@ -776,7 +766,7 @@ export default function StakeV2() {
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">TVL</div>
-                  <div>${Number(poolValue.toFixed(2)).toLocaleString()}</div>
+                  <div>${Number(formattedPoolValue.toFixed(2)).toLocaleString()}</div>
                 </div>
               </div>
             </div>
@@ -943,9 +933,8 @@ export default function StakeV2() {
               let managedUsd;
               if (tokenInfo && tokenInfo.managedUsd) {
                 managedUsd = tokenInfo.managedUsd;
-              }
-              else {
-                managedUsd= ethers.BigNumber.from(0);
+              } else {
+                managedUsd = ethers.BigNumber.from(0);
               }
               let manage = 1;
               manage = calculateManage(managedUsd, glpSupplyUsd);
