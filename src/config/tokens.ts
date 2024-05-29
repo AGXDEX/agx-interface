@@ -239,6 +239,98 @@ const ChainToken: Token[] = [
     ],
   },
 ];
+
+const novaSepoliaChain = [
+  // {
+  //   name: "Dai",
+  //   symbol: "Dai",
+  //   decimals: 18,
+  //   address: '0x5f2eC2cC20C1B556E397e70193b28bE7b459C54f', // ，ethers.constants.AddressZero
+  //   isNative: true,
+  //   isShortable: true,
+  //   imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+  //   coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+  //   isV1Available: true,
+  // },
+  {
+    name: "Ethereum",
+    symbol: "ETH",
+    decimals: 18,
+    address: ethers.constants.AddressZero, // ，ethers.constants.AddressZero
+    isNative: true,
+    isShortable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+    isV1Available: true,
+  },
+  {
+    name: "Wrapped Ethereum",
+    symbol: "wETH",
+    decimals: 18,
+    address: "0x6e42d10eB474a17b14f3cfeAC2590bfa604313C7",
+    isWrapped: true,
+    baseSymbol: "ETH",
+    imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+    isV1Available: true,
+  },
+  {
+    name: "Bitcoin (WBTC)",
+    symbol: "WBTC",
+    assetSymbol: "WBTC",
+    decimals: 8,
+    address: "0xbEacb61e11940e38EAdCf41860b9ea31E2a90deC",
+    isShortable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
+    explorerUrl: "https://explorer.zklink.io/address/0xbEacb61e11940e38EAdCf41860b9ea31E2a90deC",
+    isV1Available: true,
+  },
+  {
+    name: "pufETH (Ethereum)",
+    symbol: "pufETH",
+    decimals: 18,
+    address: "0x1569046dC6D4bd5d06cA5fa2fb83D2885bd87b20",
+    isShortable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/35176/large/pufETH-200-200-resolution.png?1707753174",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/pufeth",
+    explorerUrl: "https://sepolia.explorer.zklink.io/address/0x1569046dC6D4bd5d06cA5fa2fb83D2885bd87b20",
+    isV1Available: true,
+  },
+  {
+    name: "ezETH (Arbitrum)",
+    symbol: "ezETH",
+    decimals: 18,
+    address: "0xD7C43Ef14bb17C8bBD6575992aa35d9EBBfc512D",
+    isShortable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/34753/large/Ezeth_logo_circle.png?1713496404",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/renzo-restaked-eth",
+    explorerUrl: "https://sepolia.explorer.zklink.io/address/0xD7C43Ef14bb17C8bBD6575992aa35d9EBBfc512D",
+    isV1Available: true,
+  },
+  {
+    name: "Tether",
+    symbol: "USDT",
+    decimals: 6,
+    address: "0x773646397e21C0B4a323f7FdB98B6c45F5Df5A65",
+    isStable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
+    explorerUrl: "https://sepolia.explorer.zklink.io/address/0x773646397e21C0B4a323f7FdB98B6c45F5Df5A65",
+    isV1Available: true,
+  },
+  {
+    name: "USD Coin",
+    symbol: "USDC",
+    decimals: 6,
+    address: "0x0A8714d8fc4bE1b8f2B2AB29b8e4fEe9B271a57D",
+    isStable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+    explorerUrl: "https://sepolia.explorer.zklink.io/address/0x0A8714d8fc4bE1b8f2B2AB29b8e4fEe9B271a57D",
+    isV1Available: true,
+  },
+];
 const novaChain = [
     // {
     //   name: "Dai",
@@ -331,12 +423,17 @@ const novaChain = [
     },
   ]
 
-  //TODO: Different chain token config
-const tokens: any[] = chainKeyFromLocalStorage === 'nova'? novaChain: ChainToken.filter((token) => {
-  return token.symbol === "ETH" || token.l1Addresses?.some((address) => address.key === chainKeyFromLocalStorage);
-}).map((item) => {
-  return novaChain.find((i) => i.symbol === item.symbol)
-});
+//TODO: Different chain token config
+const novaChainTokens = process.env.REACT_APP_ENV === "development"? novaSepoliaChain: novaChain;
+
+const tokens: any[] =
+  chainKeyFromLocalStorage === "nova"
+    ? novaChainTokens
+    : ChainToken.filter((token) => {
+        return token.symbol === "ETH" || token.l1Addresses?.some((address) => address.key === chainKeyFromLocalStorage);
+      }).map((item) => {
+        return novaChainTokens.find((i) => i.symbol === item.symbol);
+      });
 export const TOKENS: { [chainId: number]: Token[] } = {
   [AVALANCHE]: [
     {

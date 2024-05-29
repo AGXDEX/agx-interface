@@ -77,6 +77,7 @@ import {
 } from "./components/modals";
 
 import noNFT from "img/noNFT.svg";
+import { STAKER_SUBGRAPH_URL, SWAP_SUBGRAPH_URL } from "config/subgraph";
 
 export default function StakeV2() {
   const { active, signer, account } = useWallet();
@@ -188,7 +189,7 @@ export default function StakeV2() {
   useEffect(() => {
     axios
       .post(
-        "https://graph.zklink.io/subgraphs/name/agx-staker",
+        STAKER_SUBGRAPH_URL,
         '{"query":"{\\n  nfts(where: {owner: \\"' + account + '\\"}) {\\n    tokenId\\n    owner\\n    }\\n}"}'
       )
       .then((response) => {
@@ -200,7 +201,7 @@ export default function StakeV2() {
       });
     axios
       .post(
-        "https://graph.zklink.io/subgraphs/name/agx-staker",
+        STAKER_SUBGRAPH_URL,
         '{"query":"{\\n  positions(where: {owner: \\"' +
           account +
           '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n  liquidity\\n  incentiveId\\n    }\\n}"}'
@@ -215,7 +216,7 @@ export default function StakeV2() {
       });
     axios
       .post(
-        "https://graph.zklink.io/subgraphs/name/agx-staker",
+        STAKER_SUBGRAPH_URL,
         '{"query":"{\\n  incentives {\\n    liquidity\\n    }\\n}"}'
       )
       .then((response) => {
@@ -226,7 +227,7 @@ export default function StakeV2() {
       });
     axios
       .post(
-        "https://graph.zklink.io/subgraphs/name/agx-staker",
+        STAKER_SUBGRAPH_URL,
         '{"query":"{\\n  incentives {\\n    id\\n    liquidity\\n    claimedToken\\n    }\\n}"}'
       )
       .then((response) => {
@@ -237,7 +238,7 @@ export default function StakeV2() {
       });
     axios
       .post(
-        "https://graph.zklink.io/subgraphs/name/agx-staker",
+        STAKER_SUBGRAPH_URL,
         '{"query":"{\\n  totalRewards(where: {owner: \\"' + account + '\\"})  {\\n    owner\\n    reward\\n    }\\n}"}'
       )
       .then((response) => {
@@ -598,7 +599,7 @@ export default function StakeV2() {
     if (Pooladdress) {
       axios
         .post(
-          "https://graph.zklink.io/subgraphs/name/novaswap",
+          SWAP_SUBGRAPH_URL,
           '{"query":"{\\n pool(id: \\"' +
             Pooladdress.toLowerCase() +
             '\\") {\\n token0 {\\nid\\n}\\n token1 {\\nid\\n}\\n liquidity\\n totalValueLockedToken0\\n totalValueLockedToken1\\n }\\n}"}'
@@ -650,7 +651,7 @@ export default function StakeV2() {
 
       try {
         const response = await axios.post(
-          "https://graph.zklink.io/subgraphs/name/agx-staker",
+          STAKER_SUBGRAPH_URL,
           '{"query":"{\\n positions(where: {owner: \\"' +
             account +
             '\\"}) {\\n tokenId\\n owner\\n staked\\n incentiveId\\n }\\n}"}'
@@ -700,7 +701,7 @@ export default function StakeV2() {
 
       try {
         const response = await axios.post(
-          "https://graph.zklink.io/subgraphs/name/agx-staker",
+          STAKER_SUBGRAPH_URL,
           '{"query":"{\\n  positions(where: {owner: \\"' +
             account +
             '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}"}'
@@ -747,7 +748,7 @@ export default function StakeV2() {
 
       try {
         const response = await axios.post(
-          "https://graph.zklink.io/subgraphs/name/agx-staker",
+          STAKER_SUBGRAPH_URL,
           '{"query":"{\\n positions(where: {owner: \\"' +
             account +
             '\\"}) {\\n tokenId\\n owner\\n staked\\n incentiveId\\n }\\n}"}'

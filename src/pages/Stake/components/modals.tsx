@@ -47,6 +47,7 @@ import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import axios from "axios";
 
 import { approveTokens } from "domain/tokens";
+import { STAKER_SUBGRAPH_URL } from "config/subgraph";
 
 
 const { AddressZero } = ethers.constants;
@@ -233,9 +234,9 @@ function DepositModal(props) {
 
       try {
         const response = await axios.post(
-          "https://graph.zklink.io/subgraphs/name/agx-staker",
+          STAKER_SUBGRAPH_URL,
           '{"query":"{\\n  nfts(where: {owner: \\"' + account + '\\"}) {\\n    tokenId\\n    owner\\n    }\\n}"}'
-        )
+        );
 
         const tokenIds = response.data.data.nfts.map((item) => item.tokenId);
         setNFTData(tokenIds);
