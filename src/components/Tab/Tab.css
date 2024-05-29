@@ -20,6 +20,26 @@
   padding-left: 1.5rem;
   padding-right: 1.5rem;
   cursor: pointer;
+  position: relative;
+}
+.Tab-option .Tab-soon{
+  position: absolute;
+  top: 0;
+  right: 10px;
+  font-size: 10px;
+  display: none;
+}
+.Tab.block .Tab-option .showTab{
+  display: inline-block;
+}
+.Tab.block .Tab-option.disabled{
+  cursor: not-allowed;
+  background: #1E1F24;
+ 
+}
+.Tab.block .Tab-option.disabled:hover{
+  background: #1E1F24;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .Tab.block .Tab-option:hover {

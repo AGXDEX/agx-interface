@@ -26,7 +26,7 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
       {small && (
         <div className="App-header-links-header">
           <Link className="App-header-link-main" to="/">
-            <img src={logoImg} alt="GMX Logo" />
+            <img src={logoImg} alt="AGX Logo" />
           </Link>
           <div
             className="App-header-menu-icon-block mobile-cross-menu"
@@ -36,9 +36,14 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
           </div>
         </div>
       )}
-      <div className="App-header-link-container">
+      {/* <div className="App-header-link-container">
         <HeaderLink to="/dashboard" showRedirectModal={showRedirectModal}>
           <Trans>Dashboard</Trans>
+        </HeaderLink>
+      </div> */}
+      <div className="App-header-link-container">
+        <HeaderLink to="/buy" showRedirectModal={showRedirectModal}>
+          <Trans>Buy</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
@@ -47,30 +52,30 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink to="/buy" showRedirectModal={showRedirectModal}>
-          <Trans>Buy</Trans>
-        </HeaderLink>
+        <a href="https://portal.zklink.io/" target="_blank" rel="noreferrer">
+          <Trans>Bridge</Trans>
+        </a>
       </div>
       <div className="App-header-link-container">
         <HeaderLink to="/referrals" showRedirectModal={showRedirectModal}>
           <Trans>Referrals</Trans>
         </HeaderLink>
       </div>
-      {/* <div className="App-header-link-container">
-        <HeaderLink to="/leaderboard" showRedirectModal={showRedirectModal} isActive={isLeaderboardActive}>
+      <div className="App-header-link-container">
+        <HeaderLink to="/leaderboard" showRedirectModal={showRedirectModal}>
           <Trans>Leaderboard</Trans>
         </HeaderLink>
       </div>
-      <div className="App-header-link-container">
+      {/* <div className="App-header-link-container">
         <HeaderLink to="/ecosystem" showRedirectModal={showRedirectModal}>
           <Trans>Ecosystem</Trans>
         </HeaderLink>
-      </div>
+      </div> */}
       <div className="App-header-link-container">
-        <ExternalLink href="https://docs.gmx.io/">
+        <ExternalLink href="https://agx-1.gitbook.io/agx/">
           <Trans>Docs</Trans>
         </ExternalLink>
-      </div> */}
+      </div>
       {/* {small && !isHomeSite() && ( */}
       {/* <div className="App-header-link-container"> */}
       {/* eslint-disable-next-line */}

@@ -641,15 +641,18 @@ button.App-connect-wallet:hover {
   margin-left: -1.5rem;
   display: flex;
   margin-right: 1.2rem;
+  padding-top: 0.7rem;
 }
 
-.App-header-link-main img {
+.App-header-link-main .big {
   display: inline-block;
-  height: 2.15rem;
-  vertical-align: middle;
+}
+.App-header-link-main .big img{
+  height: 3rem;
+  vertical-align: inherit;
 }
 
-.App-header-link-main img.small {
+.App-header-link-main .small {
   display: none;
 }
 
@@ -682,8 +685,14 @@ button.App-connect-wallet:hover {
   font-size: var(--font-base);
   line-height: 1.8rem;
   font-weight: normal;
+  position: relative;
 }
-
+.App-header-container-left a .urlSoon{
+  position: absolute;
+  font-size: 10px;
+  top: 5px;
+  right: 0;
+}
 .App-header-container-left .a.active,
 .App-header-container-left a.active {
   color: white;
@@ -909,8 +918,37 @@ button.App-button-option:disabled {
 .App-header-user {
   display: flex;
   align-items: center;
+  position: relative;
 }
-
+.App-header-user .moreButton{
+  display: flex;
+}
+.App-header-user .moreButton .novaPoints{
+  padding-top: 7px;
+}
+.App-header-user .addNova{
+  background: #262831;
+  border-radius: 4px;
+  font-size: var(--font-sm);
+  line-height: 2rem;
+  font-weight: normal;
+  letter-spacing: 0px;
+  color: #ffffff !important;
+  padding-left: 1.6rem;
+  padding-right: 1.6rem;
+  /* padding: 9px 16px !important; */
+  text-decoration: none;
+  box-sizing: border-box;
+  position: relative;
+  min-height: 3.6rem;
+  display: inline-flex !important;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  appearance: none;
+  margin-right: 2.4rem;
+}
 .App-header-user-settings {
   display: inline-flex;
   cursor: pointer;
@@ -1288,6 +1326,10 @@ button.App-button {
     padding-bottom: 0;
   }
 
+  .App-header-user .moreButton{
+    position: absolute;
+    bottom: -50px;
+  }
   .App-header-container-right {
     display: flex;
     align-items: center;
@@ -1384,16 +1426,16 @@ button.App-button {
   }
 
   .page-layout {
-    padding-top: 2.5rem;
+    padding-top: 4rem;
   }
 }
 
 @media (max-width: 600px) {
-  .App-header-link-main img.big {
+  .App-header-link-main .big {
     display: none;
   }
 
-  .App-header-link-main img.small {
+  .App-header-link-main .small {
     display: inline-block;
   }
 }

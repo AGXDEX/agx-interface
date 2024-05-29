@@ -102,7 +102,7 @@
   }
 
   .StakeV2-content {
-    min-height: 100vh;
+    /* min-height: 100vh; */
   }
 
   .StakeV2-total-rewards-card {
@@ -112,18 +112,50 @@
     position: relative;
     padding: 0;
   }
+  .StakeV2-totalBox{
+    height: auto!important;
+  }
+  .StakeV2-button{
+    top: auto!important;
+    bottom: 5px;
+  }
+  .StakeV2-content .StakeV2-box{
+    display: block;
+    padding-bottom: 50px;
+  }
+  .mobileBox{
+    display: block!important;
+  }
+  .StakeV2-content .ishide{
+    display: none!important;
+  }
+  .StakeV2-content .showMobile{
+    display: block!important;
+  }
+  .between .halfBox{
+    width: 100%!important;
+  }
+  .StakeV2-content .tolong .isShow .StakeV2-stakeButton{
+    top: auto;
+    right: auto;
+    left: 0;
+    bottom: 0;
+  }
+  .liquidity{
+    overflow: auto;
+  }
 }
 .StakeV2-content{
   margin-bottom: 15px;
 }
 .StakeV2-title{
-  font-family: Satoshi;
-  font-size: 16px;
+  font-family: "Relative", sans-serif;
+  font-size: 20px;
   font-weight: 700;
   line-height: 21.6px;
   text-align: left;
   padding-bottom: 10px;
-  border-bottom: 3px solid #1d202e;
+  /* border-bottom: 3px solid #1d202e; */
   margin-bottom: 10px;
 }
 .StakeV2-box{
@@ -131,22 +163,48 @@
   position: relative;
   gap: 15px;
 }
+.between{
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.between .halfBox{
+  width: 45%;
+}
+.between .StakeV2-fomBox{
+  width: 100%;
+  height: 30px;
+  padding: 0 12px;
+  display: flex;
+  justify-content: space-between;
+}
+.StakeV2-content .marBottom{
+  margin-bottom: 20px;
+}
+.StakeV2-content .ishide,.NFTCard .ishide{
+  display: none;
+}
+.StakeV2-content .isShow{
+  display: flex;
+}
+.StakeV2-content .show,.NFTCard .show{
+  display: block;
+}
 .StakeV2-totalBox{
   width: 233px;
   height: 68px;
   border-radius: 8px 0px 0px 0px;
   padding: 12px;
-  background: #1d202e;
-  font-family: Satoshi;
-  font-size: 16px;
+  /* background: #1d202e; */
+  font-family: "Relative", sans-serif;
+  font-size: 20px;
   font-weight: 900;
   text-align: left;
 }
 .StakeV2-tit{
-  font-family: Satoshi;
-  font-size: 12px;
+  font-family: "Relative", sans-serif;
+  font-size: 16px;
   font-weight: 500;
-  color: #5A5B5D;
+  color: #a5a6a8;
   margin-bottom: 10px;
 }
 .StakeV2-button{
@@ -159,7 +217,7 @@
 }
 .StakeV2-claimBox{
   display: flex;
-  font-family: Satoshi;
+  font-family: "Relative", sans-serif;
   font-size: 16px;
   font-weight: 500;
   text-align: left;
@@ -178,16 +236,20 @@
   height: 68px;
   border-radius: 8px 0px 0px 0px;
   padding: 12px;
-  font-family: Satoshi;
+  font-family: "Relative", sans-serif;
   font-size: 16px;
   font-weight: 900;
   text-align: left;
 }
 .StakeV2-stakeTitle{
-  font-family: Satoshi;
+  font-family: "Relative", sans-serif;
   font-size: 16px;
   font-weight: 700;
   text-align: left;
+}
+.padLeft{
+  padding-left: 12px;
+  margin-bottom: 20px;
 }
 .StakeV2-stakeButton{
   position: absolute!important;
@@ -195,11 +257,138 @@
   background: #5D00FB!important;
   text-decoration: none;
   right: 0px;
-  top: -2px;
+  top: -5px;
+}
+.StakeV2-stakeButton .Tooltip-handle{
+  cursor: pointer;
+}
+.StakeV2-disabledButton .Tooltip-handle{
+  cursor: not-allowed;
 }
 .bigModal .Modal-content{
   width: 50rem;
 }
-/* .box-padding{
-  padding: 0 150px;
-} */
+.largeModal .Modal-content{
+  width: 80rem;
+}
+.box-padding{
+  font-family: "Relative", sans-serif;
+}
+.tabBox{
+  width: 100%;
+  padding-bottom: 10px;
+  /* border-bottom: 3px solid #1d202e; */
+  margin-bottom: 10px;
+  display: flex;
+}
+.tabBox .tab{
+  font-weight: 400;
+  font-size: 18px;
+  margin-right: 12px;
+  color: rgb(139, 145, 157);
+  padding: 0 10px;
+  cursor: pointer;
+  position: relative;
+}
+.tabBox .soons{
+  font-size: 10px;
+  position: absolute;
+  top: -5px;
+}
+.tabBox .active{
+  color: #5D00FB;
+}
+.NFTCard{
+  display: flex;
+  gap: 29px;
+  flex-wrap: wrap;
+}
+.NFTCard img{
+  width: 170px;
+}
+.NFTCard .NFTBox{
+  cursor: pointer;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+.NFTCard .tokenActive{
+  border: 1px solid #fff;
+  border-radius: 24px;
+}
+.depositButton{
+  text-align: right;
+}
+.depositButton button{
+  width: 200px;
+}
+.depButton{
+  display: flex;
+  flex-direction: column;
+}
+.stakeButton{
+  width: 100%;
+  margin-top: 10px;
+}
+.addNow{
+  padding-left: 12px;
+  margin-bottom: 20px;
+  color: #929090;
+}
+.addNow .heightLight{
+  color: #fff;
+}
+.addNow a{
+  color: #929090;
+}
+.addNow a:hover{
+  color: #5D00FB;
+}
+.claimModal .tabBox{
+  display: flex;
+  justify-content: space-between;
+}
+.table-tr, .table-td{
+  font-size: 14px;
+  margin: 0px;
+  font-family: "Noto Sans";
+  line-height: 1.43;
+  font-weight: 400;
+  color: rgb(139, 145, 157);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 12px;
+  margin-bottom: 10px;
+}
+.table-tr{
+  margin-bottom: 15px;
+}
+.table-td{
+  line-height: 1.6;
+  font-weight: 500;
+  color: #fff;
+}
+.table-tr div,.table-td div{
+  min-width: 150px;
+}
+.table-tr .leftAlign,.table-td .leftAlign{
+  text-align: left;
+}
+.table-tr .rightAlign,.table-td .rightAlign{
+  text-align: right;
+}
+.noNFT{
+  width: 100%;
+  padding: 40px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.noNFT img{
+  filter: invert(1);
+  width: 60px;
+  margin-bottom: 20px;
+}
+.noNFT .noNFTInner{
+  width: 300px;
+  text-align: center;
+}

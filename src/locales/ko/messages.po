@@ -51,16 +51,16 @@ msgstr ""
 
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "<0><1>Check on GMX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
+msgid "<0><1>Check on AGX V1 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 msgstr ""
 
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
-msgid "<0><1>Check on GMX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
+msgid "<0><1>Check on AGX V2 {networkName}</1> or <2>switch network to {0}</2>.</0>"
 msgstr ""
 
 #: src/components/Synthetics/GmList/GmList.tsx
-msgid "<0>APR is based on the Fees collected for the past {daysConsidered} days. It is an estimate as actual Fees are auto-compounded into the pool in real-time.</0><1>Check Pools performance against other LP Positions in <2>GMX Dune Dashboard</2>.</1>"
+msgid "<0>APR is based on the Fees collected for the past {daysConsidered} days. It is an estimate as actual Fees are auto-compounded into the pool in real-time.</0><1>Check Pools performance against other LP Positions in <2>AGX Dune Dashboard</2>.</1>"
 msgstr ""
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
@@ -117,15 +117,15 @@ msgid "<0>The price that orders can be executed at may differ slightly from the 
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>This will claim {0} GMX.<1/><2/>After claiming, you can stake these GMX tokens by using the \"Stake\" button in the GMX section of this Earn page.<3/><4/></0>"
+msgid "<0>This will claim {0} AGX.<1/><2/>After claiming, you can stake these AGX tokens by using the \"Stake\" button in the AGX section of this Earn page.<3/><4/></0>"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>This will withdraw all esGMX tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button.<5/><6/></0>"
+msgid "<0>This will withdraw all esAGX tokens as well as pause vesting.<1/><2/>esAGX tokens that have been converted to AGX will be claimed and remain as AGX tokens.<3/><4/>To claim AGX tokens without withdrawing, use the \"Claim\" button.<5/><6/></0>"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will be claimed and remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
+msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esAGX tokens that have been converted to AGX will be claimed and remain as AGX tokens.<3/><4/>To claim AGX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
@@ -184,7 +184,7 @@ msgstr "APR"
 msgid "APR:"
 msgstr ""
 
-#: src/components/Stake/GMXAprTooltip.tsx
+#: src/components/Stake/AGXAprTooltip.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 msgstr "APR은 매주 수요일에 업데이트되며 한 주 동안 쌓인 수수료에 따라 달라집니다."
 
@@ -385,12 +385,12 @@ msgid "Affiliates"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
-msgstr "수령 후 {1} {stake} 대 1 esGMX 비율로 최대 {0}개의 esGMX를 베스팅 할 수 있습니다."
+msgid "After claiming you will be able to vest a maximum of {0} esAGX at a ratio of {1} {stakingToken} to 1 esAGX."
+msgstr "수령 후 {1} {stake} 대 1 esAGX 비율로 최대 {0}개의 esAGX를 베스팅 할 수 있습니다."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
-msgstr "수령 후, esGMX 토큰은 7일 이내에 선택한 네트워크의 계정으로 에어드랍됩니다."
+msgid "After claiming, the esAGX tokens will be airdropped to your account on the selected network within 7 days."
+msgstr "수령 후, esAGX 토큰은 7일 이내에 선택한 네트워크의 계정으로 에어드랍됩니다."
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "After you scan, a connection prompt will appear for you to connect your wallet."
@@ -478,8 +478,8 @@ msgstr "제출 취소되었습니다"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.tsx
-msgid "Approve GMX"
-msgstr "GMX 승인"
+msgid "Approve AGX"
+msgstr "AGX 승인"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
@@ -494,7 +494,7 @@ msgid "Approve {stakingTokenSymbol}"
 msgstr "{stakingTokenSymbol} 승인"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Approving GMX..."
+msgid "Approving AGX..."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -534,7 +534,7 @@ msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol},
 msgstr "{0}에서 {swapTokenSymbol}로 교환할 수 있는 유동성이 GLP에 충분하지 않기 때문에, 이하의 옵션을 사용해주세요:"
 
 #: src/pages/Dashboard/DashboardV2.tsx
-msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName}) +  GM Pools ({chainName})."
+msgid "Assets Under Management: AGX staked (All chains) + GLP pool ({chainName}) +  GM Pools ({chainName})."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -624,7 +624,7 @@ msgstr "잔고"
 msgid "Base APR"
 msgstr ""
 
-#: src/components/Stake/GMXAprTooltip.tsx
+#: src/components/Stake/AGXAprTooltip.tsx
 msgid "Base {nativeTokenSymbol} APR"
 msgstr ""
 
@@ -686,11 +686,11 @@ msgstr "구매"
 msgid "Buy / Sell GLP"
 msgstr "GLP 구매 / 판매"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
+#: src/pages/BuyAGX/BuyAGX.tsx
 msgid "Buy AVAX directly to Avalanche or transfer it there."
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
+#: src/pages/BuyAGX/BuyAGX.tsx
 msgid "Buy ETH directly on Arbitrum or transfer it there."
 msgstr ""
 
@@ -706,7 +706,7 @@ msgid "Buy GLP"
 msgstr "GLP 구매"
 
 #: src/pages/Buy/Buy.tsx
-msgid "Buy GLP or GMX"
+msgid "Buy GLP or AGX"
 msgstr ""
 
 #: src/components/Synthetics/GmSwap/GmSwapBox/GmSwapBox.tsx
@@ -719,54 +719,54 @@ msgid "Buy GM tokens before the epoch resets in {0} to be eligible for the Bonus
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Buy GMX"
+msgid "Buy AGX"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from Traderjoe:"
+#: src/pages/BuyAGX/BuyAGX.tsx
+msgid "Buy AGX from Traderjoe:"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from Uniswap (make sure to select Arbitrum):"
+#: src/pages/BuyAGX/BuyAGX.tsx
+msgid "Buy AGX from Uniswap (make sure to select Arbitrum):"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from centralized exchanges:"
+#: src/pages/BuyAGX/BuyAGX.tsx
+msgid "Buy AGX from centralized exchanges:"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from centralized services"
+#: src/pages/BuyAGX/BuyAGX.tsx
+msgid "Buy AGX from centralized services"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX from decentralized exchanges"
+#: src/pages/BuyAGX/BuyAGX.tsx
+msgid "Buy AGX from decentralized exchanges"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX on {chainName}"
+#: src/pages/BuyAGX/BuyAGX.tsx
+msgid "Buy AGX on {chainName}"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using Decentralized Exchange Aggregators:"
+#: src/pages/BuyAGX/BuyAGX.tsx
+msgid "Buy AGX using Decentralized Exchange Aggregators:"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using FIAT gateways:"
+#: src/pages/BuyAGX/BuyAGX.tsx
+msgid "Buy AGX using FIAT gateways:"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Buy GMX using any token from any network:"
+#: src/pages/BuyAGX/BuyAGX.tsx
+msgid "Buy AGX using any token from any network:"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buy failed."
 msgstr "구매 실패"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
+#: src/pages/BuyAGX/BuyAGX.tsx
 msgid "Buy or Transfer AVAX to Avalanche"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
+#: src/pages/BuyAGX/BuyAGX.tsx
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr ""
 
@@ -794,7 +794,7 @@ msgstr "{0}로 구매"
 msgid "Buy {0}"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
+#: src/pages/BuyAGX/BuyAGX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr ""
 
@@ -902,7 +902,7 @@ msgstr "최저 수수료로 이용하려면 \"수수료 절약\" 섹션 아래�
 msgid "Checking code..."
 msgstr "코드 확인중..."
 
-#: src/pages/BuyGMX/BuyGMX.tsx
+#: src/pages/BuyAGX/BuyAGX.tsx
 msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr ""
 
@@ -938,7 +938,7 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
-msgid "Claim GMX Rewards"
+msgid "Claim AGX Rewards"
 msgstr ""
 
 #: src/components/Synthetics/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
@@ -961,12 +961,12 @@ msgid "Claim completed!"
 msgstr "수령 완료!"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Claim esGMX"
-msgstr "esGMX 수령하기"
+msgid "Claim esAGX"
+msgstr "esAGX 수령하기"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
-msgid "Claim esGMX Rewards"
+msgid "Claim esAGX Rewards"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -1285,7 +1285,7 @@ msgid "Continue"
 msgstr "계속하기"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
+msgid "Convert esAGX tokens to AGX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/SubaccountModal.tsx
@@ -1465,8 +1465,8 @@ msgid "Dashboard"
 msgstr "대시보드"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Dashboard for GMX referral stats"
-msgstr "GMX 추천 시스템 통계 대시보드"
+msgid "Dashboard for AGX referral stats"
+msgstr "AGX 추천 시스템 통계 대시보드"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Dashboards"
@@ -1524,7 +1524,7 @@ msgid "Decentralized Options Strategies"
 msgstr "탈중앙화 옵션 전략"
 
 #: src/lib/legacy.ts
-msgid "Decentralized Perpetual Exchange | GMX"
+msgid "Decentralized Perpetual Exchange | AGX"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1718,16 +1718,16 @@ msgid "Earn"
 msgstr "보상"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for GMX V2.<0/>Earn prizes by participating in GMX Trading Competitions."
+msgid "Earn ARB tokens by purchasing GM tokens, trading, or migrating liquidity from GLP to GM. Only for AGX V2.<0/>Earn prizes by participating in AGX Trading Competitions."
 msgstr ""
 
-#: src/components/Stake/GMXAprTooltip.tsx
+#: src/components/Stake/AGXAprTooltip.tsx
 msgid "Earn an extra {0}% {nativeTokenSymbol} Boosted APR by increasing your staked <0>Multiplier Points</0>."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Earn prizes by participating in GMX Trading Competitions."
-msgstr "GMX 거래 대회에 참여하여 상금을 획득하세요."
+msgid "Earn prizes by participating in AGX Trading Competitions."
+msgstr "AGX 거래 대회에 참여하여 상금을 획득하세요."
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Ecosystem"
@@ -1972,12 +1972,12 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
-msgid "Escrowed GMX"
+msgid "Escrowed AGX"
 msgstr ""
 
-#: src/components/Stake/GMXAprTooltip.tsx
-msgid "Escrowed GMX APR"
-msgstr "esGMX APR"
+#: src/components/Stake/AGXAprTooltip.tsx
+msgid "Escrowed AGX APR"
+msgstr "esAGX APR"
 
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Estimated Fee Refund"
@@ -2183,8 +2183,8 @@ msgid "Fees exceed amount"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Fees generated by GMX"
-msgstr "GMX로 획득한 수수료"
+msgid "Fees generated by AGX"
+msgstr "AGX로 획득한 수수료"
 
 #: src/components/Glp/GlpSwap.js
 #~ msgid "Fees may vary depending on which asset you sell GLP for. <0/>Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
@@ -2297,7 +2297,7 @@ msgid "GLP Vault"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GLP and GMX autocompounding vaults"
+msgid "GLP and AGX autocompounding vaults"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -2310,7 +2310,7 @@ msgstr "{0} 업그레이드를 위해 GLP 구매가 비활성화되었습니다"
 
 #: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
-msgid "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
+msgid "GLP is the liquidity provider token for AGX V1 markets. Accrues 70% of the V1 markets generated fees."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -2351,135 +2351,135 @@ msgstr ""
 
 #: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
-msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
+msgid "GM is the liquidity provider token for AGX V2 markets. Accrues 63% of the V2 markets generated fees."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Announcements and Updates"
-msgstr "GMX 공지 및 업데이트"
+msgid "AGX Announcements and Updates"
+msgstr "AGX 공지 및 업데이트"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Blueberry NFTs"
-msgstr "GMX 블루베리 NFT"
+msgid "AGX Blueberry NFTs"
+msgstr "AGX 블루베리 NFT"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Governance Page"
-msgstr "GMX 거버넌스 페이지"
+msgid "AGX Governance Page"
+msgstr "AGX 거버넌스 페이지"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Pages"
-msgstr "GMX 페이지"
+msgid "AGX Pages"
+msgstr "AGX 페이지"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Perpetuals Data"
-msgstr "GMX 파생상품 데이터"
+msgid "AGX Perpetuals Data"
+msgstr "AGX 파생상품 데이터"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Proposals Voting page"
-msgstr "GMX 프로포절 투표 페이지"
+msgid "AGX Proposals Voting page"
+msgstr "AGX 프로포절 투표 페이지"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Stats Page"
-msgstr "GMX 통계 페이지"
+msgid "AGX Stats Page"
+msgstr "AGX 통계 페이지"
 
 #: src/pages/Actions/Actions.js
-msgid "GMX V1 Account"
-msgstr ""
-
-#: src/pages/Actions/Actions.js
-msgid "GMX V1 Actions"
+msgid "AGX V1 Account"
 msgstr ""
 
 #: src/pages/Actions/Actions.js
-msgid "GMX V1 Arbitrum information for account: {checkSummedAccount}"
+msgid "AGX V1 Actions"
 msgstr ""
 
 #: src/pages/Actions/Actions.js
-msgid "GMX V1 {networkName} actions for all accounts."
+msgid "AGX V1 Arbitrum information for account: {checkSummedAccount}"
+msgstr ""
+
+#: src/pages/Actions/Actions.js
+msgid "AGX V1 {networkName} actions for all accounts."
 msgstr ""
 
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "GMX V2 Account"
+msgid "AGX V2 Account"
 msgstr ""
 
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "GMX V2 Actions"
+msgid "AGX V2 Actions"
 msgstr ""
 
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "GMX V2 {networkName} actions for all accounts."
+msgid "AGX V2 {networkName} actions for all accounts."
 msgstr ""
 
 #: src/pages/SyntheticsActions/SyntheticsActions.tsx
-msgid "GMX V2 {networkName} information for account: {checkSummedAccount}"
+msgid "AGX V2 {networkName} information for account: {checkSummedAccount}"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
-msgid "GMX Vault"
+msgid "AGX Vault"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Weekly Updates"
-msgstr "GMX 주간 업데이트"
+msgid "AGX Weekly Updates"
+msgstr "AGX 주간 업데이트"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
+#: src/pages/BuyAGX/BuyAGX.tsx
+msgid "AGX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX community discussion"
-msgstr "GMX 커뮤니티 토론"
+msgid "AGX community discussion"
+msgstr "AGX 커뮤니티 토론"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX dashboards and analytics."
-msgstr "GMX 대시보드 및 통계"
+msgid "AGX dashboards and analytics."
+msgstr "AGX 대시보드 및 통계"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX ecosystem pages."
-msgstr "GMX 이코시스템 페이지"
+msgid "AGX ecosystem pages."
+msgstr "AGX 이코시스템 페이지"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX explorer for stats and traders"
-msgstr "통계와 트레이드 정보를 위한 GMX 익스플로러"
+msgid "AGX explorer for stats and traders"
+msgstr "통계와 트레이드 정보를 위한 AGX 익스플로러"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX fundamentals"
-msgstr "GMX 펀더멘탈"
+msgid "AGX fundamentals"
+msgstr "AGX 펀더멘탈"
 
 #: src/pages/Home/Home.js
-msgid "GMX is currently live on Arbitrum and Avalanche."
-msgstr "GMX는 현재 Arbitrum과 Avalanche에서 이용할 수 있습니다."
+msgid "AGX is currently live on Arbitrum and Avalanche."
+msgstr "AGX는 현재 Arbitrum과 Avalanche에서 이용할 수 있습니다."
 
 #: src/pages/Jobs/Jobs.js
-msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
-msgstr "GMX는 현재 구인하고 있지 않습니다. 하지만 해당 프로젝트에 기여할 수 있다고 생각하시면 email <0>jobs@gmx.io</0>으로 연락해주세요."
+msgid "AGX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
+msgstr "AGX는 현재 구인하고 있지 않습니다. 하지만 해당 프로젝트에 기여할 수 있다고 생각하시면 email <0>jobs@gmx.io</0>으로 연락해주세요."
 
 #: src/components/TokenCard/TokenCard.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
-msgid "GMX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees, respectively."
+msgid "AGX is the utility and governance token. Accrues 30% and 27% of V1 and V2 markets generated fees, respectively."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX staking calculator"
-msgstr "GMX 스테이킹 계산기"
+msgid "AGX staking calculator"
+msgstr "AGX 스테이킹 계산기"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX staking calculator and guide"
+msgid "AGX staking calculator and guide"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX staking rewards updates and insights"
-msgstr "GMX 스테이킹 보상 업데이트 및 인사이트"
+msgid "AGX staking rewards updates and insights"
+msgstr "AGX 스테이킹 보상 업데이트 및 인사이트"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
-msgid "GMX transfers not yet enabled"
+msgid "AGX transfers not yet enabled"
 msgstr ""
 
 #: src/components/Common/SEO.js
-msgid "GMX | Decentralized Perpetual Exchange"
+msgid "AGX | Decentralized Restaking Liquidity Marketplace"
 msgstr ""
 
 #: src/components/Synthetics/SubaccountModal/utils.ts
@@ -2503,7 +2503,7 @@ msgid "Generating shareable image..."
 msgstr "공유가능한 이미지 생성중..."
 
 #: src/pages/Referrals/Referrals.tsx
-msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
+msgid "Get fee discounts and earn rebates through the AGX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
@@ -2536,7 +2536,7 @@ msgid "I am aware of the trigger orders"
 msgstr "트리거 주문에 대해 충분히 인지하고 있습니다."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "I do not want to transfer the Affiliate esGMX tokens"
+msgid "I do not want to transfer the Affiliate esAGX tokens"
 msgstr ""
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
@@ -2779,8 +2779,8 @@ msgid "Job Openings"
 msgstr ""
 
 #: src/pages/Jobs/Jobs.js
-msgid "Job openings at GMX."
-msgstr "GMX의 구인"
+msgid "Job openings at AGX."
+msgstr "AGX의 구인"
 
 #: src/pages/Jobs/Jobs.js
 msgid "Jobs"
@@ -2848,11 +2848,11 @@ msgid "Leaderboard"
 msgstr "리더보드"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Leaderboard for GMX traders"
-msgstr "GMX 트레이더를 위한 리더보드"
+msgid "Leaderboard for AGX traders"
+msgstr "AGX 트레이더를 위한 리더보드"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
-msgid "Leaderboard for traders on GMX V2."
+msgid "Leaderboard for traders on AGX V2."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -3447,7 +3447,7 @@ msgstr ""
 msgid "Max. Leverage exceeded"
 msgstr ""
 
-#: src/components/Stake/GMXAprTooltip.tsx
+#: src/components/Stake/AGXAprTooltip.tsx
 msgid "Max. {nativeTokenSymbol} APR"
 msgstr ""
 
@@ -3466,8 +3466,8 @@ msgid "Maximum auto top-up amount is required"
 msgstr ""
 
 #: src/components/Synthetics/NetworkFeeRow/NetworkFeeRow.tsx
-msgid "Maximum execution fee paid to the network. This fee is a blockchain cost not specific to GMX, and it does not impact your collateral."
-msgstr "네트워크에 지불되는 최대 실행 수수료. 이 수수료는 GMX에 특정된 것이 아니며 담보에 영향을 미치지 않는 블록체인 비용입니다."
+msgid "Maximum execution fee paid to the network. This fee is a blockchain cost not specific to AGX, and it does not impact your collateral."
+msgstr "네트워크에 지불되는 최대 실행 수수료. 이 수수료는 AGX에 특정된 것이 아니며 담보에 영향을 미치지 않는 블록체인 비용입니다."
 
 #: src/components/Footer/constants.ts
 #: src/components/Footer/constants.ts
@@ -3664,8 +3664,8 @@ msgid "No claims yet"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "No esGMX to claim"
-msgstr "수령할 수 있는 esGMX가 없습니다"
+msgid "No esAGX to claim"
+msgstr "수령할 수 있는 esAGX가 없습니다"
 
 #: src/components/Synthetics/UserIncentiveDistributionList/UserIncentiveDistributionList.tsx
 msgid "No incentives distribution history yet."
@@ -3690,8 +3690,8 @@ msgid "No open positions"
 msgstr "열려있는 포지션이 없습니다"
 
 #: src/pages/Jobs/Jobs.js
-msgid "No open positions at GMX currently"
-msgstr "현재 GMX에서 열려있는 포지션이 없습니다."
+msgid "No open positions at AGX currently"
+msgstr "현재 AGX에서 열려있는 포지션이 없습니다."
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "No position"
@@ -4081,8 +4081,8 @@ msgid "Please input a referral code to benefit from fee discounts."
 msgstr "수수료 할인의 혜택을 받으려면 추천인 코드를 입력해주세요."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
-msgstr "계정 전체 이전을 위해서만 해당 기능을 사용해주세요.<0/>이 기능은, 귀하의 GMX, esGMX, GLP 및 멀티플라이어 포인트 전부를 새로운 계정으로 전송합니다.<1/>이전은 수취 게정이 이전에 GMX, GLP를 스테이킹한 적이 없는 경우에만 지원됩니다.<2/>이전은 단방향이며, 발송 계정으로 다시 이전하는 것이 불가능합니다."
+msgid "Please only use this for full account transfers.<0/>This will transfer all your AGX, esAGX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked AGX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
+msgstr "계정 전체 이전을 위해서만 해당 기능을 사용해주세요.<0/>이 기능은, 귀하의 AGX, esAGX, GLP 및 멀티플라이어 포인트 전부를 새로운 계정으로 전송합니다.<1/>이전은 수취 게정이 이전에 AGX, GLP를 스테이킹한 적이 없는 경우에만 지원됩니다.<2/>이전은 단방향이며, 발송 계정으로 다시 이전하는 것이 불가능합니다."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
@@ -4347,12 +4347,12 @@ msgid "Profit"
 msgstr "수익"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
+msgid "Projects developed by the AGX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Projects integrated with GMX."
-msgstr "GMX와 통합된 프로젝트"
+msgid "Projects integrated with AGX."
+msgstr "AGX와 통합된 프로젝트"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of Reserves"
@@ -4500,11 +4500,11 @@ msgid "Receiver has not staked GLP tokens before"
 msgstr "수취인은 지금까지 GLP 토큰을 스테이킹한 적이 없습니다."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Receiver has not staked GMX tokens before"
-msgstr "수취인은 지금까지 GMX 토큰을 스테이킹한 적이 없습니다."
+msgid "Receiver has not staked AGX tokens before"
+msgstr "수취인은 지금까지 AGX 토큰을 스테이킹한 적이 없습니다."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Receiver has staked GMX/GLP before"
+msgid "Receiver has staked AGX/GLP before"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -4645,8 +4645,8 @@ msgid "Reserved for Vesting"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Returns calculator for GMX and GLP"
-msgstr "GMX 및 GLP 수익 계산기"
+msgid "Returns calculator for AGX and GLP"
+msgstr "AGX 및 GLP 수익 계산기"
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/pages/Stake/StakeV1.js
@@ -4843,8 +4843,8 @@ msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
 msgstr "GLP의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
-msgstr "GMX의 베스팅 볼트에서 모든 토큰을 인출했습니다."
+msgid "Sender has withdrawn all tokens from AGX Vesting Vault"
+msgstr "AGX의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 
 #: src/components/Synthetics/StatusNotification/GmStatusNotification.tsx
 msgid "Sending Buy request"
@@ -5087,15 +5087,15 @@ msgid "Stake"
 msgstr "스테이킹"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Stake <0>GMX</0> and buy <1>GM</1> or <2>GLP</2> to earn rewards."
+msgid "Stake <0>AGX</0> and buy <1>GM</1> or <2>GLP</2> to earn rewards."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Stake GMX"
+msgid "Stake AGX"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Stake GMX Rewards"
+msgid "Stake AGX Rewards"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -5103,11 +5103,11 @@ msgid "Stake Multiplier Points"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Stake esGMX"
+msgid "Stake esAGX"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Stake esGMX Rewards"
+msgid "Stake esAGX Rewards"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -5459,16 +5459,16 @@ msgid "Telegram Groups"
 msgstr "텔레그램 그룹"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Telegram bot for GMX Swaps monitoring"
+msgid "Telegram bot for AGX Swaps monitoring"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Telegram bot for GMX position updates"
-msgstr "GMX 포지션 업데이트를 위한 텔레그램 봇"
+msgid "Telegram bot for AGX position updates"
+msgstr "AGX 포지션 업데이트를 위한 텔레그램 봇"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Telegram bot for Open Interest on GMX"
-msgstr "GMX 미결제약정을 위한 텔레그램 봇"
+msgid "Telegram bot for Open Interest on AGX"
+msgstr "AGX 미결제약정을 위한 텔레그램 봇"
 
 #: src/components/Footer/constants.ts
 #: src/pages/TermsAndConditions/TermsAndConditions.js
@@ -5476,8 +5476,8 @@ msgid "Terms and Conditions"
 msgstr "약관"
 
 #: src/pages/Stake/StakeV1.js
-msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
-msgstr "<0>GMX 마이그레이션</0>은 진행중입니다. 귀하의 GMT, xGMT, GMT-USDG 및 xGMT-USDG 토큰을 이전해주세요.<1/>USDG 토큰은 계속 기능하기때문에 이전할 필요가 없습니다."
+msgid "The <0>AGX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
+msgstr "<0>AGX 마이그레이션</0>은 진행중입니다. 귀하의 GMT, xGMT, GMT-USDG 및 xGMT-USDG 토큰을 이전해주세요.<1/>USDG 토큰은 계속 기능하기때문에 이전할 필요가 없습니다."
 
 #: src/components/Synthetics/MarketCard/MarketCard.tsx
 msgid "The Available Liquidity will be the lesser of the difference between the maximum value and the current value for the Reserve and Open Interest."
@@ -5512,7 +5512,7 @@ msgid "The Gambit protocol is in beta, please read the <0>staking details</0>be
 msgstr "해당 Gambit 프로토콜은 베타 버전입니다. 참여하기 전에 <0>스테이킹 세부사항</0>을 참조해주세요."
 
 #: src/components/SettingsModal/SettingsModal.tsx
-msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to GMX V2."
+msgid "The Max Execution Fee is set to a higher value to handle potential increases in gas price during order execution. Any excess execution fee will be refunded to your account when the order is executed. Only applicable to AGX V2."
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -5524,10 +5524,10 @@ msgid "The PnL ($) compared to the capital used.<0/><1/>The capital used is calc
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
-msgstr "esGMX (IOU) 토큰의 주소는 {esGmxIouAddress}입니다."
+msgid "The address of the esAGX (IOU) token is {esGmxIouAddress}."
+msgstr "esAGX (IOU) 토큰의 주소는 {esGmxIouAddress}입니다."
 
-#: src/components/Stake/GMXAprTooltip.tsx
+#: src/components/Stake/AGXAprTooltip.tsx
 msgid "The average {nativeTokenSymbol} APR is calculated with the average account boost percentage ({0}%), while the maximum {nativeTokenSymbol} APR is calculated with the maximum boost (200%) by staking <0>Multiplier Points</0>."
 msgstr ""
 
@@ -5540,12 +5540,12 @@ msgid "The current Price Impact is {0}. Consider using -0.30% Acceptable Price I
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
-msgstr "\"esGMX (IOU) 토큰의 주소는 {esGmxIouAddress} 입니다."
+msgid "The esAGX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
+msgstr "\"esAGX (IOU) 토큰의 주소는 {esGmxIouAddress} 입니다."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The esGMX tokens can be staked or vested at any time."
-msgstr "esGMX는 언제든지 스테이킹하거나 베스팅 할 수 있습니다."
+msgid "The esAGX tokens can be staked or vested at any time."
+msgstr "esAGX는 언제든지 스테이킹하거나 베스팅 할 수 있습니다."
 
 #: src/components/GmTokensBalanceInfo/GmTokensBalanceInfo.tsx
 msgid "The fees' USD value is calculated at the time they are accrued and does not include incentives."
@@ -5644,8 +5644,8 @@ msgid "The trigger price for this order is based on the swap fees and price impa
 msgstr "이 주문의 트리거 가격은 스왑 수수료와 가격 영향을 기반으로 하여 주문 실행시 최소 {formattedMinReceive}를 보장합니다."
 
 #: src/components/ModalViews/RedirectModal.js
-msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
-msgstr "웹사이트는 오픈소스인 <0>GMX front end</0>를 이용하고 커뮤니티에의해 배포되며, P2P <1>IPFS network<1/>에 의해 서빙및 호스팅됩니다."
+msgid "The website is a community deployed and maintained instance of the open source <0>AGX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
+msgstr "웹사이트는 오픈소스인 <0>AGX front end</0>를 이용하고 커뮤니티에의해 배포되며, P2P <1>IPFS network<1/>에 의해 서빙및 호스팅됩니다."
 
 #: src/context/SubaccountContext/SubaccountContext.tsx
 msgid "There are insufficient funds in your Subaccount for One-Click Trading. <0>Click here</0> to top-up."
@@ -5771,8 +5771,8 @@ msgstr "수취하기"
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "전송을 완료하려면 {receiver} 계정에 다시 연결해야 합니다."
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
+#: src/pages/BuyAGX/BuyAGX.tsx
+msgid "To purchase AGX on the {0} blockchain, please <0>change your network</0>."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -5905,11 +5905,11 @@ msgid "Trade History"
 msgstr "트레이딩 히스토리"
 
 #: src/components/Exchange/ExchangeBanner.js
-msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
-msgstr "GMX에서 트레이드하고 <0>$250.000</0> 상금을 획득하세요! 11월 30일까지 진행되며, <1>여기를 클릭해</1> 더 많은 정보를 확인하세요."
+msgid "Trade on AGX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
+msgstr "AGX에서 트레이드하고 <0>$250.000</0> 상금을 획득하세요! 11월 30일까지 진행되며, <1>여기를 클릭해</1> 더 많은 정보를 확인하세요."
 
 #: src/components/Common/SEO.js
-msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet on Arbitrum and Avalanche."
+msgid "AGX is the first ever LRT Asset Supported native Multi-Chain Perpetual DEX which is based zkLink Nova,support up to 50X leverage directly from your wallet"
 msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
@@ -5939,7 +5939,7 @@ msgid "Trades"
 msgstr "트레이드"
 
 #: src/components/Header/Header.tsx
-msgid "Trade on GMX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
+msgid "Trade on AGX V2 in Arbitrum and win 280,000 ARB (> $500k) in prizes in <0>two weekly</0> competitions. Live from March 13th to 27th."
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -6023,7 +6023,7 @@ msgstr "이전 실패."
 msgid "Transfer submitted!"
 msgstr "이전 제출 완료!"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
+#: src/pages/BuyAGX/BuyAGX.tsx
 msgid "Transfer {nativeTokenSymbol}"
 msgstr ""
 
@@ -6148,7 +6148,7 @@ msgid "Unstake"
 msgstr "언스테이킹"
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Unstake GMX"
+msgid "Unstake AGX"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -6156,7 +6156,7 @@ msgid "Unstake completed!"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Unstake esGMX"
+msgid "Unstake esAGX"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -6291,11 +6291,11 @@ msgid "V1 Avalanche Fuji"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
-msgid "V1 Rebates and V1/V2 esGMX are airdropped weekly. V2 Rebates are claimed manually."
+msgid "V1 Rebates and V1/V2 esAGX are airdropped weekly. V2 Rebates are claimed manually."
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
-msgid "V1 esGMX"
+msgid "V1 esAGX"
 msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
@@ -6350,15 +6350,15 @@ msgstr "Arbitrum에서 GLP로 베스팅하기"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Vest with GLP on Avalanche"
-msgstr "Avalanche에서 GMX로 베스팅하기"
+msgstr "Avalanche에서 AGX로 베스팅하기"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Vest with GMX on Arbitrum"
-msgstr "Arbitrum에서 GMX로 베스팅하기"
+msgid "Vest with AGX on Arbitrum"
+msgstr "Arbitrum에서 AGX로 베스팅하기"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Vest with GMX on Avalanche"
-msgstr "Avalanche에서 GMX로 베스팅하기"
+msgid "Vest with AGX on Avalanche"
+msgstr "Avalanche에서 AGX로 베스팅하기"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Vested GLP not withdrawn"
@@ -6366,8 +6366,8 @@ msgstr "베스트팅된 GLP에서 인출되지 않은 양"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Vested GMX not withdrawn"
-msgstr "베스트팅된 GMX에서 인출되지 않은 양"
+msgid "Vested AGX not withdrawn"
+msgstr "베스트팅된 AGX에서 인출되지 않은 양"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
@@ -6557,7 +6557,7 @@ msgid "Withdraw from GLP Vault"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "Withdraw from GMX Vault"
+msgid "Withdraw from AGX Vault"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -6629,8 +6629,8 @@ msgid "Yield Vaults"
 msgstr "일드 볼트"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Yield simulator for GMX"
-msgstr "GMX를 위한 일드 시뮬레이터"
+msgid "Yield simulator for AGX"
+msgstr "AGX를 위한 일드 시뮬레이터"
 
 #: src/components/AddressView/AddressView.tsx
 msgid "You"
@@ -6645,14 +6645,14 @@ msgid "You are earning {0}% more {nativeTokenSymbol} rewards using {1} Staked Mu
 msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
-msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
-msgstr "귀하는 GMX.io 페이지를 벗어나, 써드파티 웹사이트로 리다이렉트되고 있습니다."
+msgid "You are leaving AGX.io and will be redirected to a third party, independent website."
+msgstr "귀하는 AGX.io 페이지를 벗어나, 써드파티 웹사이트로 리다이렉트되고 있습니다."
 
-#: src/pages/BuyGMX/BuyGMX.tsx
+#: src/pages/BuyAGX/BuyAGX.tsx
 msgid "You can buy AVAX directly on <0>Avalanche</0> using these options:"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
+#: src/pages/BuyAGX/BuyAGX.tsx
 msgid "You can buy ETH directly on <0>Arbitrum</0> using these options:"
 msgstr ""
 
@@ -6669,8 +6669,8 @@ msgid "You can check your claim history <0>here</0>."
 msgstr "<0>여기</0>에서 수령한 내역을 확인할 수 있습니다."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
-msgstr "{1} {stakingToken} 대 1 esGMX 비율로 최대 {0} esGMX 토큰을 현재 베스팅 할 수 있습니다."
+msgid "You can currently vest a maximum of {0} esAGX tokens at a ratio of {1} {stakingToken} to 1 esAGX."
+msgstr "{1} {stakingToken} 대 1 esAGX 비율로 최대 {0} esAGX 토큰을 현재 베스팅 할 수 있습니다."
 
 #: src/components/Synthetics/ConfirmationBox/rows/AllowedSlippageRow.tsx
 #: src/components/Synthetics/PositionSeller/rows/AllowedSlippageRow.tsx
@@ -6685,11 +6685,11 @@ msgstr ""
 msgid "You can get a {0} better execution price in the {1} market pool.<0><1>Switch to {2} market pool</1>.</0>"
 msgstr "{1} 마켓 풀에서 {0} 더 나은 가격으로 거래할 수 있습니다.<0><1>{2} 마켓 풀로 전환</1>.</0>"
 
-#: src/pages/BuyGMX/BuyGMX.tsx
+#: src/pages/BuyAGX/BuyAGX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
+#: src/pages/BuyAGX/BuyAGX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "아래의 옵션중 하나를 사용해, ETH를 Arbitrum에 보낼 수 있습니다."
 
@@ -6747,7 +6747,7 @@ msgid "You have an existing position with {0} as collateral. This action will no
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
+msgid "You have esAGX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -6755,7 +6755,7 @@ msgid "You have multiple existing Increase {longOrShortText} {0} limit orders"
 msgstr "{longOrShortText} {0}에 대한 복수의 지정가 주문이 존재합니다."
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "You have no GMX tokens to claim."
+msgid "You have no AGX tokens to claim."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
@@ -6769,13 +6769,13 @@ msgstr ""
 msgid "You have not traded during the selected period."
 msgstr ""
 
-#: src/components/Stake/GMXAprTooltip.tsx
+#: src/components/Stake/AGXAprTooltip.tsx
 #: src/pages/Stake/StakeV2.tsx
-msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
+msgid "You have reached the maximum Boost Percentage. Stake an additional {0} AGX or esAGX to be able to stake your unstaked {1} Multiplier Points using the \"Compound\" button."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "You have reached the maximum Boost Percentage. Stake an additional {0} GMX or esGMX to be able to stake your unstaked {1} Multiplier Points."
+msgid "You have reached the maximum Boost Percentage. Stake an additional {0} AGX or esAGX to be able to stake your unstaked {1} Multiplier Points."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -6800,11 +6800,11 @@ msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for 
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "You have {0} esGMX (IOU) tokens."
+msgid "You have {0} esAGX (IOU) tokens."
 msgstr "귀하는 {0} esGMx (IOU) 토큰을 보유하고 있습니다."
 
 #: src/pages/Stake/StakeV2.tsx
-msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
+msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esAGX."
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
@@ -6837,8 +6837,8 @@ msgid "Your APR"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
-msgstr "귀하의 esGMX(IOU) 잔액은 수령 후 수령액만큼 감소하는데 이는 상정된 행동입니다."
+msgid "Your esAGX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
+msgstr "귀하의 esAGX(IOU) 잔액은 수령 후 수령액만큼 감소하는데 이는 상정된 행동입니다."
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -6866,7 +6866,7 @@ msgid "collateral"
 msgstr "담보"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "esGMX OTC Market"
+msgid "esAGX OTC Market"
 msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js
@@ -6970,7 +6970,7 @@ msgstr "{0} GLP를 {1} {2}로 판매하였습니다!"
 
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
-msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
+msgid "{0} AGX tokens can be claimed, use the options under the Total Rewards section to claim them."
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
@@ -7040,7 +7040,7 @@ msgstr "{0}이(가) 주문 폼에서 선택되었습니다."
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
 #: src/pages/Stake/StakeV2.tsx
-msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
+msgid "{0} tokens have been converted to AGX from the {1} esAGX deposited for vesting."
 msgstr ""
 
 #: src/components/Synthetics/ConfirmationBox/ConfirmationBox.tsx
@@ -7145,15 +7145,15 @@ msgstr ""
 #~ msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 #~ msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 
-#: src/components/Stake/GMXAprTooltip.tsx
+#: src/components/Stake/AGXAprTooltip.tsx
 msgid "{nativeTokenSymbol} Base APR"
 msgstr ""
 
-#: src/components/Stake/GMXAprTooltip.tsx
+#: src/components/Stake/AGXAprTooltip.tsx
 msgid "{nativeTokenSymbol} Boosted APR"
 msgstr ""
 
-#: src/components/Stake/GMXAprTooltip.tsx
+#: src/components/Stake/AGXAprTooltip.tsx
 msgid "{nativeTokenSymbol} Total APR"
 msgstr ""
 

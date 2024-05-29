@@ -41,7 +41,6 @@ export async function callContract(
     if (opts.value) {
       txnOpts.value = opts.value;
     }
-
     if (opts.showPreliminaryMsg && !opts.hideSentMsg) {
       showCallContractToast({
         chainId,

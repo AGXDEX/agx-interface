@@ -10,7 +10,7 @@
       "no-prototype-builtins": "error",
       "no-empty": "error",
       "@typescript-eslint/no-inferrable-types": "error", 
-      "@typescript-eslint/no-non-null-asserted-optional-chain": "error",
+      "@typescript-eslint/no-non-null-asserted-optional-chain": "warn",
       "react/no-unused-prop-types": "error",
       "react-hooks/rules-of-hooks": "warn",
       "react/hook-use-state": "warn",

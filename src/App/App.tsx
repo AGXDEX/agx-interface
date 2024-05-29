@@ -18,6 +18,7 @@ import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import { Exchange } from "pages/Exchange/Exchange";
+import Footer from "components/Footer/Footer";
 import Home from "pages/Home/Home";
 import NftWallet from "pages/NftWallet/NftWallet";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
@@ -234,11 +235,13 @@ function FullApp() {
     <>
       <div className="App">
         <div className="App-content">
-          { location.pathname !== '/' &&(<Header
-            disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-            openSettings={openSettings}
-            showRedirectModal={showRedirectModal}
-          />)}
+          {location.pathname !== "/" && (
+            <Header
+              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+              openSettings={openSettings}
+              showRedirectModal={showRedirectModal}
+            />
+          )}
           {isHome && (
             <Switch>
               <Route exact path="/">
@@ -258,8 +261,8 @@ function FullApp() {
           {!isHome && (
             <Switch>
               <Route exact path="/">
-                {/* <Redirect to="/trade" /> */}
-                <HomePage />
+                <Redirect to="/v1" />
+                {/* <HomePage /> */}
               </Route>
               <Route exact path="/price_impact_rebates_stats">
                 <PriceImpactRebatesStatsPage />
@@ -400,6 +403,7 @@ function FullApp() {
             </Switch>
           )}
         </div>
+        <Footer />
       </div>
       <ToastContainer
         limit={1}

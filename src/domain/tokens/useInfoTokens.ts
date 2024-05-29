@@ -24,6 +24,7 @@ export function useInfoTokens(
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+  const WethSwapAddress = getContract(chainId, "WethSwap");
 
   const whitelistedTokens = getWhitelistedV1Tokens(chainId);
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
@@ -34,7 +35,7 @@ export function useInfoTokens(
       fetcher: contractFetcher(signer, VaultReader, [
         vaultAddress,
         positionRouterAddress,
-        nativeTokenAddress,
+        WethSwapAddress,
         expandDecimals(1, 18),
         whitelistedTokenAddresses,
       ]) as any,
@@ -42,7 +43,7 @@ export function useInfoTokens(
   );
 
   const indexPricesUrl = getServerUrl(chainId, "/prices");
-  // TODO 
+  // TODO
   const indexPrices = {};
   // const { data: indexPrices } = useSWR(indexPricesUrl, {
   //   // @ts-ignore spread args incorrect type

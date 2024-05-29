@@ -66,8 +66,8 @@ export const MARKET = "Market";
 export const LIMIT = "Limit";
 export const STOP = "Stop";
 export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT, STOP];
-export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT];
-export const SWAP_OPTIONS = [LONG, SHORT, SWAP];
+export const SWAP_ORDER_OPTIONS = [MARKET];
+export const SWAP_OPTIONS = [SWAP, LONG, SHORT];
 export const REFERRAL_CODE_QUERY_PARAM = "ref";
 export const MAX_REFERRAL_CODE_LENGTH = 20;
 
@@ -204,7 +204,7 @@ export function getFeeBasisPoints(
 
 export function getBuyGlpToAmount(fromAmount, swapTokenAddress, infoTokens, glpPrice, usdgSupply, totalTokenWeights) {
   const defaultValue = { amount: bigNumberify(0), feeBasisPoints: 0 };
-  if (!fromAmount || !swapTokenAddress || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
+  if ((!Number(fromAmount) && Number(fromAmount) !== 0)|| !swapTokenAddress || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
     return defaultValue;
   }
 
@@ -1353,7 +1353,7 @@ export function getProcessedData(
 }
 
 export function getPageTitle(data) {
-  const title = t`Formula Finance`;
+  const title = t`AGX | Decentralized Restaking Liquidity Marketplace`;
   // return `${data} | ${title}`;
   return `${title}`;
 }

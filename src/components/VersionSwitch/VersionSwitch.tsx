@@ -25,7 +25,7 @@ export function VersionSwitch({ className }: Props) {
       {getIsSyntheticsSupported(chainId) && (
         <div
           className={cx("VersionSwitch-option v2", { active: currentVersion === 2 })}
-          onClick={() => setCurrentVersion(2)}
+          // onClick={() => setCurrentVersion(2)}
         >
           V2
         </div>

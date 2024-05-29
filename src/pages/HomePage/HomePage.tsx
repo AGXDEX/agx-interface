@@ -11,8 +11,9 @@ import leftSec from "img/leftSec.png";
 import rightFir from "img/rightFir.png";
 import rightSec from "img/rightSec.png";
 import logoImg from "img/logo_GMX.svg";
-import structure from "img/structure.png";
-import structure2 from "img/structure2.png";
+import structure from "img/structure1.svg";
+import structure2 from "img/structure2.svg";
+import novaLogo from "img/nova-logo.png";
 import { Link } from "react-router-dom";
 import Footer from "components/Footer/Footer";
 
@@ -22,16 +23,19 @@ function HomePage() {
       <div className="topBox">
         <div className="header">
           <Link className="" to="/">
-            <img src={logoImg} alt="GMX Logo" />
+            <img src={logoImg} alt="AGX Logo" />
           </Link>
           <div className="nav">
-            <a href="https://zklink.io/" target="block">whitepaper</a>
-            <a href="https://zklink.io/" target="block">twitter</a>
-            <a href="https://zklink.io/" target="block">Discord</a>
+            <a href="https://agx-1.gitbook.io/agx/" target="block">whitepaper</a>
+            {/* <a href="https://zklink.io/" target="block">twitter</a>
+            <a href="https://zklink.io/" target="block">Discord</a> */}
           </div>
         </div>
         <div className="topInner">
           <div className="titleFirst">
+            AGX
+          </div>
+          <div className="titleFirst mobile">
             Decentralized Restaking Liquidity Marketplace
           </div>
           <div className="topButton">
@@ -44,9 +48,10 @@ function HomePage() {
           </div>
           <div className="topDocu">
             Yiled aggregating supported by zkLink
+            <img src={novaLogo} alt="" />
           </div>
-          <div className="topDocu">
-            EignLayer Points + LSD Yield + Puffer/… LRT Points + Linea… L2 Points + $FLP LP Yield + zkLink Points + $FOM Staking Yield + Trading fee reward
+          <div className="topDocu topBorder">
+            <div className="borInner">EignLayer Points  + LSD Yield + Puffer/… LRT Points + Linea… L2 Points + $FLP LP Yield + zkLink Points + $FOM Staking Yield + Trading fee reward</div>
           </div>
         </div>
       </div>
@@ -77,16 +82,10 @@ function HomePage() {
         </div>
         <div className="contentMiddle">
           <div className="contentBorder">
-            <div className="contentBall">1</div>
-          </div>
-          <div className="contentBorder">
-            <div className="contentBall">2</div>
-          </div>
-          <div className="contentBorder">
-            <div className="contentBall">3</div>
-          </div>
-          <div className="contentBorder">
-            <div className="contentBall">4</div>
+            <div className="contentBall firstBall">1</div>
+            <div className="contentBall secondBall">2</div>
+            <div className="contentBall thirdBall">3</div>
+            <div className="contentBall forthBall">4</div>
           </div>
         </div>
         <div className="contentright">
@@ -120,7 +119,7 @@ function HomePage() {
       </div>
       <div className="productSec">
         <div className="contentTitle productTitle">
-          Product Structure
+        Liquidity Pool Module
         </div>
         <img src={structure2} className="structure" />
       </div>

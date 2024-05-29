@@ -7,7 +7,7 @@ function Banner({ className }) {
   return (
     <div className={cx("Banner-wrapper", className)}>
       <p className="Banner-text">
-        GMX updated!
+        AGX updated!
         <img src={sparkle} alt="sparkle" className="Banner-text-sparkle" />
       </p>
       <a

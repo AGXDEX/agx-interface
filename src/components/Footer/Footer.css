@@ -1,6 +1,6 @@
 .Footer-wrapper {
-  text-align: left;
-  padding: 20rem 0 6rem;
+  text-align: center;
+  padding: 3rem 0;
   /* background: #16182e; */
   width: 100%;
   /* position: absolute; */
@@ -9,10 +9,12 @@
   /* height: 20rem; */
   /* bottom: 0; */
   border-top: 1px solid #282b4c57;
+  background: var(--dark-blue-bg);
+  border-radius: 0.4rem;
 }
 
 .Footer-logo {
-  margin-bottom: 6rem;
+  margin-bottom: 1rem;
   /* display: flex;
   justify-content: center;
   align-items: center; */
@@ -21,15 +23,16 @@
 
 }
 .Footer-logo img {
-  height: 3.5rem;
+  height: 5rem;
   margin-bottom: 10px;
 }
 
 .Footer-social-link-block {
   margin: 0 auto;
   display: flex;
-  justify-content: start;
-  margin-bottom: 2.4rem;
+  justify-content: center;
+  gap: 60px;
+  margin-bottom:3rem;
 }
 .Footer-link {
   color: #a0a3c4;
@@ -46,16 +49,19 @@
 .Footer-social-link-block .App-social-link {
   /* margin: 0 3.2rem; */
   margin-left: 0;
-  margin-right: 20px;
+  margin-right: 0;
   display: flex;
-  width: 2rem;
-  height: 2rem;
+  width: 3.5rem;
+  height: 3.5rem;
   align-items: center;
   justify-content: center;
 }
+.Footer-social-link-block .App-social-link img{
+  width: 100%;
+}
 
 .Footer-social-link-block .App-social-link:hover img {
-  filter: brightness(0) invert(1);
+  filter: invert(1);
 }
 
 .Footer-copyright {
@@ -98,7 +104,7 @@
     display: block;
   }
   .Footer-social-link-block {
-    margin-bottom: 1.4rem;
+    gap: 20px;
   }
   .Footer-wrapper {
     padding-top: 2.5rem;

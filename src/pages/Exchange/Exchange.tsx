@@ -36,7 +36,9 @@ import ExchangeWalletTokens from "components/Exchange/ExchangeWalletTokens";
 import OrdersList from "components/Exchange/OrdersList";
 import PositionsList from "components/Exchange/PositionsList";
 import SwapBox from "components/Exchange/SwapBox";
-import TradeHistory from "components/Exchange/TradeHistory";
+// import TradeHistory from "components/Exchange/TradeHistory";
+
+import TradeHistorys from "components/Exchange/TradeHistorys";
 import Footer from "components/Footer/Footer";
 import Tab from "components/Tab/Tab";
 
@@ -58,7 +60,6 @@ import useV1TradeParamsProcessor from "domain/trade/useV1TradeParamsProcessor";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePendingTxns } from "lib/usePendingTxns";
 const { AddressZero } = ethers.constants;
-
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
 const UPDATED_POSITION_VALID_DURATION = 60 * 1000;
 
@@ -443,7 +444,7 @@ export const Exchange = forwardRef(
       "Short-Collateral-Address",
       getTokenBySymbol(chainId, defaultCollateralSymbol).address
     );
-    const [swapOption, setSwapOption] = useLocalStorageByChainId(chainId, "Swap-option-v2", LONG);
+    const [swapOption, setSwapOption] = useLocalStorageByChainId(chainId, "Swap-option-v2", SWAP);
     let [orderOption, setOrderOption] = useLocalStorageSerializeKey([chainId, "Order-option"], MARKET);
     const fromTokenAddress = tokenSelection?.[swapOption as any].from;
     const toTokenAddress = tokenSelection?.[swapOption as any].to;
@@ -585,6 +586,7 @@ export const Exchange = forwardRef(
     );
 
     const { infoTokens } = useInfoTokens(signer, chainId, active, tokenBalances, fundingRateInfo);
+
     const { minExecutionFee, minExecutionFeeUSD, minExecutionFeeErrorMessage } = useExecutionFee(
       signer,
       active,
@@ -786,7 +788,8 @@ export const Exchange = forwardRef(
     }));
 
     const flagOrdersEnabled = true;
-    const [orders] = useAccountOrders(flagOrdersEnabled);
+    // const [orders] = useAccountOrders(flagOrdersEnabled);
+    const orders = [];
 
     const [isWaitingForPluginApproval, setIsWaitingForPluginApproval] = useState(false);
     const [isWaitingForPositionRouterApproval, setIsWaitingForPositionRouterApproval] = useState(false);
@@ -867,7 +870,7 @@ export const Exchange = forwardRef(
     const ORDERS = "Orders";
     const TRADES = "Trades";
 
-    const LIST_SECTIONS = [POSITIONS, flagOrdersEnabled && ORDERS, TRADES].filter(Boolean);
+    const LIST_SECTIONS = [POSITIONS,ORDERS,TRADES].filter(Boolean);
     let [listSection, setListSection] = useLocalStorageByChainId(chainId, "List-section-v2", LIST_SECTIONS[0]);
     const LIST_SECTIONS_LABELS = {
       [ORDERS]: orders.length ? t`Orders (${orders.length})` : t`Orders`,
@@ -889,7 +892,7 @@ export const Exchange = forwardRef(
           className="muted font-base cancel-order-btn"
           disabled={isCancelMultipleOrderProcessing}
           type="button"
-          onClick={onMultipleCancelClick}
+          // onClick={onMultipleCancelClick}
         >
           <Plural value={cancelOrderIdList.length} one="Cancel order" other="Cancel # orders" />
         </button>
@@ -979,7 +982,7 @@ export const Exchange = forwardRef(
             />
           )}
           {listSection === TRADES && (
-            <TradeHistory
+            <TradeHistorys
               account={account}
               infoTokens={infoTokens}
               getTokenInfo={getTokenInfo}
@@ -1080,9 +1083,8 @@ export const Exchange = forwardRef(
             </div>
           </div>
           <div className="Exchange-lists small">{getListSection()}</div>
-          <UsefulLinks className="Useful-links-exchange" />
+          {/* <UsefulLinks className="Useful-links-exchange" /> */}
         </div>
-        <Footer />
       </div>
     );
   }

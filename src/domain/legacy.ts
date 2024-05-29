@@ -12,6 +12,8 @@ import Router from "abis/Router.json";
 import Token from "abis/Token.json";
 import UniPool from "abis/UniPool.json";
 import UniswapV2 from "abis/UniswapV2.json";
+import UniswapV3 from "abis/UniswapV3Factory.json";
+import UniPoolV3 from "abis/UniswapV3Pool.json";
 import Vault from "abis/Vault.json";
 
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, getChainName, getConstant, getHighExecutionFee } from "config/chains";
@@ -26,7 +28,7 @@ import { getTokenBySymbol } from "config/tokens";
 import { callContract, contractFetcher } from "lib/contracts";
 import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getProvider } from "lib/rpc";
-import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
+import { getGmxGraphClient, nissohGraphClient, endpointGraphClient } from "lib/subgraph/clients";
 import { groupBy } from "lodash";
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
@@ -204,6 +206,45 @@ export function useAllPositions(chainId, signer) {
   });
 
   return positions;
+}
+export function useHistoryTradeData(chainId, account, pageSize, startDate, endDate) {
+  // console.log(startDate)
+  // console.log(endDate)
+  const getKey = (pageIndex: number) => [chainId, "useHistoryTradeData", account, pageIndex, pageSize];
+  const {
+    data,
+    error,
+    size: pageIndex,
+    setSize: setPageIndex,
+  } = useSWRInfinite<[]>(getKey, {
+    fetcher: async (key) => {
+      const pageIndex = key[3];
+      const skip = pageIndex * pageSize;
+      const first = pageSize;
+      const query = gql(`query MyQuery {
+        swapInfos(where: {blockTimestamp_gt: "${startDate||new Date('1990.1.1').getTime()/1000}", blockTimestamp_lt: "${endDate || new Date('2200.1.1').getTime()/1000}",owner: "${account.toLowerCase()}"}, orderBy: blockTimestamp, orderDirection: desc,skip: ${skip},
+        first: ${first},) {
+          owner
+          tokenIn
+          tokenOut
+          transactionHash
+          amountIn
+          amountOut
+          blockTimestamp
+        }
+      }
+      `);
+      const { data } = await endpointGraphClient.query({ query, fetchPolicy: "no-cache" });
+      // console.log("data.swapInfos", data.swapInfos);
+      return data.swapInfos;
+    },
+  });
+  const trades = data ? data.flat() : [];
+  return {
+    trades,
+    pageIndex,
+    setPageIndex,
+  };
 }
 
 export function useAllOrders(chainId, signer) {
@@ -502,6 +543,7 @@ export function useHasOutdatedUi() {
 export function useGmxPrice(chainId, libraries, active) {
   const arbitrumLibrary = libraries && libraries.arbitrum ? libraries.arbitrum : undefined;
   const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum(arbitrumLibrary, active);
+  const { data: agxPriceFromNova, mutate: mutateFromNova } = useAGXPriceFromNova();
   const { data: gmxPriceFromAvalanche, mutate: mutateFromAvalanche } = useGmxPriceFromAvalanche();
 
   const gmxPrice = chainId === ARBITRUM ? gmxPriceFromArbitrum : gmxPriceFromAvalanche;
@@ -514,6 +556,20 @@ export function useGmxPrice(chainId, libraries, active) {
     gmxPrice,
     gmxPriceFromArbitrum,
     gmxPriceFromAvalanche,
+    mutate,
+  };
+}
+export function useAGXPrice() {
+  const { data: agxPriceFromNova, mutate: mutateFromNova } = useAGXPriceFromNova();
+
+  const agxPrice = agxPriceFromNova;
+  const mutate = useCallback(() => {
+    mutateFromNova();
+  }, [mutateFromNova]);
+
+  return {
+    agxPrice,
+    agxPriceFromNova,
     mutate,
   };
 }
@@ -692,6 +748,60 @@ function useGmxPriceFromArbitrum(signer, active) {
   }, [updateEthPrice, updateUniPoolSlot0]);
 
   return { data: gmxPrice, mutate };
+}
+function useAGXPriceFromNova() {
+  const v3Factory = getContract(ARBITRUM, "v3Factory");
+  const wethSwap = getContract(ARBITRUM, "WethSwap");
+  const agxAddressArb = getContract(ARBITRUM, "AGX");
+
+  const { data: poolAdr, mutate: updateReserves } = useSWR(["TraderAGXNovaReserves", ARBITRUM, v3Factory, "getPool"], {
+    fetcher: contractFetcher(undefined, UniswapV3, [agxAddressArb, wethSwap, 10000]),
+  });
+  const vaultAddress = getContract(ARBITRUM, "Vault");
+  const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address;
+  const { data: ethPrice, mutate: updateEthPrice } = useSWR<BigNumber>(
+    [`StakeV3:ethPrice`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
+    {
+      fetcher: contractFetcher(undefined, Vault) as any,
+    }
+  );
+  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR<any>(
+    poolAdr ? [`StakeV3:uniPoolSlot0:`, ARBITRUM, poolAdr, "slot0"] : null,
+    {
+      fetcher: contractFetcher(undefined, UniPoolV3),
+    }
+  );
+  // console.log(uniPoolSlot0)
+  const { data: uniPoolToken1, mutate: updateUniPoolToken1 } = useSWR<any>(
+    poolAdr ? [`StakeV3:uniPoolToken1:`, ARBITRUM, poolAdr, "token1"] : null,
+    {
+      fetcher: contractFetcher(undefined, UniPoolV3),
+    }
+  );
+
+  const agxPrice = useMemo(() => {
+    if (poolAdr && ethPrice && uniPoolSlot0 && uniPoolToken1) {
+      const { sqrtPriceX96 } = uniPoolSlot0;
+      let price;
+      // const ratioSquared = sqrtPriceX96.div(BigNumber.from(2).pow(96)).pow(2);
+      if (uniPoolToken1 === wethSwap) {
+        // agxprice = eth price *  (slot0.sqrtPriceX96 / 2** 96) ** 2
+        price = Number(ethPrice)/(10**30)*((Number(sqrtPriceX96)/(2**96))**2)
+      } else {
+        // agxprice  = eth price * ( 1 /  (slot0.sqrtPriceX96 / 2** 96) ** 2 )
+        price = Number(ethPrice)/(10**30)*(1/((Number(sqrtPriceX96)/(2**96))**2))
+      }
+      return price;
+    }
+  }, [ethPrice, poolAdr, wethSwap]);
+
+  const mutate = useCallback(() => {
+    updateReserves(undefined, true);
+    updateEthPrice(undefined, true);
+    // updateUniPoolSlot0(undefined, true);
+  }, [updateEthPrice, updateReserves]);
+
+  return { data: agxPrice, mutate };
 }
 
 export async function approvePlugin(chainId, pluginAddress, { signer, setPendingTxns, sentMsg, failMsg }) {

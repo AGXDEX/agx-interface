@@ -34,7 +34,7 @@
 
 .GlpSwap-content .GlpSwap-stats-card {
   max-width: 71.2rem;
-  margin-right: 1.5rem;
+  margin-right: 2.4rem;
 }
 
 .GlpSwap-stats-card .App-card-row .label {
@@ -52,16 +52,18 @@
 .GlpSwap-box .Exchange-swap-option-tabs {
   margin: 1.5rem 0;
 }
-.App-card-stats{
+.GlpSwap-stats-card .App-card-stats{
   display: flex;
   align-items: center;
   margin-bottom: 2.4rem;
+  padding: 1rem 1.5rem;
 }
 .App-card-stats .App-card-title { 
   margin-bottom: 0;
 }
 .App-card-content-flex {
   display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
 }
 .App-card-content-flex .App-card-row {
@@ -305,6 +307,19 @@
 .value-gap{
   margin: 0 0.2rem;
 }
+.Exchange-swap-max{
+  margin-left: 0.4rem;
+}
+.bridge-to-nova{
+  margin-bottom: 1rem;
+}
+.Bridge-toa .Modal-content {
+  width: 80%;
+
+}
+.Bridge-toa .Modal-body {
+  min-height: 60vh;
+}
 
 @media (max-width: 900px) {
   .GlpSwap-content {
@@ -349,6 +364,9 @@
     grid-gap: 1.5rem;
     margin-top: 0.8rem;
   }
+}
+.hideButton{
+  display: none;
 }
 @media (max-width: 600px) {
   .token-grid {

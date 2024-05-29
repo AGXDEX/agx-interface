@@ -11,11 +11,16 @@ import { useChainId } from "lib/chains";
 import { getAccountUrl, isHomeSite } from "lib/legacy";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
+import ChainDropdown from "components/ChainDropDown/ChainDropdown";
 import "./Header.scss";
 import { HeaderLink } from "./HeaderLink";
 import useWallet from "lib/wallets/useWallet";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useTradePageVersion } from "lib/useTradePageVersion";
+import { chainList } from "config/networks";
+import { helperToast } from "lib/helperToast";
+import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
+import { switchChain } from '@wagmi/core'
 
 type Props = {
   openSettings: () => void;
@@ -61,18 +66,30 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
   const showConnectionOptions = !isHomeSite();
   const [tradePageVersion] = useTradePageVersion();
 
-  const tradeLink = tradePageVersion === 2 ? "/trade" : "/v1";
+  // const tradeLink = tradePageVersion === 2 ? "/trade" : "/v1";
+  const tradeLink = "/v1";
 
   const selectorLabel = getChainName(chainId);
   const icon = getIcon(chainId, "network");
+  const selectChain = "ethereum";
 
   if (!active || !account) {
     return (
       <div className="App-header-user">
-        <div className="network-img-box">
+        {/* <div className="network-img-box">
           <img className="network-dropdown-icon network-img" src={icon} alt={selectorLabel} />
+        </div> */}
+
+      <div className="moreButton">
+        <div
+          className="addNova"
+          onClick={()=>addNovaChain()}
+        >
+          Add Nova to Metamask
         </div>
-        <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
+      </div>
+        <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
+        <div className={cx("App-header-trade-link")}>
           <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
           </HeaderLink>
@@ -82,14 +99,14 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
             <ConnectWalletButton onClick={openConnectModal} imgSrc={connectWalletImg}>
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>
-            {isDevelopment() && (
+            {/* {isDevelopment() && (
               <NetworkDropdown
                 small={small}
                 networkOptions={NETWORK_OPTIONS}
                 selectorLabel={selectorLabel}
                 openSettings={openSettings}
               />
-            )}
+            )} */}
           </>
         ) : (
           <LanguagePopupHome />
@@ -100,11 +117,66 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
 
   const accountUrl = getAccountUrl(chainId, account);
 
+  const addEvmChain= async(chain) => {
+    if (!window.ethereum) {
+      helperToast.error('Please install a wallet first.');
+      throw new Error('Please install a wallet first.');
+    }
+    const chainId = await window.ethereum.request({
+        method:"eth_chainId",
+    });
+    if (chainId === ('0x' + ARBITRUM.toString(16))) {
+      helperToast.success(
+        <div>
+          <Trans>
+          You have already added the zkLink Nova Network to your wallet.
+          </Trans>
+          <br />
+        </div>
+      );
+    } else {
+        await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [chain],
+        });
+        // await switchChain(rainbowKitConfig, { chainId: chain.chainId })
+        const nowChainId = await window.ethereum.request({
+            method:"eth_chainId",
+        });
+        if (nowChainId === ('0x' + ARBITRUM.toString(16))) {
+          helperToast.error('You have successfully add zkLink Nova Network to your wallet.');
+        }
+    }
+  }
+  const addNovaChain=async() => {
+    await addEvmChain({
+      chainId: '0x' + ARBITRUM.toString(16),
+      chainName: process.env.REACT_APP_ENV === "development" ? "zkLink Nova Testnet":'zkLink Nova',
+      rpcUrls: [process.env.REACT_APP_ENV === "development" ? "https://sepolia.rpc.zklink.io" : 'https://rpc.zklink.io'],
+      iconUrls: [],
+      nativeCurrency: {
+        name: 'ETH',
+        symbol: 'ETH',
+        decimals: 18,
+      },
+      blockExplorerUrls: [(process.env.REACT_APP_ENV === "development" ? "https://sepolia.explorer.zklink.io":'https://explorer.zklink.io') ?? ''],
+    });
+  }
   return (
     <div className="App-header-user">
-      <div className="network-img-box">
+      {/* <div className="network-img-box">
         <img className="network-dropdown-icon network-img" src={icon} alt={selectorLabel} />
+      </div> */}
+      <div className="moreButton">
+        <div
+          className="addNova"
+          onClick={()=>addNovaChain()}
+        >
+          Add Nova to Metamask
+        </div>
+        <div className="novaPoints">Nova Points:</div>
       </div>
+      <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
       <div className={cx("App-header-trade-link")}>
         <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
           {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
@@ -120,14 +192,14 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
             />
           </div>
-          {isDevelopment() && (
+          {/* {isDevelopment() && (
             <NetworkDropdown
               small={small}
               networkOptions={NETWORK_OPTIONS}
               selectorLabel={selectorLabel}
               openSettings={openSettings}
             />
-          )}
+          )} */}
         </>
       ) : (
         <LanguagePopupHome />

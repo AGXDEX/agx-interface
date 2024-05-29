@@ -112,7 +112,7 @@ export default function MarketTokenSelector(props: Props) {
                           <span>GM{indexName && `: ${indexName}`}</span>
                           <span className="subtext">{poolName && `[${poolName}]`}</span>
                         </div>
-                        <div className="Market-subtext">GMX Market Tokens</div>
+                        <div className="Market-subtext">AGX Market Tokens</div>
                       </div>
                     </>
                   )}

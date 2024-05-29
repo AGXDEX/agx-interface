@@ -79,10 +79,9 @@ export const nova = /*#__PURE__*/ defineChain({
   },
 });
 const arbitrum = process.env.REACT_APP_ENV === "development" ? sepolia : nova;
-console.log(arbitrum);
 
 const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
-const APP_NAME = "GMX";
+const APP_NAME = "AGX";
 
 const popularWalletList: WalletList = [
   {

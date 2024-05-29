@@ -133,6 +133,9 @@ export function DateRangeSelect({ startDate, endDate, onChange }: Props) {
   }, [onChange]);
 
   const handleSelectAllTime = useCallback(() => {
+
+    localStorage.setItem('trade-startDate', '');
+    localStorage.setItem('trade-endDate', '');
     onChange([undefined, undefined]);
   }, [onChange]);
 

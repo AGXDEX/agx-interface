@@ -6,13 +6,6 @@
   left: 0;
   right: 0;
 }
-.network-img-box{
-  border-radius: 0.8rem;
-  background: #262831;
-  padding: 0.5rem;
-  margin-right: 2.4rem;
-}
-
 
 .App-header.large {
   height: 6.2rem;
@@ -140,13 +133,13 @@
   margin-right: 1.2rem;
 }
 
-.App-header-link-main img {
+.App-header-link-main .big {
   display: inline-block;
   height: 2.15rem;
   vertical-align: middle;
 }
 
-.App-header-link-main img.small {
+.App-header-link-main .small {
   display: none;
 }
 
@@ -302,11 +295,11 @@
 }
 
 @media (max-width: 600px) {
-  .App-header-link-main img.big {
+  .App-header-link-main .big {
     display: none;
   }
 
-  .App-header-link-main img.small {
+  .App-header-link-main .small {
     display: inline-block;
   }
 }

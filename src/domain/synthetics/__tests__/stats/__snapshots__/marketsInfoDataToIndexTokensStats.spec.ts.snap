@@ -5538,7 +5538,7 @@ Array [
             "coingeckoUrl": "https://www.coingecko.com/en/coins/uniswap",
             "decimals": 18,
             "isSynthetic": true,
-            "name": "Uniswap",
+            "name": "Novaswap",
             "priceDecimals": 3,
             "prices": Object {
               "maxPrice": Object {
@@ -5878,7 +5878,7 @@ Array [
       "coingeckoUrl": "https://www.coingecko.com/en/coins/uniswap",
       "decimals": 18,
       "isSynthetic": true,
-      "name": "Uniswap",
+      "name": "Novaswap",
       "priceDecimals": 3,
       "prices": Object {
         "maxPrice": Object {
