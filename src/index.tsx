@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-empty-function */
 import "regenerator-runtime/runtime";
 
 import React from "react";
@@ -8,6 +10,12 @@ import WalletProvider from "lib/wallets/WalletProvider";
 import App from "./App/App";
 import reportWebVitals from "./reportWebVitals";
 
+if (process.env.NODE_ENV === "production") {
+  console.log = () => {};
+  console.error = () => {};
+  console.debug = () => {};
+}
+
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Router>
@@ -17,6 +25,7 @@ createRoot(document.getElementById("root")!).render(
     </Router>
   </React.StrictMode>
 );
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.info))

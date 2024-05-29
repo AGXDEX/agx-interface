@@ -174,7 +174,7 @@ function ClaimAllModal(props) {
         </div>
         <div>You will receive</div>
         <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-full" onClick={goDeposit}>
+          <Button variant="primary-action" className="w-full" onClick={goDeposit} loading={isDeposit}>
             Claim
           </Button>
         </div>
