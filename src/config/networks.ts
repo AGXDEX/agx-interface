@@ -174,6 +174,22 @@ export type ZkSyncNetwork = {
 export const nexusNode: ZkSyncNetwork[] = [
   {
     id: 810180,
+    key: "nova",
+    name: "zkLink Nova",
+    rpcUrl: "https://rpc.zklink.io",
+    logoUrl: "/img/nova-logo.png",
+    blockExplorerUrl: "https://explorer.zklink.io",
+    blockExplorerApi: "https://explorer-api.zklink.io",
+    withdrawalFinalizerApi: "https://withdrawal-api.zklink.io",
+    mainContract: "0x9719cD314BBf84B18aAEDEF56DF88E2267aA01e3",
+    erc20BridgeL1: "0x63e059BDEDeA829c22EfA31CbaDb9bea5E86c3Cd",
+    erc20BridgeL2: "0xcc43208B28B1eC25F000EfC0D2c2aF044715F888",
+    l1Gateway: "0xc6EbbD78E8f81626Bc62570f3C5949221F87b3Ee",
+    isEthGasToken: true,
+    l1Network: l1Networks.mainnet,
+  },
+  {
+    id: 810180,
     key: "ethereum",
     name: l1Networks.mainnet.name,
     rpcUrl: "https://rpc.zklink.io",

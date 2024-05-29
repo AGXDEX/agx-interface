@@ -296,6 +296,7 @@ export default function GlpSwap(props) {
       fetcher: contractFetcher(signer, GLP),
     }
   );
+  console.log(glpBalance, "glpBalance");
 
   const { data: rewardRate } = useSWR(
     [`StakeV2:rewardRate:${active}`, chainId, yieldTrackerAddress, "rewardRate"],
@@ -766,7 +767,7 @@ export default function GlpSwap(props) {
       value,
       sentMsg: t`Buy submitted.`,
       failMsg: t`Buy failed.`,
-      successMsg: 
+      successMsg:
       `${formatAmount(glpAmount, 18, 4, true)} ALP bought with ${formatAmount(
         swapAmount,
         swapTokenInfo.decimals,
@@ -1207,7 +1208,13 @@ const alpApr = calculateAlpAPR(glpSupplyUsd, rewardRate, agxPrice);
                   Bridge to Nova
                 </Button>
               </div>
-              <Button type="submit" variant="primary-action" className="w-full" disabled={!isPrimaryEnabled()}>
+              <Button
+                type="submit"
+                variant="primary-action"
+                className="w-full"
+                disabled={!isPrimaryEnabled()}
+                loading={isSubmitting || isApproving}
+              >
                 {getPrimaryText()}
               </Button>
             </div>
