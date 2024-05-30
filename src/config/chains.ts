@@ -11,7 +11,7 @@ export const ENV_AVALANCHE_RPC_URLS = process.env.REACT_APP_AVALANCHE_RPC_URLS;
 export const BSС_MAINNET = 56;
 export const BSС_TESTNET = 97;
 export const ETH_MAINNET = 1;
-export const AVALANCHE = 43114;
+export const AVALANCHE = 810180;
 export const AVALANCHE_FUJI = 43113;
 type ArbitrumType = 810181 | 810180;
 console.log(process.env.REACT_APP_ENV, process.env.REACT_APP_CHAIN_ID);
@@ -37,7 +37,7 @@ if (isDevelopment()) {
 
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: false,
-  [AVALANCHE]: false,
+  // [AVALANCHE]: false,
   [BSС_MAINNET]: false,
   [NOVA]: false,
   [NOVA_SEPOLIA]: false,
@@ -48,7 +48,7 @@ export const CHAIN_NAMES_MAP = {
   [BSС_TESTNET]: "BSC Testnet",
   [ARBITRUM_GOERLI]: "Arbitrum Goerli",
   [ARBITRUM]: process.env.REACT_APP_ENV === "development" ? "zkLink Nova Sepolia Testnet" : "zkLink Nova",
-  [AVALANCHE]: "Avalanche",
+  // [AVALANCHE]: "Avalanche",
   [AVALANCHE_FUJI]: "Avalanche Fuji",
   [NOVA]: "zkLink Nova",
   [NOVA_SEPOLIA]: "zkLink Nova Sepolia Testnet",
@@ -56,7 +56,7 @@ export const CHAIN_NAMES_MAP = {
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
   [ARBITRUM]: "0",
-  [AVALANCHE]: "3000000000", // 3 gwei
+  // [AVALANCHE]: "3000000000", // 3 gwei
   [NOVA]: "0",
 };
 
@@ -66,7 +66,7 @@ export const MAX_GAS_PRICE_MAP = {
 
 export const HIGH_EXECUTION_FEES_MAP = {
   [ARBITRUM]: 5, // 5 USD
-  [AVALANCHE]: 5, // 5 USD
+  // [AVALANCHE]: 5, // 5 USD
   [AVALANCHE_FUJI]: 5, // 5 USD
   [NOVA]: 5, // 5 USD
   [NOVA_SEPOLIA]: 5, // 5 USD
@@ -74,7 +74,7 @@ export const HIGH_EXECUTION_FEES_MAP = {
 
 export const EXCESSIVE_EXECUTION_FEES_MAP = {
   [ARBITRUM]: 10, // 10 USD
-  [AVALANCHE]: 10, // 10 USD
+  // [AVALANCHE]: 10, // 10 USD
   [AVALANCHE_FUJI]: 10, // 10 USD
   [NOVA]: 10, // 10 USD
   [NOVA_SEPOLIA]: 10, // 10 USD
@@ -87,7 +87,7 @@ export const EXECUTION_FEE_MULTIPLIER_MAP = {
   // case yet
   [ARBITRUM]: 65000,
   // multiplier for Avalanche is just the average gas usage
-  [AVALANCHE]: 700000,
+  // [AVALANCHE]: 700000,
   [AVALANCHE_FUJI]: 700000,
   [NOVA]: 700000,
   [NOVA_SEPOLIA]: 700000,
@@ -95,7 +95,7 @@ export const EXECUTION_FEE_MULTIPLIER_MAP = {
 
 export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
   [ARBITRUM]: BigNumber.from(10).pow(29).mul(5),
-  [AVALANCHE]: BigNumber.from(10).pow(29).mul(35),
+  // [AVALANCHE]: BigNumber.from(10).pow(29).mul(35),
   [AVALANCHE_FUJI]: BigNumber.from(10).pow(29).mul(2),
   [NOVA]: BigNumber.from(10).pow(29).mul(5),
   [NOVA_SEPOLIA]: BigNumber.from(10).pow(29).mul(5),
@@ -107,10 +107,10 @@ export const EXECUTION_FEE_CONFIG_V2: {
     defaultBufferBps?: number;
   };
 } = {
-  [AVALANCHE]: {
-    shouldUseMaxPriorityFeePerGas: true,
-    defaultBufferBps: 1000, // 10%
-  },
+  // [AVALANCHE]: {
+  //   shouldUseMaxPriorityFeePerGas: true,
+  //   defaultBufferBps: 1000, // 10%
+  // },
   [AVALANCHE_FUJI]: {
     shouldUseMaxPriorityFeePerGas: true,
     defaultBufferBps: 1000, // 10%
@@ -178,19 +178,19 @@ const constants = {
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.000300001"),
   },
 
-  [AVALANCHE]: {
-    nativeTokenSymbol: "AVAX",
-    wrappedTokenSymbol: "WAVAX",
-    defaultCollateralSymbol: "USDC",
-    defaultFlagOrdersEnabled: true,
-    positionReaderPropsLength: 9,
-    v2: true,
+  // [AVALANCHE]: {
+  //   nativeTokenSymbol: "AVAX",
+  //   wrappedTokenSymbol: "WAVAX",
+  //   defaultCollateralSymbol: "USDC",
+  //   defaultFlagOrdersEnabled: true,
+  //   positionReaderPropsLength: 9,
+  //   v2: true,
 
-    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
-    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
-    // contract requires that execution fee be strictly greater than instead of gte
-    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
-  },
+  //   SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
+  //   INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
+  //   // contract requires that execution fee be strictly greater than instead of gte
+  //   DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
+  // },
 
   [AVALANCHE_FUJI]: {
     nativeTokenSymbol: "AVAX",
@@ -261,7 +261,7 @@ export const RPC_PROVIDERS = {
     // "https://endpoints.omniatech.io/v1/arbitrum/goerli/public",
     // "https://arbitrum-goerli.public.blastapi.io",
   ],
-  [AVALANCHE]: ["https://api.avax.network/ext/bc/C/rpc"],
+  // [AVALANCHE]: ["https://api.avax.network/ext/bc/C/rpc"],
   [AVALANCHE_FUJI]: [
     "https://avalanche-fuji-c-chain.publicnode.com",
     "https://api.avax-test.network/ext/bc/C/rpc",
@@ -276,9 +276,9 @@ export const FALLBACK_PROVIDERS = {
   // [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyHttpUrl()],
   [ARBITRUM]:
     process.env.REACT_APP_ENV === "development" ? ["https://sepolia.rpc.zklink.io"] : ["https://rpc.zklink.io"],
-  [AVALANCHE]: ENV_AVALANCHE_RPC_URLS
-    ? JSON.parse(ENV_AVALANCHE_RPC_URLS)
-    : ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
+  // [AVALANCHE]: ENV_AVALANCHE_RPC_URLS
+  //   ? JSON.parse(ENV_AVALANCHE_RPC_URLS)
+  //   : ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
   [AVALANCHE_FUJI]: [
     "https://endpoints.omniatech.io/v1/avax/fuji/public",
     "https://api.avax-test.network/ext/bc/C/rpc",
@@ -334,17 +334,17 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
     rpcUrls: RPC_PROVIDERS[ARBITRUM],
     blockExplorerUrls: [getExplorerUrl(ARBITRUM)],
   },
-  [AVALANCHE]: {
-    chainId: "0x" + AVALANCHE.toString(16),
-    chainName: "Avalanche",
-    nativeCurrency: {
-      name: "AVAX",
-      symbol: "AVAX",
-      decimals: 18,
-    },
-    rpcUrls: RPC_PROVIDERS[AVALANCHE],
-    blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
-  },
+  // [AVALANCHE]: {
+  //   chainId: "0x" + AVALANCHE.toString(16),
+  //   chainName: "Avalanche",
+  //   nativeCurrency: {
+  //     name: "AVAX",
+  //     symbol: "AVAX",
+  //     decimals: 18,
+  //   },
+  //   rpcUrls: RPC_PROVIDERS[AVALANCHE],
+  //   blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
+  // },
   [AVALANCHE_FUJI]: {
     chainId: "0x" + AVALANCHE_FUJI.toString(16),
     chainName: "Avalanche Fuji Testnet",
