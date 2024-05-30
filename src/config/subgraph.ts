@@ -2,6 +2,17 @@ import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, ETH_MAINNET } fro
 import { isDevelopment } from "./env";
 import { getSubgraphUrlKey } from "./localStorage";
 
+export const STAKER_SUBGRAPH_URL =
+  process.env.REACT_APP_ENV === "development"
+    ? "https://sepolia.graph.zklink.io/subgraphs/name/staker"
+    : "https://graph.zklink.io/subgraphs/name/agx-staker";
+
+export const SWAP_SUBGRAPH_URL =
+  process.env.REACT_APP_ENV === "development"
+    ? "https://sepolia.graph.zklink.io/subgraphs/name/novasap-subgraph"
+    : "https://graph.zklink.io/subgraphs/name/novaswap";
+
+
 const SUBGRAPH_URLS = {
   [ARBITRUM]: {
     stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-stats/api",
@@ -9,7 +20,7 @@ const SUBGRAPH_URLS = {
     nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
     leaderboard: "https://squid.subsquid.io/gmx-synthetics-arbitrum/graphql",
-    endpoint: "https://sepolia.graph.zklink.io/subgraphs/name/staker",
+    endpoint: "https://graph.zklink.io/subgraphs/name/agx-staker",
   },
 
   [ARBITRUM_GOERLI]: {

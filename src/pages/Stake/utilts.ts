@@ -41,12 +41,10 @@ export function getEmissionData(startTimestamp) {
 
 export function calculateManage(managedUsd, glpSupplyUsd) {
   if (!managedUsd || managedUsd.isZero()) {
-    console.error("Error: managedUsd is zero or undefined.");
     return BigNumber.from(0);
   }
 
   if (!glpSupplyUsd || glpSupplyUsd.isZero()) {
-    console.error("Error: division by zero. 'glpSupplyUsd' is zero or undefined.");
     return BigNumber.from(0);
   }
 

@@ -172,10 +172,9 @@ const tabOptions = [t`Buy ALP`, t`Sell ALP`];
 const dataList = [
   { name: "USDT", value: 0.25 },
   { name: "USDC", value: 0.25 },
-  { name: "ETH", value: 0.15 },
+  { name: "ETH", value: 0.20 },
   { name: "WBTC", value: 0.15 },
-  { name: "pufETH", value: 0.1 },
-  { name: "ezETH", value: 0.1 },
+  { name: "pufETH", value: 0.15 },
 ];
 export default function GlpSwap(props) {
   const { isBuying, setIsBuying } = props;
@@ -296,6 +295,7 @@ export default function GlpSwap(props) {
       fetcher: contractFetcher(signer, GLP),
     }
   );
+  console.log(glpBalance, "glpBalance");
 
   const { data: rewardRate } = useSWR(
     [`StakeV2:rewardRate:${active}`, chainId, yieldTrackerAddress, "rewardRate"],
@@ -766,7 +766,7 @@ export default function GlpSwap(props) {
       value,
       sentMsg: t`Buy submitted.`,
       failMsg: t`Buy failed.`,
-      successMsg: 
+      successMsg:
       `${formatAmount(glpAmount, 18, 4, true)} ALP bought with ${formatAmount(
         swapAmount,
         swapTokenInfo.decimals,
@@ -1207,7 +1207,13 @@ const alpApr = calculateAlpAPR(glpSupplyUsd, rewardRate, agxPrice);
                   Bridge to Nova
                 </Button>
               </div>
-              <Button type="submit" variant="primary-action" className="w-full" disabled={!isPrimaryEnabled()}>
+              <Button
+                type="submit"
+                variant="primary-action"
+                className="w-full"
+                disabled={!isPrimaryEnabled()}
+                loading={isSubmitting || isApproving}
+              >
                 {getPrimaryText()}
               </Button>
             </div>

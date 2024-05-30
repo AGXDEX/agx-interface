@@ -7,23 +7,6 @@ export const NATIVE_TOKEN_ADDRESS = ethers.constants.AddressZero;
 import { SELECTED_CHAIN_LOCAL_STORAGE_KEY } from "config/localStorage";
 const chainKeyFromLocalStorage = localStorage.getItem(SELECTED_CHAIN_LOCAL_STORAGE_KEY)||'nova';
 const ChainToken: Token[] = [
-  // {
-  //   name: "Dai",
-  //   symbol: "Dai",
-  //   decimals: 18,
-  //   address: "0xfc31ff38e24901052b813dcebef5a9a10eaf25ec",
-  //   isShortable: true,
-  //   imageUrl: "https://assets.coingecko.com/coins/images/34753/large/Ezeth_logo_circle.png?1713496404",
-  //   coingeckoUrl: "https://www.coingecko.com/en/coins/renzo-restaked-eth",
-  //   explorerUrl: "https://sepolia.explorer.zklink.io/address/0xD7C43Ef14bb17C8bBD6575992aa35d9EBBfc512D",
-  //   isV1Available: true,
-  //   l1Addresses: [
-  //     {
-  //       key: "arbitrum",
-  //       address: "0x2416092f143378750bb29b79eD961ab195CcEea5",
-  //     },
-  //   ],
-  // },
   {
     name: "Ethereum",
     symbol: "ETH",
@@ -43,7 +26,7 @@ const ChainToken: Token[] = [
     symbol: "wETH",
     decimals: 18,
     //TODO: WETH9 address config
-    address: "0x6e42d10eB474a17b14f3cfeAC2590bfa604313C7",
+    address: "0x8280a4e7D5B3B658ec4580d3Bc30f5e50454F169",
     isWrapped: true,
     baseSymbol: "ETH",
     imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
@@ -147,32 +130,32 @@ const ChainToken: Token[] = [
       },
     ],
   },
-  {
-    name: "ezETH (Arbitrum)",
-    symbol: "ezETH",
-    decimals: 18,
-    address: "0xD7C43Ef14bb17C8bBD6575992aa35d9EBBfc512D",
-    isShortable: true,
-    imageUrl: "https://assets.coingecko.com/coins/images/34753/large/Ezeth_logo_circle.png?1713496404",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/renzo-restaked-eth",
-    explorerUrl: "https://sepolia.explorer.zklink.io/address/0xD7C43Ef14bb17C8bBD6575992aa35d9EBBfc512D",
-    isV1Available: true,
-    l1Addresses: [
-      {
-        key: "arbitrum",
-        address: "0x2416092f143378750bb29b79eD961ab195CcEea5",
-      },
-    ],
-  },
+  // {
+  //   name: "ezETH (Arbitrum)",
+  //   symbol: "ezETH",
+  //   decimals: 18,
+  //   address: "0x3FDB1939daB8e2d4F7a04212F142469Cd52d6402",
+  //   isShortable: true,
+  //   imageUrl: "https://assets.coingecko.com/coins/images/34753/large/Ezeth_logo_circle.png?1713496404",
+  //   coingeckoUrl: "https://www.coingecko.com/en/coins/renzo-restaked-eth",
+  //   explorerUrl: "https://sepolia.explorer.zklink.io/address/0x3FDB1939daB8e2d4F7a04212F142469Cd52d6402",
+  //   isV1Available: true,
+  //   l1Addresses: [
+  //     {
+  //       key: "arbitrum",
+  //       address: "0x2416092f143378750bb29b79eD961ab195CcEea5",
+  //     },
+  //   ],
+  // },
   {
     name: "Tether",
     symbol: "USDT",
     decimals: 6,
-    address: "0x773646397e21C0B4a323f7FdB98B6c45F5Df5A65",
+    address: "0x2F8A25ac62179B31D62D7F80884AE57464699059",
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
     coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
-    explorerUrl: "https://sepolia.explorer.zklink.io/address/0x773646397e21C0B4a323f7FdB98B6c45F5Df5A65",
+    explorerUrl: "https://sepolia.explorer.zklink.io/address/0x2F8A25ac62179B31D62D7F80884AE57464699059",
     isV1Available: true,
     l1Addresses: [
       {
@@ -256,6 +239,98 @@ const ChainToken: Token[] = [
     ],
   },
 ];
+
+const novaSepoliaChain = [
+  // {
+  //   name: "Dai",
+  //   symbol: "Dai",
+  //   decimals: 18,
+  //   address: '0x5f2eC2cC20C1B556E397e70193b28bE7b459C54f', // ，ethers.constants.AddressZero
+  //   isNative: true,
+  //   isShortable: true,
+  //   imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+  //   coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+  //   isV1Available: true,
+  // },
+  {
+    name: "Ethereum",
+    symbol: "ETH",
+    decimals: 18,
+    address: ethers.constants.AddressZero, // ，ethers.constants.AddressZero
+    isNative: true,
+    isShortable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+    isV1Available: true,
+  },
+  {
+    name: "Wrapped Ethereum",
+    symbol: "wETH",
+    decimals: 18,
+    address: "0x6e42d10eB474a17b14f3cfeAC2590bfa604313C7",
+    isWrapped: true,
+    baseSymbol: "ETH",
+    imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
+    isV1Available: true,
+  },
+  {
+    name: "Bitcoin (WBTC)",
+    symbol: "WBTC",
+    assetSymbol: "WBTC",
+    decimals: 8,
+    address: "0xbEacb61e11940e38EAdCf41860b9ea31E2a90deC",
+    isShortable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
+    explorerUrl: "https://explorer.zklink.io/address/0xbEacb61e11940e38EAdCf41860b9ea31E2a90deC",
+    isV1Available: true,
+  },
+  {
+    name: "pufETH (Ethereum)",
+    symbol: "pufETH",
+    decimals: 18,
+    address: "0x1569046dC6D4bd5d06cA5fa2fb83D2885bd87b20",
+    isShortable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/35176/large/pufETH-200-200-resolution.png?1707753174",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/pufeth",
+    explorerUrl: "https://sepolia.explorer.zklink.io/address/0x1569046dC6D4bd5d06cA5fa2fb83D2885bd87b20",
+    isV1Available: true,
+  },
+  // {
+  //   name: "ezETH (Arbitrum)",
+  //   symbol: "ezETH",
+  //   decimals: 18,
+  //   address: "0xD7C43Ef14bb17C8bBD6575992aa35d9EBBfc512D",
+  //   isShortable: true,
+  //   imageUrl: "https://assets.coingecko.com/coins/images/34753/large/Ezeth_logo_circle.png?1713496404",
+  //   coingeckoUrl: "https://www.coingecko.com/en/coins/renzo-restaked-eth",
+  //   explorerUrl: "https://sepolia.explorer.zklink.io/address/0xD7C43Ef14bb17C8bBD6575992aa35d9EBBfc512D",
+  //   isV1Available: true,
+  // },
+  {
+    name: "Tether",
+    symbol: "USDT",
+    decimals: 6,
+    address: "0x773646397e21C0B4a323f7FdB98B6c45F5Df5A65",
+    isStable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
+    explorerUrl: "https://sepolia.explorer.zklink.io/address/0x773646397e21C0B4a323f7FdB98B6c45F5Df5A65",
+    isV1Available: true,
+  },
+  {
+    name: "USD Coin",
+    symbol: "USDC",
+    decimals: 6,
+    address: "0x0A8714d8fc4bE1b8f2B2AB29b8e4fEe9B271a57D",
+    isStable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
+    explorerUrl: "https://sepolia.explorer.zklink.io/address/0x0A8714d8fc4bE1b8f2B2AB29b8e4fEe9B271a57D",
+    isV1Available: true,
+  },
+];
 const novaChain = [
     // {
     //   name: "Dai",
@@ -283,7 +358,7 @@ const novaChain = [
       name: "Wrapped Ethereum",
       symbol: "wETH",
       decimals: 18,
-      address: "0x6e42d10eB474a17b14f3cfeAC2590bfa604313C7",
+      address: "0x8280a4e7D5B3B658ec4580d3Bc30f5e50454F169",
       isWrapped: true,
       baseSymbol: "ETH",
       imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
@@ -295,64 +370,70 @@ const novaChain = [
       symbol: "WBTC",
       assetSymbol: "WBTC",
       decimals: 8,
-      address: "0xbEacb61e11940e38EAdCf41860b9ea31E2a90deC",
+      address: "0xDa4AaEd3A53962c83B35697Cd138cc6df43aF71f",
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
       coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
-      explorerUrl: "https://explorer.zklink.io/address/0xbEacb61e11940e38EAdCf41860b9ea31E2a90deC",
+      explorerUrl: "https://explorer.zklink.io/address/0xDa4AaEd3A53962c83B35697Cd138cc6df43aF71f",
       isV1Available: true,
     },
     {
       name: "pufETH (Ethereum)",
       symbol: "pufETH",
       decimals: 18,
-      address: "0x1569046dC6D4bd5d06cA5fa2fb83D2885bd87b20",
+      address: "0x1B49eCf1A8323Db4abf48b2F5EFaA33F7DdAB3FC",
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/35176/large/pufETH-200-200-resolution.png?1707753174",
       coingeckoUrl: "https://www.coingecko.com/en/coins/pufeth",
-      explorerUrl: "https://sepolia.explorer.zklink.io/address/0x1569046dC6D4bd5d06cA5fa2fb83D2885bd87b20",
+      explorerUrl: "https://explorer.zklink.io/address/0x1B49eCf1A8323Db4abf48b2F5EFaA33F7DdAB3FC",
       isV1Available: true,
     },
-    {
-      name: "ezETH (Arbitrum)",
-      symbol: "ezETH",
-      decimals: 18,
-      address: "0xD7C43Ef14bb17C8bBD6575992aa35d9EBBfc512D",
-      isShortable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/34753/large/Ezeth_logo_circle.png?1713496404",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/renzo-restaked-eth",
-      explorerUrl: "https://sepolia.explorer.zklink.io/address/0xD7C43Ef14bb17C8bBD6575992aa35d9EBBfc512D",
-      isV1Available: true,
-    },
+    // {
+    //   name: "ezETH (Arbitrum)",
+    //   symbol: "ezETH",
+    //   decimals: 18,
+    //   address: "0x3FDB1939daB8e2d4F7a04212F142469Cd52d6402",
+    //   isShortable: true,
+    //   imageUrl: "https://assets.coingecko.com/coins/images/34753/large/Ezeth_logo_circle.png?1713496404",
+    //   coingeckoUrl: "https://www.coingecko.com/en/coins/renzo-restaked-eth",
+    //   explorerUrl: "https://explorer.zklink.io/address/0x3FDB1939daB8e2d4F7a04212F142469Cd52d6402",
+    //   isV1Available: true,
+    // },
     {
       name: "Tether",
       symbol: "USDT",
       decimals: 6,
-      address: "0x773646397e21C0B4a323f7FdB98B6c45F5Df5A65",
+      address: "0x2F8A25ac62179B31D62D7F80884AE57464699059",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
       coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
-      explorerUrl: "https://sepolia.explorer.zklink.io/address/0x773646397e21C0B4a323f7FdB98B6c45F5Df5A65",
+      explorerUrl: "https://explorer.zklink.io/address/0x2F8A25ac62179B31D62D7F80884AE57464699059",
       isV1Available: true,
     },
     {
       name: "USD Coin",
       symbol: "USDC",
       decimals: 6,
-      address: "0x0A8714d8fc4bE1b8f2B2AB29b8e4fEe9B271a57D",
+      address: "0x1a1A3b2ff016332e866787B311fcB63928464509",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
       coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
-      explorerUrl: "https://sepolia.explorer.zklink.io/address/0x0A8714d8fc4bE1b8f2B2AB29b8e4fEe9B271a57D",
+      explorerUrl: "https://explorer.zklink.io/address/0x1a1A3b2ff016332e866787B311fcB63928464509",
       isV1Available: true,
     },
   ]
 
-const tokens: any[] = chainKeyFromLocalStorage === 'nova'? novaChain: ChainToken.filter((token) => {
-  return token.symbol === "ETH" || token.l1Addresses?.some((address) => address.key === chainKeyFromLocalStorage);
-}).map((item) => {
-  return novaChain.find((i) => i.symbol === item.symbol)
-});
+//TODO: Different chain token config
+const novaChainTokens = process.env.REACT_APP_ENV === "development"? novaSepoliaChain: novaChain;
+
+const tokens: any[] =
+  chainKeyFromLocalStorage === "nova"
+    ? novaChainTokens
+    : ChainToken.filter((token) => {
+        return token.symbol === "ETH" || token.l1Addresses?.some((address) => address.key === chainKeyFromLocalStorage);
+      }).map((item) => {
+        return novaChainTokens.find((i) => i.symbol === item.symbol);
+      });
 export const TOKENS: { [chainId: number]: Token[] } = {
   [AVALANCHE]: [
     {
@@ -963,86 +1044,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
   ],
   [ARBITRUM]: tokens,
-  // [ARBITRUM]: [
-  //   {
-  //     name: "Ethereum",
-  //     symbol: "ETH",
-  //     decimals: 18,
-  //     address: ethers.constants.AddressZero, // ，ethers.constants.AddressZero
-  //     isNative: true,
-  //     isShortable: true,
-  //     imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-  //     coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
-  //     isV1Available: true,
-  //   },
-  //   {
-  //     name: "Wrapped Ethereum",
-  //     symbol: "WETH",
-  //     decimals: 18,
-  //     address: "0x6e42d10eB474a17b14f3cfeAC2590bfa604313C7",
-  //     isWrapped: true,
-  //     baseSymbol: "ETH",
-  //     imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-  //     coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
-  //     isV1Available: true,
-  //   },
-  //   {
-  //     name: "Bitcoin (WBTC)",
-  //     symbol: "BTC",
-  //     assetSymbol: "WBTC",
-  //     decimals: 8,
-  //     address: "0xbEacb61e11940e38EAdCf41860b9ea31E2a90deC",
-  //     isShortable: true,
-  //     imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
-  //     coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
-  //     explorerUrl: "https://explorer.zklink.io/address/0xbEacb61e11940e38EAdCf41860b9ea31E2a90deC",
-  //     isV1Available: true,
-  //   },
-  //   {
-  //     name: "pufETH",
-  //     symbol: "pufETH",
-  //     decimals: 18,
-  //     address: "0x1569046dC6D4bd5d06cA5fa2fb83D2885bd87b20",
-  //     isShortable: true,
-  //     imageUrl: "https://assets.coingecko.com/coins/images/35176/large/pufETH-200-200-resolution.png?1707753174",
-  //     coingeckoUrl: "https://www.coingecko.com/en/coins/pufeth",
-  //     explorerUrl: "https://sepolia.explorer.zklink.io/address/0x1569046dC6D4bd5d06cA5fa2fb83D2885bd87b20",
-  //     isV1Available: true,
-  //   },
-  //   {
-  //     name: "ezETH",
-  //     symbol: "ezETH",
-  //     decimals: 18,
-  //     address: "0xD7C43Ef14bb17C8bBD6575992aa35d9EBBfc512D",
-  //     isShortable: true,
-  //     imageUrl: "https://assets.coingecko.com/coins/images/34753/large/Ezeth_logo_circle.png?1713496404",
-  //     coingeckoUrl: "https://www.coingecko.com/en/coins/renzo-restaked-eth",
-  //     explorerUrl: "https://sepolia.explorer.zklink.io/address/0xD7C43Ef14bb17C8bBD6575992aa35d9EBBfc512D",
-  //     isV1Available: true,
-  //   },
-  //   {
-  //     name: "Tether",
-  //     symbol: "USDT",
-  //     decimals: 6,
-  //     address: "0x773646397e21C0B4a323f7FdB98B6c45F5Df5A65",
-  //     isStable: true,
-  //     imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
-  //     coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
-  //     explorerUrl: "https://sepolia.explorer.zklink.io/address/0x773646397e21C0B4a323f7FdB98B6c45F5Df5A65",
-  //     isV1Available: true,
-  //   },
-  //   {
-  //     name: "USD Coin",
-  //     symbol: "USDC",
-  //     decimals: 6,
-  //     address: "0x0A8714d8fc4bE1b8f2B2AB29b8e4fEe9B271a57D",
-  //     isStable: true,
-  //     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-  //     coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
-  //     explorerUrl: "https://sepolia.explorer.zklink.io/address/0x0A8714d8fc4bE1b8f2B2AB29b8e4fEe9B271a57D",
-  //     isV1Available: true,
-  //   },
-  // ],
 };
 
 export const TOKEN_COLOR_MAP = {
