@@ -925,6 +925,7 @@ button.App-button-option:disabled {
 }
 .App-header-user .moreButton .novaPoints{
   padding-top: 7px;
+  margin-right: 2.4rem;
 }
 .App-header-user .addNova{
   background: #262831;
@@ -1497,6 +1498,15 @@ button.App-button {
   }
   .App-header-trade-link.homepage-header {
     margin-right: 1.6rem;
+  }
+  .App-header-link-container{
+    position: relative;
+  }
+  .App-header-link-container a .urlSoon{
+    position: absolute;
+    font-size: 10px;
+    top: 5px;
+    // right: 0;
   }
 }
 

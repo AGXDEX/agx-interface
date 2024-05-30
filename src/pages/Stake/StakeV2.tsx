@@ -1079,8 +1079,8 @@ export default function StakeV2() {
                 {agxPrice &&
                   Pool2ewards &&
                   rewards &&
-                  ((Number(Pool2ewards) / 10 ** 18 + Number(rewards) / 10 ** 18) * agxPrice)
-                    .toFixed(2)
+                  Number(((Number(Pool2ewards) / 10 ** 18 + Number(rewards) / 10 ** 18) * agxPrice)
+                    .toFixed(2))
                     .toLocaleString()}
               </div>
               <div className="StakeV2-claimToken">USDT</div>
@@ -1313,7 +1313,7 @@ export default function StakeV2() {
                 managedUsd = tokenInfo.managedUsd;
               }
               let manage = 1;
-              manage = calculateManage(managedUsd, glpSupplyUsd);
+              manage = managedUsd && calculateManage(managedUsd, glpSupplyUsd);
               return (
                 <div className="table-td" key={token.symbol}>
                   <div className="leftAlign">{token.symbol}/ALP</div>

@@ -1,258 +1,240 @@
 .container{
   width: 100%;
   height: 100%;
-  padding: 0 48px;
   background-color: #000;
-}
-.topBox{
-  width: 100%;
-  /* height: 580px; */
-  background-image: url("img/Bg.png");
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  border-radius: 0px 0px 48px 48px;
   position: relative;
-  margin-bottom: 40px;
-  padding-bottom: 80px;
 }
-.header{
-  width: calc(100% - 96px);
+.container .header{
+  width: 100%;
+  padding: 67px 160px 142px 160px;
+}
+.container .header-top{
+  width: 100%;
   position: fixed;
-  padding-top: 20px;
-  padding-bottom: 10px;
   top: 0;
+  height: 48px;
   display: flex;
   justify-content: space-around;
-  background-color: #000;
-  z-index: 9;
+  padding-top: 14px;
 }
-.header img{
-  width: 32px;
-  height: 32px;
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 500px;
+.container .header-top .icon{
+
 }
-.nav{
+.container .header-top .icon img{
+  width: 20px;
+  height: 20px;
+  margin-right: 22px;
+}
+.container .header .nav{
+  width: 100%;
   display: flex;
-  gap: 20px;
+  justify-content: space-between;
+  margin-bottom: 47.5px;
 }
-.nav a{
-  text-decoration: none;
-  font-family: Satoshi;
-  font-size: 16px;
-  font-weight: 700;
-  color: #CBD5E1;
+.container .header .nav img{
+  width: 75px;
+  height: 75px;
 }
-.nav a:hover{
-  color: #FFF;
+.container .header .nav .navButton{
+  display: flex;
+  padding-top: 11.5px;
 }
-.topInner{
-  padding-top: 150px;
-  padding: 150px 200px 0;
+.container .header .nav .navButton .scroll{
+  height: 50px;
+  line-height: 20px;
+  padding: 14px 38px 14px 38px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 30px;
+  margin-right: 30px;
+  cursor: pointer;
+}
+.container .header .nav .navButton .joinNew{
+  height: 50px;
+  line-height: 20px;
+  padding: 14px 38px 14px 38px;
+  background: rgba(255, 255, 255, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 30px;
+  margin-right: 30px;
+  color: #000;
+  cursor: pointer;
+}
+
+.container .header .support{
+  margin-bottom: 30px;
+}
+.container .header .support img{
+  height: 40px;
+}
+.introduce .large{
+  display: flex;
+}
+.introduce .large .marginRight{
+  width: 65%;
+  margin-right: 10%;
+  margin-bottom: 60px;
+}
+.introduce .large .marginLeft{
+  width: 60%;
+  margin-left: 18%;
+  margin-bottom: 60px;
+}
+.introduce .large .BurstStar{
+  width: 10%;
+  height: 10%;
+  margin-top: -1%;
+}
+.introduce .trade div{
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 30px;
+  font-weight: 500;
+  line-height: 70px;
+  margin-right: 15%;
+}
+.introduce .trade img{
+  width: 35%;
+  margin-bottom: 60px;
+}
+.introduce .flex .start{
+  height: 52px;
+  padding: 14px 38px 14px 38px;
+  border-radius: 30px;
+  background: linear-gradient(121.46deg, #77F6D3 -8.22%, #5F63F0 37.56%, #9F57F2 79.81%);
+  color: #fff;
+  width: fit-content;
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 18px;
+  font-weight: 600;
+  margin-left: 52%;
+  margin-right: 8%;
+  cursor: pointer;
+}
+.introduce .flex .start img{
+  width: 24px;
+  vertical-align: bottom;
+}
+.introduce .flex{
+  display: flex;
+}
+
+.introduce .flex .learn{
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+  padding-top: 10px;
+}
+.container .main{
+  background-image: url("img/home/bg.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  padding: 130px 160px ;
+  margin-top: -60px;
+}
+.container .main .box{
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
+  margin-bottom: 130px;
 }
-.topInner a{
-  text-decoration: none;
+.container .main .box .title{
+  margin-bottom: 95px;
 }
-.titleFirst{
-  width: 95%;
-  font-family: Satoshi;
-  font-size: 56px;
-  font-weight: 800;
-  line-height: 55px;
-  margin-bottom: 25px;
-}
-.topButton{
-  background: #5D00FB;
-  font-family: Satoshi;
-  font-size: 16px;
-  font-weight: 500;
-  padding: 8px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-bottom: 20px;
-  color: #fff;
-}
-.topText{
-  width: 60%;
-  font-family: Satoshi;
-  font-size: 24px;
-  font-weight: 400;
-  color: #CBD5E1;
-  line-height: 30px;
-  margin-bottom: 20px;
-}
-.topDocu{
-  font-family: Satoshi;
-  font-size: 16px;
-  font-weight: 400;
-  color: #A2B0CB;
-  margin-bottom: 10px;
-}
-.topDocu img{
-  width: 32px;
-  vertical-align: bottom;
-  margin-left: 5px;
-}
-.topBorder{
-  border-radius: 16px;
-  background: linear-gradient(90deg, rgba(168, 85, 247, 1) 0%, rgba(94,99,238,1) 50%, rgb(194, 149, 242) 75%, rgba(93, 0, 251, 1) 100%);
-  color: #A2B0CB;
-  border: 1px solid transparent;
-}
-.borInner{
-  border-radius: 16px;
-  padding: 8px 15px;
-  background-color: #3c2976;
-}
-.content{
+.container .main .box .charts{
   width: 100%;
-  background-image: url("img/Section.png");
-  background-size: 100%;
-  background-repeat: no-repeat;
+  margin-bottom: 50px;
+}
+.container .main .box .choose{
   position: relative;
-  padding: 174px 150px 150px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 120px;
+}
+.container .main .box .choose img{
+  position: absolute;
+  width: 252px;
+  z-index: 0;
+  filter: opacity(10%);
+  left: 30%;
+  top: -40px;
+}
+.container .main .box .choose .chooseBut{
+  height: 50px;
+  line-height: 20px;
+  padding: 14px 38px 14px 38px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 30px;
+}
+.container .main .box .choose .chooseInf{
+  width:750px;
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 38px;
+  font-weight: 500;
+  line-height: 64.6px;
+}
+.container .main .box .cardList{
+  width: 100%;
   display: flex;
   justify-content: space-between;
 }
-.innerBox{
-  height: 500px;
-  padding-top: 40px;
-  /* margin-bottom: 40px; */
+.container .main .box .cardList .card{
+  width: 360px;
+  height: 394px;
+  border-radius: 30px;
+  padding: 50px 30px;
 }
-.contentTitle{
-  display: inline-block;
-  width: auto;
-  max-width: 110%;
-  font-family: Satoshi;
-  font-size: 40px;
-  font-weight: 800;
-  line-height: 45px;
-  background: linear-gradient(313.71deg, rgba(248, 250, 252, 0.236642) 8.27%, #F8FAFC 57.24%, rgba(248, 250, 252, 0.237844) 96.6%);
-  margin-bottom: 15px;
-  background-clip: text;
-  color: transparent;
-}
-.contentInner{
-  font-family: Satoshi;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 24px;
-  color: #969696;
-}
-.contentright,.contentLeft{
-  width: 45%;
-}
-.imgBox{
-  width: 100%;
-  height: 720px;
-  border-radius: 24px 0px 0px 0px;
-  margin-top: -220px;
-  /* border: 1px solid #1E293B;
-  background-image: url("img/Rectangle.png");
-  background-size: 100% 100%;
-  background-repeat: no-repeat; */
-}
-.imgBox img{
-  height: 100%;
-}
-.contentBorder{
-  height: 100%;
-  position: relative;
-  width: 1px;
-  background: linear-gradient(180deg, rgba(32,34,40,0) 0%, #454A57 46%, rgba(114,121,142,0) 100%);
-}
-.contentBorder .contentBall{
-  width: 40px;
-  height: 40px;
-  left: -20px;
+.container .main .box .cardList .card .ball{
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  position: absolute;
-  background: linear-gradient(18.55deg, #77F6D3 -26.26%, #6063F0 43.6%, #9F57F2 108.45%);
-  text-align: center;
-  line-height: 40px;
-  font-family: Satoshi;
-  font-size: 24px;
+  margin-bottom: 40px;
+}
+.container .main .box .cardList .card .title{
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 26px;
   font-weight: 500;
 }
-.firstBall{
-  top: 100px;
+.container .main .box .cardList .card .inner{
+  width: 213px;
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 30.6px;
 }
-.secondBall{
-  top: 600px;
-}
-.thirdBall{
-  top: 1100px;
-}
-.forthBall{
-  top: 1600px;
-}
-.product,.productSec{
-  width: 100%;
-  background-size: 100% 100%;
+.container .main .box .cardList .first{
+  background-image: url("img/home/cardbg-f.png");
+  background-size: 100%;
   background-repeat: no-repeat;
-  position: relative;
-  padding: 200px 150px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
-.product{
-  background-image: url("img/productBg.png");
+.container .main .box .cardList .first .ball{
+  background: rgba(93, 0, 251, 1);
 }
-.productTitle{
-  width: auto;
-  margin-bottom: 40px;
+.container .main .box .cardList .second{
+  background-image: url("img/home/cardbg-s.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
 }
-.structure{
-  width: 100%;
-  padding: 10px 0;
+.container .main .box .cardList .thrid{
+  background-image: url("img/home/cardbg-t.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
 }
-.productSec{
-  background-image: url("img/productBg2.png");
-  margin-bottom: 40px;
-  padding: 200px 150px;
+.container .main .box .cardList .second .ball{
+  background: rgba(119, 246, 211, 1);
 }
-@media (max-width: 900px) {
-  .header{
-    width: calc(100% - 20px);
-  }
-  .container{
-    padding: 0 10px;
-  }
-  .header img{
-    margin-right: 100px;
-  }
-  .topInner{
-    padding: 150px 20px 0;
-  }
-  .mobile{
-    font-size: 40px;
-  }
-  .content{
-    padding: 150px 20px;
-  }
-  .innerBox .contentInner{
-    height: 200px;
-    overflow: auto;
-  }
-  .contentTitle{
-    font-size: 21px;
-    line-height: 25px;
-  }
-  .imgBox{
-    display: flex;
-    align-items: center;
-  }
-  .imgBox img{
-    width: 100%;
-    height: auto;
-  }
-  .product, .productSec{
-    padding: 150px 20px 0;
-  }
+.container .main .box .cardList .thrid .ball{
+  background: rgba(159, 87, 242, 1);
 }

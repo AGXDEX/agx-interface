@@ -1,129 +1,109 @@
-import { getPageTitle, isHashZero } from "lib/legacy";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useParams } from "react-router-dom";
-import { useLocalStorage } from "react-use";
 import "./HomePage.css";
-import useWallet from "lib/wallets/useWallet";
-import PageTitle from "components/PageTitle/PageTitle";
-import { usePendingTxns } from "lib/usePendingTxns";
-import leftFir from "img/leftFir.png";
-import leftSec from "img/leftSec.png";
-import rightFir from "img/rightFir.png";
-import rightSec from "img/rightSec.png";
 import logoImg from "img/logo_GMX.svg";
-import structure from "img/structure1.svg";
-import structure2 from "img/structure2.svg";
-import novaLogo from "img/nova-logo.png";
-import { Link } from "react-router-dom";
-import Footer from "components/Footer/Footer";
+import File from "img/File.png";
+import XLogo from "img/XLogo.png";
+import TelegramLogo from "img/TelegramLogo.png";
+import DiscordLogo from "img/DiscordLogo.png";
+import start from "img/home/start.png";
+import zklink from "img/home/zklink.svg";
+import support from "img/home/support.svg";
+import BurstStar from "img/home/Burst-star.png";
+import Revolutionizing from "img/home/Revolutionizing.svg";
+import Decentralized from "img/home/Decentralized.svg";
+import Trading from "img/home/Trading.svg";
+import ArrowRight from "img/home/ArrowRight.png";
+import bg from "img/home/bg.png";
+import Multi from "img/home/Multi.svg";
+import multiChart from "img/home/multi-chart.svg";
+import multiMind from "img/home/multi-mind.svg";
 
+import { Link } from "react-router-dom";
 function HomePage() {
   return (
     <div className="container">
-      <div className="topBox">
-        <div className="header">
-          <Link className="" to="/">
-            <img src={logoImg} alt="AGX Logo" />
-          </Link>
-          <div className="nav">
-            <a href="https://agx-1.gitbook.io/agx/" target="block">whitepaper</a>
-            {/* <a href="https://zklink.io/" target="block">twitter</a>
-            <a href="https://zklink.io/" target="block">Discord</a> */}
+      <div className="header">
+        <div className="header-top">
+          <div></div>
+          <div></div>
+          <div className="icon">
+            <a href="https://docs.agx.xyz/" target="block">
+              <img src={File}/>
+            </a>
+            <a href="https://x.com/AGX_XYZ" target="block">
+              <img src={XLogo}/>
+            </a>
+            <a href="https://t.me/agx_xyz_channel" target="block">
+              <img src={TelegramLogo}/>
+            </a>
+            <a href="https://discord.gg/agxdefi" target="block">
+              <img src={DiscordLogo}/>
+            </a>
           </div>
         </div>
-        <div className="topInner">
-          <div className="titleFirst">
-            AGX
+        <div className="nav">
+            <img src={logoImg}/>
+            <div className="navButton">
+              <div className="scroll">Features</div>
+              <div className="scroll">Tokenomics</div>
+              <div className="scroll">Roadmap</div>
+              <div className="joinNew">Join Now</div>
+            </div>
+        </div>
+        <div className="support">
+          <img src={support}/>
+        </div>
+        <div className="introduce">
+          <div className="large">
+            <img className="marginRight" src={Revolutionizing}/>
+            <img className="BurstStar" src={BurstStar}/>
           </div>
-          <div className="titleFirst mobile">
-            Decentralized Restaking Liquidity Marketplace
+          <div className="large">
+            <img className="marginLeft" src={Decentralized}/>
           </div>
-          <div className="topButton">
-            <Link className="" to="/buy">
-              Launch
-            </Link>
+          <div className="large trade">
+            <div>The First Ever LST & LRT Asset <br /> Supported Multi-Chain Perpetual DEX</div>
+            <img src={Trading}/>
           </div>
-          <div className="topText">
-            The first ever LRT Asset Supported native Multi-Chain Perpetual DEX
-          </div>
-          <div className="topDocu">
-            Yiled aggregating supported by zkLink
-            <img src={novaLogo} alt="" />
-          </div>
-          <div className="topDocu topBorder">
-            <div className="borInner">EignLayer Points  + LSD Yield + Puffer/… LRT Points + Linea… L2 Points + $FLP LP Yield + zkLink Points + $FOM Staking Yield + Trading fee reward</div>
+          <div className="flex">
+            <div className="start">Get Started Now  <img src={ArrowRight} /></div>
+            <div className="learn">Learn More</div>
           </div>
         </div>
       </div>
-      <div className="content">
-        <div className="contentLeft">
-          <div className="innerBox">
-            <div className="contentTitle">
-            Slippage-Free Trading
-            </div>
-            <div className="contentInner">
-            Trade popular cryptocurrencies, including $ETH, $BTC, $SOL, and LRT Asset including ezETH, pufETH…  on Formula Finance without experiencing slippage. Our platform is designed to prioritize the execution of your orders at the desired price, ensuring a seamless trading experience.
-            </div>
-          </div>
-          <div className="imgBox">
-            <img src={leftFir} alt="" />
-          </div>
-          <div className="innerBox">
-            <div className="contentTitle">
-            Yield aggregator supported with multi-chain LSD, LRT and LP mining
-            </div>
-            <div className="contentInner">
-            Formula Finance is a yield aggregator platform that supports multi-chain liquidity staking , Restaking, and $FOM LP mining. We provide users with the opportunity to maximize their yield earnings through various strategies.
-            </div>
-          </div>
-          <div className="imgBox">
-            <img src={leftSec} alt="" />
-          </div>
+      <div className="main">
+        <div className="box">
+          <img className="title" src={Multi} />
+          <img className="charts" src={multiChart} />
+          <img className="charts" src={multiMind} />
         </div>
-        <div className="contentMiddle">
-          <div className="contentBorder">
-            <div className="contentBall firstBall">1</div>
-            <div className="contentBall secondBall">2</div>
-            <div className="contentBall thirdBall">3</div>
-            <div className="contentBall forthBall">4</div>
+        <div className="box ">
+          <div className="choose">
+            <div className="chooseBut">Why Choose AGX?</div>
+            <img src={BurstStar} />
+            <div className="chooseInf">Empower Your Trades, Maximize Your Gains, Seamless, Secure, and Smart, Experience the Future of Prep DEX</div>
           </div>
-        </div>
-        <div className="contentright">
-          <div className="imgBox">
-            <img src={rightFir} alt="" />
-          </div>
-          <div className="innerBox">
-            <div className="contentTitle">
-            Eliminate Counterparty Risk
+          <div className="cardList">
+            <div className="card first">
+              <div className="ball"></div>
+              <div className="title">Effortless Trading</div>
+              <div className="inner">Experience seamless, slippage-free trading on popular cryptocurrencies.</div>
+              <img src={ArrowRight} />
             </div>
-            <div className="contentInner">
-            Rest assured that when you trade on Formula Finance, you won't have to worry about counterparty risk. Our platform provides a secure trading environment, protecting your trades and ensuring that all winnings are paid out, regardless of market movements.</div>
-          </div>
-          <div className="imgBox">
-            <img src={rightSec} alt="" />
-          </div>
-          <div className="innerBox">
-            <div className="contentTitle">
-            Fair Launch
+            <div className="card second">
+              <div className="ball"></div>
+              <div className="title">Effortless Trading</div>
+              <div className="inner">Experience seamless, slippage-free trading on popular cryptocurrencies.</div>
+              <img src={ArrowRight} />
             </div>
-            <div className="contentInner">
-            FOM serves as the native token of Formula Finance, with a maximum supply of 10 million tokens. What makes FOM unique is its Fair Launch model, with 100% of the token supply generated through position mining, liquidity mining, and referral mining. These tokens are rewarded to our supportive community users.</div>
+            <div className="card thrid">
+              <div className="ball"></div>
+              <div className="title">Effortless Trading</div>
+              <div className="inner">Experience seamless, slippage-free trading on popular cryptocurrencies.</div>
+              <img src={ArrowRight} />
+            </div>
           </div>
         </div>
       </div>
-      <div className="product">
-        <div className="contentTitle productTitle">
-          Product Structure
-        </div>
-        <img src={structure} className="structure" />
-      </div>
-      <div className="productSec">
-        <div className="contentTitle productTitle">
-        Liquidity Pool Module
-        </div>
-        <img src={structure2} className="structure" />
-      </div>
-      <Footer />
     </div>
   );
 }
