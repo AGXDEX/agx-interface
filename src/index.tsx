@@ -9,6 +9,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import WalletProvider from "lib/wallets/WalletProvider";
 import App from "./App/App";
 import reportWebVitals from "./reportWebVitals";
+import QueryProvider from "providers/react-query-provider";
 
 if (process.env.NODE_ENV === "production") {
   console.log = () => {};
@@ -19,9 +20,11 @@ if (process.env.NODE_ENV === "production") {
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Router>
-      <WalletProvider>
-        <App />
-      </WalletProvider>
+      <QueryProvider>
+        <WalletProvider>
+          <App />
+        </WalletProvider>
+      </QueryProvider>
     </Router>
   </React.StrictMode>
 );
