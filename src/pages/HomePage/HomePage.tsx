@@ -22,7 +22,7 @@ import two from "img/home/02.svg";
 import three from "img/home/03.svg";
 import four from "img/home/04.svg";
 import AGXAndALP from "img/home/AGXAndALP.svg";
-// import AGXBall from "img/home/AGXBall.gif";
+import AGXBall from "img/home/AGXBall.gif";
 import ALPToken from "img/home/ALPToken.svg";
 import AGXToken from "img/home/AGXToken.svg";
 // import FairBall from "img/home/FairBall.gif";
@@ -91,7 +91,7 @@ function HomePage() {
               <div className="scroll" onClick={() => scrollTo(0)}>Features</div>
               <div className="scroll" onClick={() => scrollTo(7300)}>Structures</div>
               <div className="scroll" onClick={() => scrollTo(10000)}>Roadmap</div>
-              <Link to="/trade">
+              <Link to="/v1">
                 <div className="joinNew">Join Now</div>
               </Link>
               
@@ -114,7 +114,7 @@ function HomePage() {
           </div>
           <div className="flex">
             <div className="start">
-              <Link to="/trade">
+              <Link to="/v1">
                 Get Started Now  <img src={ArrowRight} />
               </Link>
             </div>
@@ -197,7 +197,7 @@ function HomePage() {
         <div className="box">
           <div className="AGXAndALP">
             <img src={AGXAndALP}/>
-            {/* <img src={AGXBall}/> */}
+            <img src={AGXBall}/>
           </div>
           <div className="token">
             <img src={ALPToken} />
@@ -265,7 +265,7 @@ function HomePage() {
         <div className="box">
           <div className="fairBox">
             <div className="startTrade">
-              <Link to="/trade">
+              <Link to="/v1">
                 <div className="joinNow">Join Now</div>
               </Link>
             </div>
