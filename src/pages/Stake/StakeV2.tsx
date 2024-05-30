@@ -662,7 +662,6 @@ export default function StakeV2() {
           subtitle={
             <div>
               <Trans>Earn reward from trading fees and liquidity mining</Trans>
-              ererererer
             </div>
           }
         />

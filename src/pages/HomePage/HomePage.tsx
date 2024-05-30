@@ -62,7 +62,7 @@ function HomePage() {
             Slippage-Free Trading
             </div>
             <div className="contentInner">
-            Trade popular cryptocurrencies, including $ETH, $BTC, $SOL, and LRT Asset including ezETH, pufETH…  on Formula Finance without experiencing slippage. Our platform is designed to prioritize the execution of your orders at the desired price, ensuring a seamless trading experience.
+            Trade popular cryptocurrencies, including $ETH, $BTC, $SOL, and LRT Asset including pufETH…  on Formula Finance without experiencing slippage. Our platform is designed to prioritize the execution of your orders at the desired price, ensuring a seamless trading experience.
             </div>
           </div>
           <div className="imgBox">

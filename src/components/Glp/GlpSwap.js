@@ -172,10 +172,9 @@ const tabOptions = [t`Buy ALP`, t`Sell ALP`];
 const dataList = [
   { name: "USDT", value: 0.25 },
   { name: "USDC", value: 0.25 },
-  { name: "ETH", value: 0.15 },
+  { name: "ETH", value: 0.20 },
   { name: "WBTC", value: 0.15 },
-  { name: "pufETH", value: 0.1 },
-  { name: "ezETH", value: 0.1 },
+  { name: "pufETH", value: 0.15 },
 ];
 export default function GlpSwap(props) {
   const { isBuying, setIsBuying } = props;
