@@ -6,16 +6,48 @@
 }
 .container .header{
   width: 100%;
-  padding: 67px 160px 142px 160px;
+  padding: 67px 15% 142px 15%;
+  position: relative;
+}
+.container .header .hero{
+  position: absolute;
+  right: 0;
+  bottom: 60px;
+}
+.container .header .Ellipse{
+  width: 50%;
+  position: absolute;
+  left: 20px;
+  bottom: 60px;
+}
+.container .header .MaskTable{
+  width: 35%;
+  position: absolute;
+  left: 100px;
+  bottom: 60px;
+}
+.container .header .EllipseLeft{
+  width: 25%;
+  position: absolute;
+  left: 0;
+  bottom: 10%;
+}
+.container .header .Mask{
+  width: 50%;
+  position: absolute;
+  left: 15%;
+  top: 0;
 }
 .container .header-top{
   width: 100%;
   position: fixed;
   top: 0;
+  left: 0;
   height: 48px;
   display: flex;
   justify-content: space-around;
   padding-top: 14px;
+  background: linear-gradient(121.46deg, rgba(119, 246, 211, 0.2) -8.22%, rgba(95, 99, 240, 0.2) 37.56%, rgba(159, 87, 242, 0.2) 79.81%);
 }
 .container .header-top .icon{
 
@@ -26,10 +58,12 @@
   margin-right: 22px;
 }
 .container .header .nav{
+  position: relative;
   width: 100%;
   display: flex;
   justify-content: space-between;
   margin-bottom: 47.5px;
+  z-index: 1;
 }
 .container .header .nav img{
   width: 75px;
@@ -68,7 +102,13 @@
 }
 
 .container .header .support{
+  position: relative;
   margin-bottom: 30px;
+  z-index: 1;
+}
+.container .header .introduce{
+  position: relative;
+  z-index: 1;
 }
 .container .header .support img{
   height: 40px;
@@ -101,6 +141,9 @@
 .introduce .trade img{
   width: 35%;
   margin-bottom: 60px;
+}
+.introduce .flex a{
+  text-decoration: none;
 }
 .introduce .flex .start{
   height: 52px;
@@ -136,7 +179,7 @@
   background-image: url("img/home/bg.png");
   background-size: 100%;
   background-repeat: no-repeat;
-  padding: 130px 160px ;
+  padding: 130px 15%;
   margin-top: -60px;
 }
 .container .main .box{
@@ -195,6 +238,7 @@
   height: 394px;
   border-radius: 30px;
   padding: 50px 30px;
+  position: relative;
 }
 .container .main .box .cardList .card .ball{
   width: 20px;
@@ -202,13 +246,19 @@
   border-radius: 50%;
   margin-bottom: 40px;
 }
+.container .main .box .cardList .card img{
+  position: absolute;
+  right: 47px;
+  bottom: 50px;
+}
 .container .main .box .cardList .card .title{
   font-family: Neue Haas Grotesk Display Pro;
   font-size: 26px;
   font-weight: 500;
+  margin-bottom: 40px;
 }
 .container .main .box .cardList .card .inner{
-  width: 213px;
+  width: 260px;
   font-family: Neue Haas Grotesk Display Pro;
   font-size: 18px;
   font-weight: 500;
@@ -237,4 +287,257 @@
 }
 .container .main .box .cardList .thrid .ball{
   background: rgba(159, 87, 242, 1);
+}
+.container .main .box .howToWork{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.container .main .box .howToWork .workInfo{
+  width: 550px;
+  padding-top: 90px;
+  background-image: url("img/home/listBg.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 30.6px;
+}
+.container .main .box .stepList{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.container .main .box .stepList .step{
+
+}
+.container .main .box .stepList .step img{
+  width: 55px;
+  height: 55px;
+  margin-bottom: 22px;
+}
+.container .main .box .stepList .step .title{
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 33.6px;
+  margin-bottom: 22px;
+}
+.container .main .box .stepList .step .inner{
+  width: 300px;
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 30.6px;
+}
+
+.container .main .box .AGXAndALP{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 70px;
+}
+.container .main .box .token{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.container .main .box .fair{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.container .main .box .fair .fairBox{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: -80px;
+}
+.container .main .box .fair .FairLaunch{
+  margin-top: 10px;
+  width: 370px;
+  z-index: 2;
+  margin-left: -250px;
+}
+.container .main .box .fair .FairBall{
+  width: 700px;
+  height: 700px;
+  margin-top: -200px;
+  margin-left: -250px;
+}
+.container .main .box .fair img{
+  margin-top: -180px;
+  margin-right: -50px;
+}
+.container .main .box .advanced{
+  width: 100%;
+  margin-top: -50px;
+  position: relative;
+  margin-bottom: 70px;
+}
+.container .main .box .advanced .advancedLearn{
+  height: 50px;
+  line-height: 20px;
+  padding: 14px 38px 14px 38px;
+  background: rgba(255, 255, 255, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 30px;
+  margin-right: 30px;
+  color: #000;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+.container .main .box .advanced .advancedLearn a{
+  color: #000;
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 18px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.container .main .box .secure{
+  width: 100%;
+  margin-bottom: 40px;
+}
+.container .main .box .secure img{
+  width: 100%;
+}
+.container .main .box .fairBox{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.container .main .box .fairBox .security{
+  width: 550px;
+  height: 370px;
+  background-image: url("img/home/tradeBG.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  padding: 51px;
+  position: relative;
+}
+.container .main .box .fairBox .security .logo{
+  margin-bottom: 18px;
+}
+.container .main .box .fairBox .security .title{
+  margin-bottom: 14px;
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 33.6px;
+}
+.container .main .box .fairBox .security .inner{
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 30.6px;
+}
+.container .main .box .fairBox .security .center{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: -27px;
+  left: 0;
+}
+.container .main .box .fairBox .security .button{
+  height: 54px;
+  padding: 8px 16px 8px 10px;
+  border-radius: 30px;
+  background: linear-gradient(154.31deg, #9F57F2 0.89%, #8236DA 27.8%, #4C158B 56.66%, #300264 98.42%);
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 26.4px;
+}
+.container .main .box .fairBox .security .button img{
+  margin-right: 10px;
+}
+.container .main .box .Protocol{
+  width: 80%;
+  margin-bottom: 90px;
+}
+.container .main .box .protoool{
+  width: 100%;
+}
+.container .main .box .fairBox .startTrade{
+  position: relative;
+  width: 645px;
+  height: 670px;
+  background-image: url("img/home/startTrade.svg");
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+.container .main .box .fairBox .startTrade .joinNow{
+  position: absolute;
+  height: 50px;
+  line-height: 20px;
+  padding: 14px 38px 14px 38px;
+  background: rgba(255, 255, 255, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 30px;
+  margin-right: 30px;
+  color: #000;
+  cursor: pointer;
+  left: 242px;
+  bottom: 231px;
+}
+.container .main .box .fairBox .chain{
+  position: relative;
+  width: 455px;
+  height: 670px;
+  background-image: url("img/home/chain.svg");
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+.container .main .box .fairBox .chain .link{
+  display: flex;
+  position: absolute;
+  width: 100%;
+  bottom: 35px;
+  justify-content: space-between;
+  padding: 0 80px;
+}
+.container .main .box .fairBox .chain .link a{
+  background: #fff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  line-height: 75px;
+}
+.container .footer{
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(121.46deg, rgba(119, 246, 211, 0.2) -8.22%, rgba(95, 99, 240, 0.2) 37.56%, rgba(159, 87, 242, 0.2) 79.81%);
+  display: flex;
+  justify-content: space-around;
+  padding-top: 50px;
+  font-family: Neue Haas Grotesk Display Pro;
+  font-size: 18px;
+  font-weight: 500;
+}
+.container .footer .scrollBox{
+  display: flex;
+  gap: 40px;
+}
+.container .footer .scrollBox .scroll{
+  cursor: pointer;
+}
+.container .footer .copyright{
+  font-size: 16px;
+  color: rgba(173, 173, 173, 1);
+}
+@media (max-width: 400px) {
+  .container .header-top{
+    display: none;
+  }
 }
