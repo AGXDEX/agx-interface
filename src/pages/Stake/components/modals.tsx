@@ -184,31 +184,18 @@ function DepositModal(props) {
     setIsVisible,
     chainId,
     title,
-    maxAmount,
-    value,
-    setValue,
     active,
     account,
     signer,
-    stakingTokenSymbol,
-    stakingTokenAddress,
-    farmAddress,
-    rewardRouterAddress,
-    stakeMethodName,
-    refetchDepNFTlist,
     setPendingTxns,
     showNFTdata,
     URLlist,
-    baseUriList,
-    setNFTData,
   } = props;
   const dexreaderAddress = getContract(chainId, "dexreader");
   const queryClient = useQueryClient();
   const [tokenId, setTokenId] = useState(null);
   const NFTPositionsManagerAddress = getContract(chainId, "nonfungibleTokenPositionManagerAddress");
-  const IncentiveKeyAddress = getContract(chainId, "IncentiveKey");
   const uniV3StakerAddress = getContract(chainId, "v3StakerAddress");
-  const ALPAddress = getContract(chainId, "ALP");
   const [isDeposit, setIsDeposit] = useState(false);
 
   const getPositionInfo = async (_tokenId) => {
@@ -238,11 +225,6 @@ function DepositModal(props) {
       queryClient.setQueryData(
         [`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, showNFTdata],
         (prevNFTlist: any) => {
-          console.log(
-            prevNFTlist,
-            prevNFTlist[1]?.filter((tId) => Number(tId.toString()) !== tokenId),
-            "getTokenURIs"
-          );
           return prevNFTlist[1]?.filter((tId) => Number(tId.toString()) !== tokenId);
         }
       );
@@ -258,7 +240,6 @@ function DepositModal(props) {
           return [...prevNFTlist, ethers.BigNumber.from(tokenId)];
         }
       );
-      console.log(IncentiveKeyAddress, "IncentiveKeyAddress");
       queryClient.setQueryData(["positions", account], (prevPositionsData: any) => {
         const updatedPositions = [
           ...prevPositionsData,
@@ -270,7 +251,6 @@ function DepositModal(props) {
             incentiveId: "0xd11b602a24a9bb891c3d6568c5a91630139d9673d6495f72a12afeb228089f19",
           },
         ];
-        console.log(updatedPositions, "updatedPositions");
         return updatedPositions;
       });
     } catch (error) {
@@ -303,7 +283,6 @@ function DepositModal(props) {
         </div>
         <div className="Exchange-swap-button-container depositButton">
           <Button variant="primary-action" onClick={goDeposit} loading={isDeposit}>
-            {/* {getPrimaryText()} */}
             Deposit
           </Button>
         </div>

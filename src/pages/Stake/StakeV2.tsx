@@ -14,7 +14,6 @@ import UniswapV3Factory from "abis/UniswapV3Factory.json";
 import DexReader from "abis/DexReader.json";
 import VaultV2 from "abis/VaultV2.json";
 import YieldEmission from "abis/YieldEmission.json";
-import NFTPositionsManager from "abis/NFTPositionsManager.json";
 
 import { ARBITRUM, getConstant } from "config/chains";
 import { useAGXPrice } from "domain/legacy";
@@ -110,7 +109,6 @@ export default function StakeV2() {
   const IncentiveKeyAddress = getContract(chainId, "IncentiveKey");
   const AGXAddress = getContract(chainId, "AGX");
   const wethAddress = getContract(chainId, "WethSwap");
-  const NFTPositionsManagerAddress = getContract(chainId, "nonfungibleTokenPositionManagerAddress");
 
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const wrappedTokenSymbol = getConstant(chainId, "wrappedTokenSymbol");
@@ -300,7 +298,7 @@ export default function StakeV2() {
     const result = await dexReaderContract.getSpecificNftIds(NFTdata, AGXAddress, wethAddress);
     return result;
   };
-  const { data: NFTlist, refetch: refetchSpecificNftIds } = useQuery({
+  const { data: NFTlist } = useQuery({
     queryKey: [`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress],
     queryFn: fetchNftIds,
     enabled: !!signer && !!dexreaderAddress,
@@ -313,7 +311,7 @@ export default function StakeV2() {
     const result = await dexReaderContract.getTokenURIs(NFTlist.map((i) => Number(i)));
     return result;
   };
-  const { data: baselist, refetch: refetchTokenURIs } = useQuery({
+  const { data: baselist } = useQuery({
     queryKey: [`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, NFTlist],
     queryFn: fetchTokenURIs,
     enabled: !!signer && !!dexreaderAddress && !!NFTlist,
@@ -420,64 +418,47 @@ export default function StakeV2() {
     }
   };
 
-  const getPositionInfo = async (_tokenId) => {
-    if (!signer || !NFTPositionsManagerAddress) return;
 
-    const positionContract = new Contract(NFTPositionsManagerAddress, NFTPositionsManager.abi, signer);
-    const result = await positionContract.positions(_tokenId);
-    return result;
-  };
-
-  const withdraw = async (tokenId) => {
-    //TODO: Finish withdraw action
+  const withdrawFn = async (tokenId) => {
     setIsWithdrawing(true);
     setSelectedCard(tokenId);
     try {
-      // const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
-      // await callContract(chainId, contract, "withdrawToken", [tokenId, account, "0x"], {
-      //   sentMsg: t`Withdraw submitted.`,
-      //   failMsg: t`Withdraw failed.`,
-      //   successMsg: t`Withdraw completed!`,
-      //   setPendingTxns,
-      // });
+      const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
+      await callContract(chainId, contract, "withdrawToken", [tokenId, account, "0x"], {
+        sentMsg: t`Withdraw submitted.`,
+        failMsg: t`Withdraw failed.`,
+        successMsg: t`Withdraw completed!`,
+        setPendingTxns,
+      });
       queryClient.setQueryData(
         [`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress],
         (prevNFTlist: any) => {
           const formattedTokenId = ethers.BigNumber.from(tokenId);
-          // console.log(prevNFTlist, tokenId,formattedTokenId, "prevNFTlist---->");
           if (prevNFTlist) {
-            // 检查 tokenId 是否已经存在于 prevNFTlist 中
             if (!prevNFTlist.includes(formattedTokenId)) {
-              console.log([...prevNFTlist, formattedTokenId], urlList, "prevNFTlist---->");
-              // 如果 tokenId 不存在，将其添加到 prevNFTlist
               return [...prevNFTlist, formattedTokenId];
             }
           } else {
-            // 如果 prevNFTlist 为空或未定义，创建一个新数组并添加 tokenId
             return [formattedTokenId];
           }
-          // 如果 tokenId 已经存在于 prevNFTlist 中，直接返回原始的 prevNFTlist
           return prevNFTlist;
         }
       );
       queryClient.setQueryData(
-        //getTokenURIs
         [`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, NFTlist],
         (prevNFTlist: any) => {
           const formattedId = ethers.BigNumber.from(tokenId);
           if (prevNFTlist) {
             const updatedList = prevNFTlist[1].map((tId) => tId);
-            // 檢查 tokenId 是否已經存在於 updatedList 中
             if (!updatedList.some((tId) => tId.eq(formattedId))) {
-              // 如果 tokenId 不存在，將其添加到 updatedList
               updatedList.push(formattedId);
-              return [[...prevNFTlist[0], depBaselist[0]], updatedList];
+              const tokenIndex = updatedList.findIndex((tId) => tId.eq(formattedId));
+              const selectedDepBase = depBaselist[tokenIndex];
+              return [[...prevNFTlist[0], selectedDepBase], updatedList];
             }
           } else {
-            // 如果 prevNFTlist 為空或未定義，創建一個新的嵌套數組並添加 tokenId
             return [prevNFTlist[0], [formattedId]];
           }
-          // 如果 tokenId 已經存在於 updatedList 中，直接返回原始的 prevNFTlist
           return prevNFTlist;
         }
       );
@@ -488,22 +469,20 @@ export default function StakeV2() {
         }
       );
       queryClient.setQueryData(["positions", account], (prevPositionsData: any) => {
-        const updatedPositions = prevPositionsData.filter((position: any) => Number(position.tokenId) !== Number(tokenId));
+        const updatedPositions = prevPositionsData.filter(
+          (position: any) => Number(position.tokenId) !== Number(tokenId)
+        );
         return updatedPositions;
       });
     } catch (error) {
       console.log("Error withdrawing token:", error);
     } finally {
-      console.log(positionsData,NFTlist, "withdraw-NFTlist------>");
-      // setIsWithdrawing(false);
-      // setSelectedCard(null);
-      // refetchSpecificNftIds();
-      // refetchTokenURIs();
-
+      setIsWithdrawing(false);
+      setSelectedCard(null);
     }
   };
 
-  const unstake = async (tokenId) => {
+  const unstakeFn = async (tokenId) => {
     setIsUnstakeLoading(true);
     setSelectedCard(tokenId);
 
@@ -606,16 +585,8 @@ export default function StakeV2() {
   const userStakedAGXAmount = stakedAGXAmount === "NaN" ? "0.00" : stakedAGXAmount;
   const formattedPoolValue = isNaN(poolValue) ? 0 : poolValue;
 
-  const test = () => {
-    console.log("test");
-    // queryClient.setQueryData(["positions", account], (oldData) => {
-    //   console.log("oldData",oldData)
-    // });
-  };
-
   return (
     <div className="default-container page-layout">
-      <button onClick={test}>testttttt</button>
       <ClaimAllModal
         isVisible={claimModalVisible}
         setIsVisible={setClaimModalVisible}
@@ -887,7 +858,7 @@ export default function StakeV2() {
                         <Button
                           variant="secondary"
                           className={cx("stakeButton ishide", { show: !item.staked }, { showMobile: !item.staked })}
-                          onClick={() => withdraw(Number(item.tokenId))}
+                          onClick={() => withdrawFn(Number(item.tokenId))}
                           loading={isWithdrawing && Number(selectedCard) === Number(item.tokenId)}
                         >
                           <Trans>Withdraw</Trans>
@@ -895,7 +866,7 @@ export default function StakeV2() {
                         <Button
                           variant="secondary"
                           className={cx("stakeButton ishide", { show: item.staked }, { showMobile: item.staked })}
-                          onClick={() => unstake(Number(item.tokenId))}
+                          onClick={() => unstakeFn(Number(item.tokenId))}
                           loading={isUnstaking && Number(selectedCard) === Number(item.tokenId)}
                         >
                           <TooltipWithPortal
