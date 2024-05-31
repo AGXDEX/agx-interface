@@ -99,12 +99,15 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
           <img className="network-dropdown-icon network-img" src={icon} alt={selectorLabel} />
         </div> */}
 
-        <div className="moreButton">
-          <div className="addNova" onClick={() => addNovaChain()}>
-            Add Nova to Wallet
-          </div>
+      <div className="moreButton">
+        <div
+          className="addNova"
+          onClick={()=>addNovaChain()}
+        >
+          Add Nova Network to Wallet
         </div>
-        {/* <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} /> */}
+      </div>
+        <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
         <div className={cx("App-header-trade-link")}>
           <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
@@ -189,11 +192,11 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
       </div> */}
       <div className="moreButton">
         <div className="addNova" onClick={() => addNovaChain()}>
-          Add Nova to Wallet
+          Add Nova Network to Wallet
         </div>
         <div className="novaPoints">Nova Points: {novaPointsData || 0}</div>
       </div>
-      {/* <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} /> */}
+      <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
       <div className={cx("App-header-trade-link")}>
         <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
           {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
