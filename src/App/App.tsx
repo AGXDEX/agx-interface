@@ -261,8 +261,8 @@ function FullApp() {
           {!isHome && (
             <Switch>
               <Route exact path="/">
-                <Redirect to="/v1" />
-                {/* <HomePage /> */}
+                {/* <Redirect to="/v1" /> */}
+                <HomePage />
               </Route>
               <Route exact path="/price_impact_rebates_stats">
                 <PriceImpactRebatesStatsPage />
@@ -403,7 +403,9 @@ function FullApp() {
             </Switch>
           )}
         </div>
-        <Footer />
+        {location.pathname !== "/" && (
+          <Footer />
+        )}
       </div>
       <ToastContainer
         limit={1}

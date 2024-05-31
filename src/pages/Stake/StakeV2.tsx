@@ -17,12 +17,8 @@ import YieldEmission from "abis/YieldEmission.json";
 
 import { ARBITRUM, getConstant } from "config/chains";
 import { useAGXPrice } from "domain/legacy";
-import { BigNumber, ethers } from "ethers";
-import {
-  GLP_DECIMALS,
-  PLACEHOLDER_ACCOUNT,
-  USD_DECIMALS,
-} from "lib/legacy";
+import { BigNumber, Contract, ethers } from "ethers";
+import { GLP_DECIMALS, PLACEHOLDER_ACCOUNT, USD_DECIMALS } from "lib/legacy";
 
 import useSWR from "swr";
 
@@ -52,17 +48,16 @@ import { useLocalStorageByChainId } from "lib/localStorage";
 import { DepositTooltipContent } from "components/Synthetics/MarketsList/DepositTooltipContent";
 const { AddressZero } = ethers.constants;
 
-import {
-  ClaimAllModal,
-  DepositModal,
-} from "./components/modals";
+import { ClaimAllModal, DepositModal } from "./components/modals";
 
 import noNFT from "img/noNFT.svg";
 import { STAKER_SUBGRAPH_URL, SWAP_SUBGRAPH_URL } from "config/subgraph";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const EXTERNAL_LINK_CHAIN_CONFIG = process.env.REACT_APP_ENV === "development" ? "nova_sepolia" : "nova_mainnet";
 
 export default function StakeV2() {
+  const queryClient = useQueryClient();
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
 
@@ -83,8 +78,6 @@ export default function StakeV2() {
 
   const [selectTab, setselectTab] = useState("Pool2");
   const [NFTdata, setNFTData] = useState<any[]>([]);
-  const [depNFTData, setDepNFTData] = useState<any[]>([]);
-  const [depNFTDataId, setDepNFTDataId] = useState<any[]>([]);
   const [stakeliquidity, setstakeliquidity] = useState("");
   const [NFTClaimed, setNFTClaimed] = useState("");
   const [totalReward, setTotalReward] = useState("");
@@ -105,9 +98,7 @@ export default function StakeV2() {
   const vaultAddress = getContract(chainId, "Vault");
   const gmxAddress = getContract(chainId, "GMX");
 
-
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
-
 
   const glpManagerAddress = getContract(chainId, "GlpManager");
 
@@ -116,14 +107,8 @@ export default function StakeV2() {
   const uniV3StakerAddress = getContract(chainId, "v3StakerAddress");
   const v3FactoryAddress = getContract(chainId, "v3Factory");
   const IncentiveKeyAddress = getContract(chainId, "IncentiveKey");
-
-  const stakedGmxDistributorAddress = getContract(chainId, "StakedGmxDistributor");
-  const stakedGlpDistributorAddress = getContract(chainId, "StakedGlpDistributor");
-
   const AGXAddress = getContract(chainId, "AGX");
   const wethAddress = getContract(chainId, "WethSwap");
-
-  const excludedEsGmxAccounts = [stakedGmxDistributorAddress, stakedGlpDistributorAddress];
 
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const wrappedTokenSymbol = getConstant(chainId, "wrappedTokenSymbol");
@@ -142,25 +127,7 @@ export default function StakeV2() {
         console.log("Error:", error);
       });
     axios
-      .post(
-        STAKER_SUBGRAPH_URL,
-        '{"query":"{\\n  positions(where: {owner: \\"' +
-          account +
-          '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n  liquidity\\n  incentiveId\\n    }\\n}"}'
-      )
-      .then((response) => {
-        const array = response.data.data.positions.map((item) => item.tokenId);
-        setDepNFTData(response.data.data.positions);
-        setDepNFTDataId(array);
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
-    axios
-      .post(
-        STAKER_SUBGRAPH_URL,
-        '{"query":"{\\n  incentives {\\n    liquidity\\n    }\\n}"}'
-      )
+      .post(STAKER_SUBGRAPH_URL, '{"query":"{\\n  incentives {\\n    liquidity\\n    }\\n}"}')
       .then((response) => {
         setstakeliquidity(response.data.data.incentives[0].liquidity);
       })
@@ -206,9 +173,7 @@ export default function StakeV2() {
 
   const emissionData = getEmissionData(Number(startTime?.toString()));
 
-
   let hasMultiplierPoints = false;
-
 
   const showDepositModals = () => {
     if (NFTlist.length > 0) {
@@ -229,22 +194,65 @@ export default function StakeV2() {
     setClaimModalVisible(true);
   };
 
-  const { data: depNFTlist, mutate: refetchDepNFTlist } = useSWR(
-    [`StakeV2:getSpecificNftId:${active}`, chainId, dexreaderAddress, "getSpecificNftIds"],
-    {
-      fetcher: contractFetcher(signer, DexReader, [depNFTDataId, AGXAddress, wethAddress]),
-    }
-  );
+  const fetchPositions = async ({ queryKey }) => {
+    const [, account] = queryKey;
+    if (!account) return;
 
-  let depNFTlists =
+    const response = await axios.post(STAKER_SUBGRAPH_URL, {
+      query: `{
+      positions(where: { owner: "${account}" }) {
+        tokenId
+        owner
+        staked
+        liquidity
+        incentiveId
+      }
+    }`,
+    });
+
+    return response.data.data.positions;
+  };
+
+  const { data: positionsData } = useQuery({
+    queryKey: ["positions", account],
+    queryFn: fetchPositions,
+    enabled: !!account,
+    refetchOnWindowFocus: false,
+    select: (positions) => {
+      const tokenIdArray = positions.map((item) => item.tokenId);
+      return {
+        positions,
+        tokenIdArray,
+      };
+    },
+  });
+
+  const { positions: positionsAll, tokenIdArray: postionTokenIds } = positionsData || {};
+
+  const fetchSpecificNftIds = async () => {
+    if (!signer || !dexreaderAddress) return;
+
+    const dexReaderContract = new Contract(dexreaderAddress, DexReader.abi, signer);
+    const result = await dexReaderContract.getSpecificNftIds(postionTokenIds, AGXAddress, wethAddress);
+    return result;
+  };
+
+  const { data: depNFTlist, refetch: refetchDepNFTlist } = useQuery({
+    queryKey: [`StakeV2:getSpecificNftId:${active}`, chainId, dexreaderAddress],
+    queryFn: fetchSpecificNftIds,
+    enabled: !!signer && !!dexreaderAddress && !!postionTokenIds,
+    refetchOnWindowFocus: false,
+  });
+
+  const filteredDepNFTlists =
     depNFTlist &&
-    depNFTData.filter((it) => {
+    positionsAll?.filter((it) => {
       return depNFTlist.some((i) => {
         return i.toNumber() == Number(it.tokenId);
       });
     });
 
-  const stakedTokens = (depNFTlist && depNFTlists?.filter((nft) => nft.staked).map((nft) => nft.tokenId)) || [];
+  const stakedTokens = (depNFTlist && filteredDepNFTlists?.filter((nft) => nft.staked).map((nft) => nft.tokenId)) || [];
 
   const { data: stakedRewardInfos } = useSWR(
     [`StakeV2:getRewardInfos:${active}`, chainId, dexreaderAddress, "getRewardInfos"],
@@ -253,11 +261,11 @@ export default function StakeV2() {
     }
   );
   const { data: depBaselist } = useSWR([`StakeV2:getTokenURI:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
-    fetcher: contractFetcher(signer, DexReader, [depNFTDataId ? depNFTDataId.map((i) => Number(i)) : []]),
+    fetcher: contractFetcher(signer, DexReader, [postionTokenIds ? postionTokenIds.map((i) => Number(i)) : []]),
   });
   const depUrlList =
-    depNFTlists &&
-    depNFTlists.map((it, ind) => {
+    filteredDepNFTlists &&
+    filteredDepNFTlists.map((it, ind) => {
       let obj = {};
       depBaselist &&
         depBaselist[0] &&
@@ -278,24 +286,40 @@ export default function StakeV2() {
   const tokenIds = rewardInfos.length ? rewardInfos.map((x) => x.tokenId) : [];
   const tokenRewards = rewardInfos.length ? rewardInfos.map((x) => x.reward) : [];
 
-  const mergedDepNFTlists = depNFTlists?.length
-    ? depNFTlists.map((nft) => {
+  const mergedDepNFTlists = filteredDepNFTlists?.length
+    ? filteredDepNFTlists.map((nft) => {
         const index = tokenIds.indexOf(parseInt(nft.tokenId, 10));
         return index !== -1 ? { ...nft, reward: tokenRewards[index] } : nft;
       })
     : [];
-  const { data: NFTlist, mutate: refetchSpecificNftIds } = useSWR(
-    [`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress, "getSpecificNftIds"],
-    {
-      fetcher: contractFetcher(signer, DexReader, [NFTdata, AGXAddress, wethAddress]),
-    }
-  );
-  const { data: baselist, mutate: refetchTokenURIs } = useSWR(
-    [`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, "getTokenURIs"],
-    {
-      fetcher: contractFetcher(signer, DexReader, [NFTlist ? NFTlist.map((i) => Number(i)) : []]),
-    }
-  );
+  const fetchNftIds = async ({ queryKey }) => {
+    const [, , dexreaderAddress] = queryKey;
+    if (!signer || !dexreaderAddress) return;
+
+    const dexReaderContract = new Contract(dexreaderAddress, DexReader.abi, signer);
+    const result = await dexReaderContract.getSpecificNftIds(NFTdata, AGXAddress, wethAddress);
+    return result;
+  };
+  const { data: NFTlist } = useQuery({
+    queryKey: [`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress],
+    queryFn: fetchNftIds,
+    enabled: !!signer && !!dexreaderAddress,
+              refetchOnWindowFocus: false,
+  });
+  const fetchTokenURIs = async ({ queryKey }) => {
+    const [, , dexreaderAddress, NFTlist] = queryKey;
+    if (!signer || !dexreaderAddress || !NFTlist) return;
+
+    const dexReaderContract = new Contract(dexreaderAddress, DexReader.abi, signer);
+    const result = await dexReaderContract.getTokenURIs(NFTlist.map((i) => Number(i)));
+    return result;
+  };
+  const { data: baselist } = useQuery({
+    queryKey: [`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, NFTlist],
+    queryFn: fetchTokenURIs,
+    enabled: !!signer && !!dexreaderAddress && !!NFTlist,
+    refetchOnWindowFocus: false,
+  });
   const { data: Pool2ewards } = useSWR([`StakeV2:rewards:${active}`, chainId, uniV3StakerAddress, "rewards"], {
     fetcher: contractFetcher(signer, UniV3Staker, [AGXAddress, account]),
   });
@@ -367,7 +391,7 @@ export default function StakeV2() {
     }
   }, [Pooladdress, agxPrice, ethPrice, stakeliquidity, stakeAllValue]);
 
-  const stake = async (tokenId) => {
+  const stakeFn = async (tokenId) => {
     setIsStaking(true);
     setSelectedCard(tokenId);
     try {
@@ -378,61 +402,28 @@ export default function StakeV2() {
         successMsg: t`Stake completed!`,
         setPendingTxns,
       });
-
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      refetchDepNFTlist();
-
-      try {
-        const response = await axios.post(
-          STAKER_SUBGRAPH_URL,
-          '{"query":"{\\n positions(where: {owner: \\"' +
-            account +
-            '\\"}) {\\n tokenId\\n owner\\n staked\\n incentiveId\\n }\\n}"}'
-        );
-        const array = response.data.data.positions.map((item) => item.tokenId);
-        setDepNFTData(response.data.data.positions);
-        setDepNFTDataId(array);
-        refetchDepNFTlist();
-
-        axios
-        .post(
-          "https://sepolia.graph.zklink.io/subgraphs/name/staker",
-          '{"query":"{\\n  positions(where: {owner: \\"' +
-            account +
-            '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n  liquidity\\n  incentiveId\\n    }\\n}"}'
-        )
-        .then((response) => {
-          const array = response.data.data.positions.map((item) => item.tokenId);
-          setDepNFTData(response.data.data.positions);
-          setDepNFTDataId(array);
-        })
-        .catch((error) => {
-          console.log("Error:", error);
+      queryClient.setQueryData(["positions", account], (prevPositionsData: any) => {
+        const updatedPositions = prevPositionsData.map((position) => {
+          if (Number(position.tokenId) === tokenId) {
+            return {
+              ...position,
+              staked: true,
+            };
+          }
+          return position;
         });
-
-      } catch (error) {
-        console.log("Error:", error);
-      }
-
-      depNFTlists =
-        depNFTlist &&
-        depNFTData.filter((it) => {
-          return depNFTlist.some((i) => {
-            return i.toNumber() == Number(it.tokenId);
-          });
-        });
-
-      refetchDepNFTlist();
+        return updatedPositions;
+      });
     } catch (error) {
       console.log("Error:", error);
     } finally {
-      refetchDepNFTlist();
       setIsStaking(false);
       setSelectedCard(null);
     }
   };
 
-  const withdraw = async (tokenId) => {
+
+  const withdrawFn = async (tokenId) => {
     setIsWithdrawing(true);
     setSelectedCard(tokenId);
     try {
@@ -443,44 +434,59 @@ export default function StakeV2() {
         successMsg: t`Withdraw completed!`,
         setPendingTxns,
       });
-
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      refetchDepNFTlist();
-      refetchSpecificNftIds();
-      refetchTokenURIs();
-
-      try {
-        const response = await axios.post(
-          STAKER_SUBGRAPH_URL,
-          '{"query":"{\\n  positions(where: {owner: \\"' +
-            account +
-            '\\"}) {\\n    tokenId\\n    owner\\n    staked\\n    incentiveId\\n    }\\n}"}'
+      queryClient.setQueryData(
+        [`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress],
+        (prevNFTlist: any) => {
+          const formattedTokenId = ethers.BigNumber.from(tokenId);
+          if (prevNFTlist) {
+            if (!prevNFTlist.includes(formattedTokenId)) {
+              return [...prevNFTlist, formattedTokenId];
+            }
+          } else {
+            return [formattedTokenId];
+          }
+          return prevNFTlist;
+        }
+      );
+      queryClient.setQueryData(
+        [`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, NFTlist],
+        (prevNFTlist: any) => {
+          const formattedId = ethers.BigNumber.from(tokenId);
+          if (prevNFTlist) {
+            const updatedList = prevNFTlist[1].map((tId) => tId);
+            if (!updatedList.some((tId) => tId.eq(formattedId))) {
+              updatedList.push(formattedId);
+              const tokenIndex = updatedList.findIndex((tId) => tId.eq(formattedId));
+              const selectedDepBase = depBaselist[tokenIndex];
+              return [[...prevNFTlist[0], selectedDepBase], updatedList];
+            }
+          } else {
+            return [prevNFTlist[0], [formattedId]];
+          }
+          return prevNFTlist;
+        }
+      );
+      queryClient.setQueryData(
+        [`StakeV2:getSpecificNftId:${active}`, chainId, dexreaderAddress],
+        (prevNFTlist: any) => {
+          return prevNFTlist?.filter((tId) => Number(tId.toString()) !== Number(tokenId));
+        }
+      );
+      queryClient.setQueryData(["positions", account], (prevPositionsData: any) => {
+        const updatedPositions = prevPositionsData.filter(
+          (position: any) => Number(position.tokenId) !== Number(tokenId)
         );
-
-        const { positions } = response.data.data;
-        const tokenIds = positions.map((item) => item.tokenId);
-        setDepNFTData(positions);
-        setDepNFTDataId(tokenIds);
-
-        depNFTlists =
-          depNFTlist &&
-          positions.filter((position) => {
-            return depNFTlist.some((tokenId) => tokenId.toNumber() === Number(position.tokenId));
-          });
-      } catch (error) {
-        console.log("Error fetching positions:", error);
-      }
+        return updatedPositions;
+      });
     } catch (error) {
       console.log("Error withdrawing token:", error);
     } finally {
       setIsWithdrawing(false);
       setSelectedCard(null);
-      refetchSpecificNftIds();
-      refetchTokenURIs();
     }
   };
 
-  const unstake = async (tokenId) => {
+  const unstakeFn = async (tokenId) => {
     setIsUnstakeLoading(true);
     setSelectedCard(tokenId);
 
@@ -492,36 +498,18 @@ export default function StakeV2() {
         successMsg: t`Unstake completed!`,
         setPendingTxns,
       });
-
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      refetchDepNFTlist();
-
-      try {
-        const response = await axios.post(
-          STAKER_SUBGRAPH_URL,
-          '{"query":"{\\n positions(where: {owner: \\"' +
-            account +
-            '\\"}) {\\n tokenId\\n owner\\n staked\\n incentiveId\\n }\\n}"}'
-        );
-        const array = response.data.data.positions.map((item) => item.tokenId);
-        setDepNFTData(response.data.data.positions);
-        setDepNFTDataId(array);
-        refetchDepNFTlist();
-
-        depNFTlists =
-          depNFTlist &&
-          depNFTData.filter((it) => {
-            return depNFTlist.some((i) => {
-              return i.toNumber() == Number(it.tokenId);
-            });
-          });
-
-        refetchDepNFTlist();
-      } catch (error) {
-        console.log("Error fetching positions:", error);
-      }
-
-      refetchDepNFTlist();
+      queryClient.setQueryData(["positions", account], (prevPositionsData: any) => {
+        const updatedPositions = prevPositionsData.map((position) => {
+          if (Number(position.tokenId) === tokenId) {
+            return {
+              ...position,
+              staked: false,
+            };
+          }
+          return position;
+        });
+        return updatedPositions;
+      });
     } catch (error) {
       console.log("Error unstaking token:", error);
     } finally {
@@ -589,8 +577,8 @@ export default function StakeV2() {
     history.push("/buy");
   };
 
-  const totalUserStakedLiquidity = depNFTData
-    .filter((entry) => entry && typeof entry.liquidity !== "undefined")
+  const totalUserStakedLiquidity = positionsAll
+    ?.filter((entry) => entry && typeof entry.liquidity !== "undefined")
     .reduce((sum, { liquidity }) => sum + BigInt(liquidity), BigInt(0));
 
   const stakedAGXAmount = (
@@ -600,7 +588,6 @@ export default function StakeV2() {
 
   const userStakedAGXAmount = stakedAGXAmount === "NaN" ? "0.00" : stakedAGXAmount;
   const formattedPoolValue = isNaN(poolValue) ? 0 : poolValue;
-
 
   return (
     <div className="default-container page-layout">
@@ -652,6 +639,7 @@ export default function StakeV2() {
         wrappedTokenSymbol={wrappedTokenSymbol}
         showNFTdata={NFTlist}
         URLlist={urlList}
+        baseUriList={baselist}
         setNFTData={setNFTData}
         refetchDepNFTlist={refetchDepNFTlist}
       />
@@ -700,8 +688,8 @@ export default function StakeV2() {
                 {agxPrice &&
                   Pool2ewards &&
                   rewards &&
-                  ((Number(Pool2ewards) / 10 ** 18 + Number(rewards) / 10 ** 18) * agxPrice)
-                    .toFixed(2)
+                  Number(((Number(Pool2ewards) / 10 ** 18 + Number(rewards) / 10 ** 18) * agxPrice)
+                    .toFixed(2))
                     .toLocaleString()}
               </div>
               <div className="StakeV2-claimToken">USDT</div>
@@ -866,7 +854,7 @@ export default function StakeV2() {
                         <Button
                           variant="secondary"
                           className={cx("stakeButton ishide", { show: !item.staked }, { showMobile: !item.staked })}
-                          onClick={() => stake(Number(item.tokenId))}
+                          onClick={() => stakeFn(Number(item.tokenId))}
                           loading={isStaking && Number(selectedCard) === Number(item.tokenId)}
                         >
                           <Trans>Stake</Trans>
@@ -874,7 +862,7 @@ export default function StakeV2() {
                         <Button
                           variant="secondary"
                           className={cx("stakeButton ishide", { show: !item.staked }, { showMobile: !item.staked })}
-                          onClick={() => withdraw(Number(item.tokenId))}
+                          onClick={() => withdrawFn(Number(item.tokenId))}
                           loading={isWithdrawing && Number(selectedCard) === Number(item.tokenId)}
                         >
                           <Trans>Withdraw</Trans>
@@ -882,7 +870,7 @@ export default function StakeV2() {
                         <Button
                           variant="secondary"
                           className={cx("stakeButton ishide", { show: item.staked }, { showMobile: item.staked })}
-                          onClick={() => unstake(Number(item.tokenId))}
+                          onClick={() => unstakeFn(Number(item.tokenId))}
                           loading={isUnstaking && Number(selectedCard) === Number(item.tokenId)}
                         >
                           <TooltipWithPortal
@@ -938,7 +926,7 @@ export default function StakeV2() {
                 managedUsd = ethers.BigNumber.from(0);
               }
               let manage = 1;
-              manage = calculateManage(managedUsd, glpSupplyUsd);
+              manage = managedUsd && calculateManage(managedUsd, glpSupplyUsd);
               return (
                 <div className="table-td" key={token.symbol}>
                   <div className="leftAlign">{token.symbol}/ALP</div>

@@ -14,10 +14,8 @@ import UniV3Staker from "abis/UniV3Staker.json";
 
 import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
-import { ethers } from "ethers";
-import {
-  getPageTitle,
-} from "lib/legacy";
+import { Contract, ethers } from "ethers";
+import { getPageTitle } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 
 import useSWR from "swr";
@@ -34,13 +32,7 @@ import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { getIcons } from "config/icons";
 import { callContract, contractFetcher } from "lib/contracts";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import {
-  bigNumberify,
-  formatAmount,
-  formatAmountFree,
-  limitDecimals,
-  parseValue,
-} from "lib/numbers";
+import { bigNumberify, formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
 // import "../Stake.css";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
@@ -48,7 +40,7 @@ import axios from "axios";
 
 import { approveTokens } from "domain/tokens";
 import { STAKER_SUBGRAPH_URL } from "config/subgraph";
-
+import { useQueryClient } from "@tanstack/react-query";
 
 const { AddressZero } = ethers.constants;
 function ClaimAllModal(props) {
@@ -73,9 +65,9 @@ function ClaimAllModal(props) {
     URLlist,
     setNFTData,
     Pool2ewards,
-    rewards
+    rewards,
   } = props;
-  const [tokenId, setTokenId] = useState('');
+  const [tokenId, setTokenId] = useState("");
   const NFTPositionsManagerAddress = getContract(chainId, "nonfungibleTokenPositionManagerAddress");
   const IncentiveKeyAddress = getContract(chainId, "IncentiveKey");
   const uniV3StakerAddress = getContract(chainId, "v3StakerAddress");
@@ -85,9 +77,9 @@ function ClaimAllModal(props) {
   const [isDeposit, setIsDeposit] = useState(false);
   const goDeposit = () => {
     if (isDeposit || !tokenId) {
-      return
+      return;
     }
-    if (tokenId === 'Liquidity') {
+    if (tokenId === "Liquidity") {
       setIsDeposit(true);
       const contract = new ethers.Contract(ALPAddress, GLP.abi, signer);
       callContract(chainId, contract, "claim", [account], {
@@ -97,31 +89,31 @@ function ClaimAllModal(props) {
         setPendingTxns,
       }).finally(() => {
         setIsDeposit(false);
-        setIsVisible(false)
+        setIsVisible(false);
       });
-    } else if (tokenId === 'Staking') {
+    } else if (tokenId === "Staking") {
       setIsDeposit(true);
       const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
-      callContract(chainId, contract, "claimReward", [AGXAddress,account,Pool2ewards.toNumber()], {
+      callContract(chainId, contract, "claimReward", [AGXAddress, account, Pool2ewards.toNumber()], {
         sentMsg: t`Claim submitted.`,
         failMsg: t`Claim failed.`,
         successMsg: t`Claim completed!`,
         setPendingTxns,
       }).finally(() => {
         setIsDeposit(false);
-        setIsVisible(false)
+        setIsVisible(false);
       });
     } else {
       setIsDeposit(true);
       const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
-      callContract(chainId, contract, "claimReward", [AGXAddress,account,Pool2ewards], {
+      callContract(chainId, contract, "claimReward", [AGXAddress, account, Pool2ewards], {
         sentMsg: t`Claim submitted.`,
         failMsg: t`Claim failed.`,
         successMsg: t`Claim completed!`,
         setPendingTxns,
       }).finally(() => {
         setIsDeposit(false);
-        setIsVisible(false)
+        setIsVisible(false);
       });
     }
   };
@@ -131,45 +123,48 @@ function ClaimAllModal(props) {
         <div className="claimModal">
           <div className="tabBox">
             <div>
-              <Checkbox isChecked={tokenId==='Staking'} setIsChecked={(isChecked)=>{isChecked?setTokenId('Staking'):setTokenId('')}}>
+              <Checkbox
+                isChecked={tokenId === "Staking"}
+                setIsChecked={(isChecked) => {
+                  isChecked ? setTokenId("Staking") : setTokenId("");
+                }}
+              >
                 <span className="muted">
-                  <Trans>
-                  Staking
-                  </Trans>
+                  <Trans>Staking</Trans>
                 </span>
               </Checkbox>
             </div>
-            <div>
-              0 AGX
-            </div>
+            <div>0 AGX</div>
           </div>
           <div className="tabBox">
             <div>
-              <Checkbox isChecked={tokenId==='Pool2'} setIsChecked={(isChecked)=>{isChecked?setTokenId('Pool2'):setTokenId('')}}>
+              <Checkbox
+                isChecked={tokenId === "Pool2"}
+                setIsChecked={(isChecked) => {
+                  isChecked ? setTokenId("Pool2") : setTokenId("");
+                }}
+              >
                 <span className="muted">
-                  <Trans>
-                  Pool2 Mining
-                  </Trans>
+                  <Trans>Pool2 Mining</Trans>
                 </span>
               </Checkbox>
             </div>
-            <div>
-              {Pool2ewards && Number((Number(Pool2ewards)/(10**18)).toFixed(2)).toLocaleString()} AGX
-            </div>
+            <div>{Pool2ewards && Number((Number(Pool2ewards) / 10 ** 18).toFixed(2)).toLocaleString()} AGX</div>
           </div>
           <div className="tabBox">
             <div>
-              <Checkbox isChecked={tokenId==='Liquidity'} setIsChecked={(isChecked)=>{isChecked?setTokenId('Liquidity'):setTokenId('')}}>
+              <Checkbox
+                isChecked={tokenId === "Liquidity"}
+                setIsChecked={(isChecked) => {
+                  isChecked ? setTokenId("Liquidity") : setTokenId("");
+                }}
+              >
                 <span className="muted">
-                  <Trans>
-                  Liquidity Mining
-                  </Trans>
+                  <Trans>Liquidity Mining</Trans>
                 </span>
               </Checkbox>
             </div>
-            <div>
-              {rewards && Number((Number(rewards)/(10**18)).toFixed(2)).toLocaleString()} AGX
-            </div>
+            <div>{rewards && Number((Number(rewards) / 10 ** 18).toFixed(2)).toLocaleString()} AGX</div>
           </div>
         </div>
         <div>You will receive</div>
@@ -189,29 +184,27 @@ function DepositModal(props) {
     setIsVisible,
     chainId,
     title,
-    maxAmount,
-    value,
-    setValue,
     active,
     account,
     signer,
-    stakingTokenSymbol,
-    stakingTokenAddress,
-    farmAddress,
-    rewardRouterAddress,
-    stakeMethodName,
-    refetchDepNFTlist,
     setPendingTxns,
     showNFTdata,
     URLlist,
-    setNFTData,
   } = props;
+  const dexreaderAddress = getContract(chainId, "dexreader");
+  const queryClient = useQueryClient();
   const [tokenId, setTokenId] = useState(null);
   const NFTPositionsManagerAddress = getContract(chainId, "nonfungibleTokenPositionManagerAddress");
-  const IncentiveKeyAddress = getContract(chainId, "IncentiveKey");
   const uniV3StakerAddress = getContract(chainId, "v3StakerAddress");
-  const ALPAddress = getContract(chainId, "ALP");
   const [isDeposit, setIsDeposit] = useState(false);
+
+  const getPositionInfo = async (_tokenId) => {
+    if (!signer || !NFTPositionsManagerAddress) return;
+
+    const positionContract = new Contract(NFTPositionsManagerAddress, NFTPositionsManager.abi, signer);
+    const result = await positionContract.positions(_tokenId);
+    return result;
+  };
 
   const goDeposit = async () => {
     if (isDeposit || !tokenId) {
@@ -228,29 +221,44 @@ function DepositModal(props) {
         successMsg: t`Deposit completed!`,
         setPendingTxns,
       });
-
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      refetchDepNFTlist();
-
-      try {
-        const response = await axios.post(
-          STAKER_SUBGRAPH_URL,
-          '{"query":"{\\n  nfts(where: {owner: \\"' + account + '\\"}) {\\n    tokenId\\n    owner\\n    }\\n}"}'
-        );
-
-        const tokenIds = response.data.data.nfts.map((item) => item.tokenId);
-        setNFTData(tokenIds);
-        refetchDepNFTlist();
-      } catch (error) {
-        console.error("Error fetching NFTs:", error);
-      }
+      const positionInfo = await getPositionInfo(tokenId);
+      queryClient.setQueryData(
+        [`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, showNFTdata],
+        (prevNFTlist: any) => {
+          return prevNFTlist[1]?.filter((tId) => Number(tId.toString()) !== tokenId);
+        }
+      );
+      queryClient.setQueryData(
+        [`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress],
+        (prevNFTlist: any) => {
+          return prevNFTlist.filter((tId) => Number(tId.toString()) !== tokenId);
+        }
+      );
+      queryClient.setQueryData(
+        [`StakeV2:getSpecificNftId:${active}`, chainId, dexreaderAddress],
+        (prevNFTlist: any) => {
+          return [...prevNFTlist, ethers.BigNumber.from(tokenId)];
+        }
+      );
+      queryClient.setQueryData(["positions", account], (prevPositionsData: any) => {
+        const updatedPositions = [
+          ...prevPositionsData,
+          {
+            liquidity: positionInfo.liquidity.toString(),
+            tokenId: String(tokenId),
+            stake: false,
+            owner: account,
+            incentiveId: "0xd11b602a24a9bb891c3d6568c5a91630139d9673d6495f72a12afeb228089f19",
+          },
+        ];
+        return updatedPositions;
+      });
     } catch (error) {
       console.error("Error depositing token:", error);
     } finally {
       setTokenId(null);
       setIsDeposit(false);
       setIsVisible(false);
-      refetchDepNFTlist();
     }
   };
   return (
@@ -268,14 +276,13 @@ function DepositModal(props) {
                   }}
                   className={cx("NFTBox", { tokenActive: tokenId === item.toNumber() })}
                 >
-                  <img src={URLlist[index]?.image || ""} />
+                  <img src={URLlist[index]?.image || ""} alt="" />
                 </div>
               );
             })}
         </div>
         <div className="Exchange-swap-button-container depositButton">
           <Button variant="primary-action" onClick={goDeposit} loading={isDeposit}>
-            {/* {getPrimaryText()} */}
             Deposit
           </Button>
         </div>
@@ -1283,4 +1290,4 @@ export {
   ClaimModal,
   AffiliateClaimModal,
   AffiliateVesterWithdrawModal,
-}
+};
