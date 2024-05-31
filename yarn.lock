@@ -7436,6 +7436,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bignumber.js@npm:^9.1.1":
+  version: 9.1.2
+  resolution: "bignumber.js@npm:9.1.2"
+  checksum: 582c03af77ec9cb0ebd682a373ee6c66475db94a4325f92299621d544aa4bd45cb45fd60001610e94aef8ae98a0905fa538241d9638d4422d57abbeeac6fadaf
+  languageName: node
+  linkType: hard
+
 "binary-extensions@npm:^2.0.0":
   version: 2.2.0
   resolution: "binary-extensions@npm:2.2.0"
@@ -11384,6 +11391,7 @@ __metadata:
     "@wagmi/connectors": 4.1.14
     "@wagmi/core": 2.6.5
     bigdecimal: 0.6.1
+    bignumber.js: ^9.1.1
     buffer: 6.0.3
     classnames: 2.3.1
     cross-env: 7.0.3

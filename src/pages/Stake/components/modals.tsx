@@ -43,6 +43,7 @@ import { approveTokens } from "domain/tokens";
 import { STAKER_SUBGRAPH_URL } from "config/subgraph";
 import { useQueryClient } from "@tanstack/react-query";
 import { UiModal } from "components/ui/Modal";
+import { displayAddress } from "utils/formatter";
 
 const { AddressZero } = ethers.constants;
 function ClaimAllModal(props) {
@@ -1223,7 +1224,7 @@ export function ClaimHistoryModal(props) {
 const { isVisible, setIsVisible,data } = props;
 console.log(data, "claimHistoryModal");
   return (
-    <Modal isVisible setIsVisible={setIsVisible}>
+    <Modal isVisible setIsVisible={setIsVisible} className="!bg-[#292B2F]">
       <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4 max-w-[900px]">
         <div className="mt-4">
           <table className="w-full divide-y divide-gray-700">
@@ -1231,50 +1232,41 @@ console.log(data, "claimHistoryModal");
               <tr>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-lg font-medium text-gray-300 uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xl font-medium text-gray-300 uppercase tracking-wider"
                 >
                   Type
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-lg font-medium text-gray-300 uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xl font-medium text-gray-300 uppercase tracking-wider"
                 >
                   USDT Amount
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-lg font-medium text-gray-300 uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xl font-medium text-gray-300 uppercase tracking-wider"
                 >
                   EQU Amount
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-lg font-medium text-gray-300 uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xl font-medium text-gray-300 uppercase tracking-wider"
                 >
                   Tx Hash
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700 text-lg">
+            <tbody className="divide-y divide-gray-700 text-xl">
               {data?.map((item, index) => (
                 <tr key={index}>
-                  <td className="px-6 py-4 whitespace-nowrap text-lg text-gray-300">Staking AGX</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-lg text-gray-300">{item.amount}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-lg text-gray-300">{item.amount}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-lg text-blue-400">{item.transactionHash}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-xl text-gray-300">Staking AGX</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-xl text-gray-300">{item.amount}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-xl text-gray-300">{item.amount}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-xl text-blue-400">
+                    {displayAddress(item.transactionHash)}
+                  </td>
                 </tr>
               ))}
-              {/* {
-    "transactionHash": "0xb17f09accf8ddcc3dd2e72ec979691f1c3af927e7e62787fe84863ed4583c01a",
-    "blockTimestamp": "1716272530",
-    "amount": "0"
-} */}
-              {/* <tr>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">Staking EQU</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">&lt;0.01</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">0</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-400">0xcd5a...4278</td>
-              </tr> */}
             </tbody>
           </table>
         </div>
