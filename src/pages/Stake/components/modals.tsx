@@ -1216,6 +1216,27 @@ function ClaimModal(props) {
   );
 }
 
+export function ClaimHistoryModal(props) {
+
+const { isVisible, setIsVisible,data } = props;
+console.log(data, "claimHistoryModal");
+  return (
+    <div className="StakeModal">
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
+        <div className="CompoundModal-menu"></div>
+        {data?.map((item, index) => {
+          return <>{item?.amount}</>;
+        })}
+        {/* <div className="Exchange-swap-button-container">
+          <Button variant="primary-action" className="w-full">
+            test
+          </Button>
+        </div> */}
+      </Modal>
+    </div>
+  );
+}
+
 function AffiliateClaimModal(props) {
   const { isVisible, setIsVisible, signer, chainId, setPendingTxns, totalVesterRewards } = props;
   const [isClaiming, setIsClaiming] = useState(false);

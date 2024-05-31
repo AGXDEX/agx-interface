@@ -48,7 +48,7 @@ import { useLocalStorageByChainId } from "lib/localStorage";
 import { DepositTooltipContent } from "components/Synthetics/MarketsList/DepositTooltipContent";
 const { AddressZero } = ethers.constants;
 
-import { ClaimAllModal, DepositModal } from "./components/modals";
+import { ClaimAllModal, ClaimHistoryModal, DepositModal } from "./components/modals";
 
 import noNFT from "img/noNFT.svg";
 import { STAKER_SUBGRAPH_URL, SWAP_SUBGRAPH_URL } from "config/subgraph";
@@ -194,6 +194,30 @@ export default function StakeV2() {
     setClaimModalVisible(true);
   };
 
+  const fetchClaimHistories = async ({ queryKey }) => {
+    const [, account] = queryKey;
+    const response = await axios.post(STAKER_SUBGRAPH_URL, {
+      query: `{
+      claimHistories(
+        where: { owner: "${account}" }
+        orderDirection: desc
+        orderBy: blockTimestamp
+      ) {
+        transactionHash
+        blockTimestamp
+        amount
+      }
+    }`,
+    });
+    return response.data.data.claimHistories;
+  };
+
+  const { data: claimHistories } = useQuery({
+    queryKey: ["claimHistories", account],
+    queryFn: fetchClaimHistories,
+    enabled: !!account,
+  });
+
   const fetchPositions = async ({ queryKey }) => {
     const [, account] = queryKey;
     if (!account) return;
@@ -304,7 +328,7 @@ export default function StakeV2() {
     queryKey: [`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress],
     queryFn: fetchNftIds,
     enabled: !!signer && !!dexreaderAddress,
-              refetchOnWindowFocus: false,
+    refetchOnWindowFocus: false,
   });
   const fetchTokenURIs = async ({ queryKey }) => {
     const [, , dexreaderAddress, NFTlist] = queryKey;
@@ -421,7 +445,6 @@ export default function StakeV2() {
       setSelectedCard(null);
     }
   };
-
 
   const withdrawFn = async (tokenId) => {
     setIsWithdrawing(true);
@@ -688,9 +711,9 @@ export default function StakeV2() {
                 {agxPrice &&
                   Pool2ewards &&
                   rewards &&
-                  Number(((Number(Pool2ewards) / 10 ** 18 + Number(rewards) / 10 ** 18) * agxPrice)
-                    .toFixed(2))
-                    .toLocaleString()}
+                  Number(
+                    ((Number(Pool2ewards) / 10 ** 18 + Number(rewards) / 10 ** 18) * agxPrice).toFixed(2)
+                  ).toLocaleString()}
               </div>
               <div className="StakeV2-claimToken">USDT</div>
             </div>
@@ -702,11 +725,23 @@ export default function StakeV2() {
               </div>
               <div className="StakeV2-claimToken">AGX</div>
             </div>
-            <Button variant="secondary" className="StakeV2-button" onClick={onClickPrimary} disabled={!rewards}>
-              Claim
-            </Button>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "between",
+                alignItems: "center",
+              }}
+            >
+              <Button variant="secondary" onClick={onClickPrimary} disabled={!rewards}>
+                Claim
+              </Button>
+              <span> Claim History</span>
+            </div>
           </div>
         </div>
+
+        <ClaimHistoryModal isVisible={true} setIsVisible={() => {}} data={claimHistories} />
 
         <div className="App-card App-card-space-between StakeV2-content">
           <div className="tabBox">
