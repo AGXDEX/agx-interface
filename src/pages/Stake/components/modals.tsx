@@ -42,8 +42,16 @@ import axios from "axios";
 import { approveTokens } from "domain/tokens";
 import { STAKER_SUBGRAPH_URL } from "config/subgraph";
 import { useQueryClient } from "@tanstack/react-query";
-import { UiModal } from "components/ui/Modal";
+// import { UiModal } from "components/ui/Modal";
 import { displayAddress } from "utils/formatter";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "components/ui/dialog";
 
 const { AddressZero } = ethers.constants;
 function ClaimAllModal(props) {
@@ -182,18 +190,8 @@ function ClaimAllModal(props) {
 }
 
 function DepositModal(props) {
-  const {
-    isVisible,
-    setIsVisible,
-    chainId,
-    title,
-    active,
-    account,
-    signer,
-    setPendingTxns,
-    showNFTdata,
-    URLlist,
-  } = props;
+  const { isVisible, setIsVisible, chainId, title, active, account, signer, setPendingTxns, showNFTdata, URLlist } =
+    props;
   const dexreaderAddress = getContract(chainId, "dexreader");
   const queryClient = useQueryClient();
   const [tokenId, setTokenId] = useState(null);
@@ -1220,58 +1218,113 @@ function ClaimModal(props) {
 }
 
 export function ClaimHistoryModal(props) {
-
-const { isVisible, setIsVisible,data } = props;
-console.log(data, "claimHistoryModal");
+  const { isVisible, setIsVisible, data } = props;
+  console.log(data, "claimHistoryModal");
   return (
-    <Modal isVisible setIsVisible={setIsVisible} className="!bg-[#292B2F]">
-      <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4 max-w-[900px]">
-        <div className="mt-4">
-          <table className="w-full divide-y divide-gray-700">
-            <thead>
-              <tr>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xl font-medium text-gray-300 uppercase tracking-wider"
-                >
-                  Type
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xl font-medium text-gray-300 uppercase tracking-wider"
-                >
-                  USDT Amount
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xl font-medium text-gray-300 uppercase tracking-wider"
-                >
-                  EQU Amount
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xl font-medium text-gray-300 uppercase tracking-wider"
-                >
-                  Tx Hash
-                </th>
+    <Dialog open>
+      {/* <DialogTrigger asChild>
+        <Button variant="outline">Edit Profile</Button>
+      </DialogTrigger> */}
+      <DialogContent className="sm:max-w-[925px] bg-[#292B2F]">
+        <DialogHeader className="items-center py-4">
+          <DialogTitle className="text-3xl">Claim History</DialogTitle>
+          {/* <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription> */}
+        </DialogHeader>
+        <table className="w-full mt-5">
+          <thead>
+            <tr>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-2xl font-medium text-gray-300 uppercase tracking-wider"
+              >
+                Type
+              </th>
+              {/* <th
+                scope="col"
+                className="px-6 py-3 text-left text-2xl font-medium text-gray-300 uppercase tracking-wider"
+              >
+                USDT Amount
+              </th> */}
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-2xl font-medium text-gray-300 uppercase tracking-wider"
+              >
+                AGX Amount
+              </th>
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-2xl font-medium text-gray-300 uppercase tracking-wider"
+              >
+                Tx Hash
+              </th>
+            </tr>
+          </thead>
+          <tbody className="text-2xl">
+            {data?.map((item, index) => (
+              <tr key={index}>
+                <td className="px-6 py-4 whitespace-nowrap text-2xl text-gray-300">
+                  {Number(item.type) === 1 ? "Pool2 mining" : "Liquidity mining"}
+                </td>
+                {/* <td className="px-6 py-4 whitespace-nowrap text-2xl text-gray-300">{item.amount}</td> */}
+                <td className="px-6 py-4 whitespace-nowrap text-2xl text-gray-300">{item.amount}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-2xl text-blue-400">
+                  {displayAddress(item.transactionHash)}
+                </td>
               </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-700 text-xl">
-              {data?.map((item, index) => (
-                <tr key={index}>
-                  <td className="px-6 py-4 whitespace-nowrap text-xl text-gray-300">Staking AGX</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-xl text-gray-300">{item.amount}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-xl text-gray-300">{item.amount}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-xl text-blue-400">
-                    {displayAddress(item.transactionHash)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </Modal>
+            ))}
+          </tbody>
+        </table>
+        <DialogFooter>{/* <Button type="submit">Save changes</Button> */}</DialogFooter>
+      </DialogContent>
+    </Dialog>
+    // <Dialog>
+    //   <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4 max-w-[900px]">
+    //     <div className="mt-4">
+    //       <table className="w-full divide-y divide-gray-700">
+    //         <thead>
+    //           <tr>
+    //             <th
+    //               scope="col"
+    //               className="px-6 py-3 text-left text-xl font-medium text-gray-300 uppercase tracking-wider"
+    //             >
+    //               Type
+    //             </th>
+    //             <th
+    //               scope="col"
+    //               className="px-6 py-3 text-left text-xl font-medium text-gray-300 uppercase tracking-wider"
+    //             >
+    //               USDT Amount
+    //             </th>
+    //             <th
+    //               scope="col"
+    //               className="px-6 py-3 text-left text-xl font-medium text-gray-300 uppercase tracking-wider"
+    //             >
+    //               EQU Amount
+    //             </th>
+    //             <th
+    //               scope="col"
+    //               className="px-6 py-3 text-left text-xl font-medium text-gray-300 uppercase tracking-wider"
+    //             >
+    //               Tx Hash
+    //             </th>
+    //           </tr>
+    //         </thead>
+    //         <tbody className="divide-y divide-gray-700 text-xl">
+    //           {data?.map((item, index) => (
+    //             <tr key={index}>
+    //               <td className="px-6 py-4 whitespace-nowrap text-xl text-gray-300">Staking AGX</td>
+    //               <td className="px-6 py-4 whitespace-nowrap text-xl text-gray-300">{item.amount}</td>
+    //               <td className="px-6 py-4 whitespace-nowrap text-xl text-gray-300">{item.amount}</td>
+    //               <td className="px-6 py-4 whitespace-nowrap text-xl text-blue-400">
+    //                 {displayAddress(item.transactionHash)}
+    //               </td>
+    //             </tr>
+    //           ))}
+    //         </tbody>
+    //       </table>
+    //     </div>
+    //   </div>
+    // </Dialog>
     // <div className="StakeModal">
     //   <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
     //     <h1 className="text-3xl font-bold underline">Hello world!</h1>

@@ -203,6 +203,7 @@ export default function StakeV2() {
         orderDirection: desc
         orderBy: blockTimestamp
       ) {
+        type
         transactionHash
         blockTimestamp
         amount
