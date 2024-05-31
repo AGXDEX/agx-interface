@@ -88,7 +88,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
           Add Nova to Wallet
         </div>
       </div>
-        {/* <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} /> */}
+        <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
         <div className={cx("App-header-trade-link")}>
           <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
@@ -176,7 +176,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
         </div>
         <div className="novaPoints">Nova Points:</div>
       </div>
-      {/* <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} /> */}
+      <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
       <div className={cx("App-header-trade-link")}>
         <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
           {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
