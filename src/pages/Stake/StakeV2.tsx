@@ -48,7 +48,7 @@ import { useLocalStorageByChainId } from "lib/localStorage";
 import { DepositTooltipContent } from "components/Synthetics/MarketsList/DepositTooltipContent";
 const { AddressZero } = ethers.constants;
 
-import { ClaimAllModal, DepositModal } from "./components/modals";
+import { ClaimAllModal, ClaimHistoryModal, DepositModal } from "./components/modals";
 
 import noNFT from "img/noNFT.svg";
 import { STAKER_SUBGRAPH_URL, SWAP_SUBGRAPH_URL } from "config/subgraph";
@@ -66,6 +66,7 @@ export default function StakeV2() {
   const icons = getIcons(chainId)!;
   const hasInsurance = true;
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
+  const [isClaimHistoryModalVisible, setIsClaimHistoryModalVisible] = useState(false);
   const [depositModalVisible, setDepositModalVisible] = useState(false);
   const [claimModalVisible, setClaimModalVisible] = useState(false);
   const [stakeModalTitle, setStakeModalTitle] = useState("");
@@ -194,6 +195,31 @@ export default function StakeV2() {
     setClaimModalVisible(true);
   };
 
+  const fetchClaimHistories = async ({ queryKey }) => {
+    const [, account] = queryKey;
+    const response = await axios.post(STAKER_SUBGRAPH_URL, {
+      query: `{
+      claimHistories(
+        where: { owner: "${account}" }
+        orderDirection: desc
+        orderBy: blockTimestamp
+      ) {
+        type
+        transactionHash
+        blockTimestamp
+        amount
+      }
+    }`,
+    });
+    return response.data.data.claimHistories;
+  };
+
+  const { data: claimHistories } = useQuery({
+    queryKey: ["claimHistories", account],
+    queryFn: fetchClaimHistories,
+    enabled: !!account,
+  });
+
   const fetchPositions = async ({ queryKey }) => {
     const [, account] = queryKey;
     if (!account) return;
@@ -304,7 +330,7 @@ export default function StakeV2() {
     queryKey: [`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress],
     queryFn: fetchNftIds,
     enabled: !!signer && !!dexreaderAddress,
-              refetchOnWindowFocus: false,
+    refetchOnWindowFocus: false,
   });
   const fetchTokenURIs = async ({ queryKey }) => {
     const [, , dexreaderAddress, NFTlist] = queryKey;
@@ -421,7 +447,6 @@ export default function StakeV2() {
       setSelectedCard(null);
     }
   };
-
 
   const withdrawFn = async (tokenId) => {
     setIsWithdrawing(true);
@@ -688,9 +713,9 @@ export default function StakeV2() {
                 {agxPrice &&
                   Pool2ewards &&
                   rewards &&
-                  Number(((Number(Pool2ewards) / 10 ** 18 + Number(rewards) / 10 ** 18) * agxPrice)
-                    .toFixed(2))
-                    .toLocaleString()}
+                  Number(
+                    ((Number(Pool2ewards) / 10 ** 18 + Number(rewards) / 10 ** 18) * agxPrice).toFixed(2)
+                  ).toLocaleString()}
               </div>
               <div className="StakeV2-claimToken">USDT</div>
             </div>
@@ -702,11 +727,34 @@ export default function StakeV2() {
               </div>
               <div className="StakeV2-claimToken">AGX</div>
             </div>
-            <Button variant="secondary" className="StakeV2-button" onClick={onClickPrimary} disabled={!rewards}>
-              Claim
-            </Button>
+            <div
+              className="w-full flex justify-start items-center space-x-5"
+            >
+              <Button
+                variant="secondary"
+                className="p-2.5 px-5 !bg-[#5D00FB] max-w-[80px] w-full"
+                onClick={onClickPrimary}
+                disabled={!rewards}
+              >
+                Claim
+              </Button>
+              <span
+              className="cursor-pointer"
+                onClick={() => {
+                  setIsClaimHistoryModalVisible(true);
+                }}
+              >
+                Claim History {`>`}
+              </span>
+            </div>
           </div>
         </div>
+
+        <ClaimHistoryModal
+          isVisible={isClaimHistoryModalVisible}
+          setIsVisible={setIsClaimHistoryModalVisible}
+          data={claimHistories}
+        />
 
         <div className="App-card App-card-space-between StakeV2-content">
           <div className="tabBox">
