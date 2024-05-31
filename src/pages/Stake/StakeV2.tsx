@@ -66,6 +66,7 @@ export default function StakeV2() {
   const icons = getIcons(chainId)!;
   const hasInsurance = true;
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
+  const [isClaimHistoryModalVisible, setIsClaimHistoryModalVisible] = useState(false);
   const [depositModalVisible, setDepositModalVisible] = useState(false);
   const [claimModalVisible, setClaimModalVisible] = useState(false);
   const [stakeModalTitle, setStakeModalTitle] = useState("");
@@ -727,22 +728,33 @@ export default function StakeV2() {
               <div className="StakeV2-claimToken">AGX</div>
             </div>
             <div
-              style={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "between",
-                alignItems: "center",
-              }}
+              className="w-full flex justify-start items-center space-x-5"
             >
-              <Button variant="secondary" onClick={onClickPrimary} disabled={!rewards}>
+              <Button
+                variant="secondary"
+                className="p-2.5 px-5 !bg-[#5D00FB] max-w-[80px] w-full"
+                onClick={onClickPrimary}
+                disabled={!rewards}
+              >
                 Claim
               </Button>
-              <span> Claim History</span>
+              <span
+              className="cursor-pointer"
+                onClick={() => {
+                  setIsClaimHistoryModalVisible(true);
+                }}
+              >
+                Claim History {`>`}
+              </span>
             </div>
           </div>
         </div>
 
-        <ClaimHistoryModal isVisible={true} setIsVisible={() => {}} data={claimHistories} />
+        <ClaimHistoryModal
+          isVisible={isClaimHistoryModalVisible}
+          setIsVisible={setIsClaimHistoryModalVisible}
+          data={claimHistories}
+        />
 
         <div className="App-card App-card-space-between StakeV2-content">
           <div className="tabBox">
