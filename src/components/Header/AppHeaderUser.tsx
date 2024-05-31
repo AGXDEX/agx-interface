@@ -2,6 +2,7 @@ import connectWalletImg from "img/ic_wallet_24.svg";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
 
+import axios from "axios";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
@@ -20,7 +21,8 @@ import { useTradePageVersion } from "lib/useTradePageVersion";
 import { chainList } from "config/networks";
 import { helperToast } from "lib/helperToast";
 import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
-import { switchChain } from '@wagmi/core'
+import { switchChain } from "@wagmi/core";
+import { useQuery } from "@tanstack/react-query";
 
 type Props = {
   openSettings: () => void;
@@ -59,12 +61,29 @@ if (isDevelopment()) {
   });
 }
 
+const project = "agx";
+
+const fetchNovaPoints = async (address, project) => {
+  const response = await axios.get(
+    `https://lrt-points.zklink.io/nova/points/project?address=${address}&project=${project}`
+  );
+  return response.data;
+};
+
 export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSettings, showRedirectModal }: Props) {
   const { chainId } = useChainId();
   const { active, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const showConnectionOptions = !isHomeSite();
   const [tradePageVersion] = useTradePageVersion();
+
+  const { data: novaPointsData } = useQuery({
+    queryKey: ["novaPoints", account, project],
+    queryFn: () => fetchNovaPoints(account, project),
+    enabled: !!account,
+    //TODO: Confirm data structure
+    select: (data) => data.data.length || 0,
+  });
 
   // const tradeLink = tradePageVersion === 2 ? "/trade" : "/v1";
   const tradeLink = "/v1";
@@ -85,7 +104,7 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
           className="addNova"
           onClick={()=>addNovaChain()}
         >
-          Add Nova to Wallet
+          Add Nova Network to Wallet
         </div>
       </div>
         <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
@@ -117,64 +136,65 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
 
   const accountUrl = getAccountUrl(chainId, account);
 
-  const addEvmChain= async(chain) => {
+  const addEvmChain = async (chain) => {
     if (!window.ethereum) {
-      helperToast.error('Please install a wallet first.');
-      throw new Error('Please install a wallet first.');
+      helperToast.error("Please install a wallet first.");
+      throw new Error("Please install a wallet first.");
     }
     const chainId = await window.ethereum.request({
-        method:"eth_chainId",
+      method: "eth_chainId",
     });
-    if (chainId === ('0x' + ARBITRUM.toString(16))) {
+    if (chainId === "0x" + ARBITRUM.toString(16)) {
       helperToast.success(
         <div>
-          <Trans>
-          You have already added the zkLink Nova Network to your wallet.
-          </Trans>
+          <Trans>You have already added the zkLink Nova Network to your wallet.</Trans>
           <br />
         </div>
       );
     } else {
-        await window.ethereum.request({
-            method: 'wallet_addEthereumChain',
-            params: [chain],
-        });
-        // await switchChain(rainbowKitConfig, { chainId: chain.chainId })
-        const nowChainId = await window.ethereum.request({
-            method:"eth_chainId",
-        });
-        if (nowChainId === ('0x' + ARBITRUM.toString(16))) {
-          helperToast.error('You have successfully add zkLink Nova Network to your wallet.');
-        }
+      await window.ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: [chain],
+      });
+      // await switchChain(rainbowKitConfig, { chainId: chain.chainId })
+      const nowChainId = await window.ethereum.request({
+        method: "eth_chainId",
+      });
+      if (nowChainId === "0x" + ARBITRUM.toString(16)) {
+        helperToast.error("You have successfully add zkLink Nova Network to your wallet.");
+      }
     }
-  }
-  const addNovaChain=async() => {
+  };
+  const addNovaChain = async () => {
     await addEvmChain({
-      chainId: '0x' + ARBITRUM.toString(16),
-      chainName: process.env.REACT_APP_ENV === "development" ? "zkLink Nova Testnet":'zkLink Nova',
-      rpcUrls: [process.env.REACT_APP_ENV === "development" ? "https://sepolia.rpc.zklink.io" : 'https://rpc.zklink.io'],
+      chainId: "0x" + ARBITRUM.toString(16),
+      chainName: process.env.REACT_APP_ENV === "development" ? "zkLink Nova Testnet" : "zkLink Nova",
+      rpcUrls: [
+        process.env.REACT_APP_ENV === "development" ? "https://sepolia.rpc.zklink.io" : "https://rpc.zklink.io",
+      ],
       iconUrls: [],
       nativeCurrency: {
-        name: 'ETH',
-        symbol: 'ETH',
+        name: "ETH",
+        symbol: "ETH",
         decimals: 18,
       },
-      blockExplorerUrls: [(process.env.REACT_APP_ENV === "development" ? "https://sepolia.explorer.zklink.io":'https://explorer.zklink.io') ?? ''],
+      blockExplorerUrls: [
+        (process.env.REACT_APP_ENV === "development"
+          ? "https://sepolia.explorer.zklink.io"
+          : "https://explorer.zklink.io") ?? "",
+      ],
     });
-  }
+  };
   return (
     <div className="App-header-user">
       {/* <div className="network-img-box">
         <img className="network-dropdown-icon network-img" src={icon} alt={selectorLabel} />
       </div> */}
       <div className="moreButton">
-        <div
-          className="addNova"
-          onClick={()=>addNovaChain()}
-        >
-          Add Nova to Wallet
+        <div className="addNova" onClick={() => addNovaChain()}>
+          Add Nova Network to Wallet
         </div>
-        <div className="novaPoints">Nova Points:</div>
+        <div className="novaPoints">Nova Points: {novaPointsData || 0}</div>
       </div>
       <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
       <div className={cx("App-header-trade-link")}>
