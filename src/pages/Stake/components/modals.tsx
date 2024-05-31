@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
+// import NModal as Modal from "components/ui/Modal";
 import cx from "classnames";
 
 import RewardRouter from "abis/RewardRouter.json";
@@ -41,6 +42,17 @@ import axios from "axios";
 import { approveTokens } from "domain/tokens";
 import { STAKER_SUBGRAPH_URL } from "config/subgraph";
 import { useQueryClient } from "@tanstack/react-query";
+// import { UiModal } from "components/ui/Modal";
+import { displayAddress } from "utils/formatter";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "components/ui/dialog";
+import { X } from "lucide-react";
 
 const { AddressZero } = ethers.constants;
 function ClaimAllModal(props) {
@@ -179,18 +191,8 @@ function ClaimAllModal(props) {
 }
 
 function DepositModal(props) {
-  const {
-    isVisible,
-    setIsVisible,
-    chainId,
-    title,
-    active,
-    account,
-    signer,
-    setPendingTxns,
-    showNFTdata,
-    URLlist,
-  } = props;
+  const { isVisible, setIsVisible, chainId, title, active, account, signer, setPendingTxns, showNFTdata, URLlist } =
+    props;
   const dexreaderAddress = getContract(chainId, "dexreader");
   const queryClient = useQueryClient();
   const [tokenId, setTokenId] = useState(null);
@@ -1213,6 +1215,76 @@ function ClaimModal(props) {
         </div>
       </Modal>
     </div>
+  );
+}
+
+export function ClaimHistoryModal(props) {
+  const { isVisible, setIsVisible, data } = props;
+  if(!isVisible) return null;
+  return (
+    <Dialog open={isVisible}>
+      <DialogContent className="sm:max-w-[925px] bg-[#292B2F]">
+        <div
+          className="absolute cursor-pointer right-6 top-6 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-white/10 p-5 rounded-full"
+          onClick={() => {
+            setIsVisible(false);
+          }}
+        >
+          <X size={18} />
+          <span className="sr-only">Close</span>
+        </div>
+        <DialogHeader className="items-center py-4">
+          <DialogTitle className="text-3xl">Claim History</DialogTitle>
+        </DialogHeader>
+        {!data?.length ? (
+          <div className="flex flex-col items-center justify-center min-h-[200px]">
+            <div className="text-2xl text-[#88898F] text-center">No claim history</div>
+          </div>
+        ) : (
+          <>
+            <table className="w-full mt-8">
+              <thead>
+                <tr>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-2xl font-medium text-[#88898F] uppercase tracking-wider"
+                  >
+                    Type
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-2xl font-medium text-[#88898F] uppercase tracking-wider"
+                  >
+                    AGX Amount
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-2xl font-medium text-[#88898F] uppercase tracking-wider"
+                  >
+                    Tx Hash
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="text-2xl">
+                {data?.map((item, index) => (
+                  <tr key={index}>
+                    <td className="px-6 py-4 whitespace-nowrap text-2xl text-white">
+                      {Number(item.type) === 1 ? "Pool2 mining" : "Liquidity mining"}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-2xl text-white">
+                      {formatAmount(ethers.BigNumber.from(item.amount), 18, 4, true)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-2xl text-white underline">
+                      {displayAddress(item.transactionHash)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }
 
