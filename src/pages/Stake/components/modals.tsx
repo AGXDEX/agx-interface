@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
+// import NModal as Modal from "components/ui/Modal";
 import cx from "classnames";
 
 import RewardRouter from "abis/RewardRouter.json";
@@ -41,6 +42,7 @@ import axios from "axios";
 import { approveTokens } from "domain/tokens";
 import { STAKER_SUBGRAPH_URL } from "config/subgraph";
 import { useQueryClient } from "@tanstack/react-query";
+import { UiModal } from "components/ui/Modal";
 
 const { AddressZero } = ethers.constants;
 function ClaimAllModal(props) {
@@ -1221,19 +1223,73 @@ export function ClaimHistoryModal(props) {
 const { isVisible, setIsVisible,data } = props;
 console.log(data, "claimHistoryModal");
   return (
-    <div className="StakeModal">
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
-        <div className="CompoundModal-menu"></div>
-        {data?.map((item, index) => {
-          return <>{item?.amount}</>;
-        })}
-        {/* <div className="Exchange-swap-button-container">
-          <Button variant="primary-action" className="w-full">
-            test
-          </Button>
-        </div> */}
-      </Modal>
-    </div>
+    <Modal isVisible setIsVisible={setIsVisible}>
+      <div className="px-4 pt-5 pb-4 sm:p-6 sm:pb-4 max-w-[900px]">
+        <div className="mt-4">
+          <table className="w-full divide-y divide-gray-700">
+            <thead>
+              <tr>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-lg font-medium text-gray-300 uppercase tracking-wider"
+                >
+                  Type
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-lg font-medium text-gray-300 uppercase tracking-wider"
+                >
+                  USDT Amount
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-lg font-medium text-gray-300 uppercase tracking-wider"
+                >
+                  EQU Amount
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-lg font-medium text-gray-300 uppercase tracking-wider"
+                >
+                  Tx Hash
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-700 text-lg">
+              {data?.map((item, index) => (
+                <tr key={index}>
+                  <td className="px-6 py-4 whitespace-nowrap text-lg text-gray-300">Staking AGX</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-lg text-gray-300">{item.amount}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-lg text-gray-300">{item.amount}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-lg text-blue-400">{item.transactionHash}</td>
+                </tr>
+              ))}
+              {/* {
+    "transactionHash": "0xb17f09accf8ddcc3dd2e72ec979691f1c3af927e7e62787fe84863ed4583c01a",
+    "blockTimestamp": "1716272530",
+    "amount": "0"
+} */}
+              {/* <tr>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">Staking EQU</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">&lt;0.01</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">0</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-400">0xcd5a...4278</td>
+              </tr> */}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </Modal>
+    // <div className="StakeModal">
+    //   <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
+    //     <h1 className="text-3xl font-bold underline">Hello world!</h1>
+
+    //     <div className="CompoundModal-menu"></div>
+    //     {data?.map((item, index) => {
+    //       return <>{item?.amount}</>;
+    //     })}
+    //   </Modal>
+    // </div>
   );
 }
 
