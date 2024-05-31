@@ -217,6 +217,7 @@ export default function StakeV2() {
     queryKey: ["positions", account],
     queryFn: fetchPositions,
     enabled: !!account,
+    refetchOnWindowFocus: false,
     select: (positions) => {
       const tokenIdArray = positions.map((item) => item.tokenId);
       return {
@@ -240,6 +241,7 @@ export default function StakeV2() {
     queryKey: [`StakeV2:getSpecificNftId:${active}`, chainId, dexreaderAddress],
     queryFn: fetchSpecificNftIds,
     enabled: !!signer && !!dexreaderAddress && !!postionTokenIds,
+    refetchOnWindowFocus: false,
   });
 
   const filteredDepNFTlists =
@@ -302,6 +304,7 @@ export default function StakeV2() {
     queryKey: [`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress],
     queryFn: fetchNftIds,
     enabled: !!signer && !!dexreaderAddress,
+              refetchOnWindowFocus: false,
   });
   const fetchTokenURIs = async ({ queryKey }) => {
     const [, , dexreaderAddress, NFTlist] = queryKey;
@@ -315,6 +318,7 @@ export default function StakeV2() {
     queryKey: [`StakeV2:getTokenURIs:${active}`, chainId, dexreaderAddress, NFTlist],
     queryFn: fetchTokenURIs,
     enabled: !!signer && !!dexreaderAddress && !!NFTlist,
+    refetchOnWindowFocus: false,
   });
   const { data: Pool2ewards } = useSWR([`StakeV2:rewards:${active}`, chainId, uniV3StakerAddress, "rewards"], {
     fetcher: contractFetcher(signer, UniV3Staker, [AGXAddress, account]),
