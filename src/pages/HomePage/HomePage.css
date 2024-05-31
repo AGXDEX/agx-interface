@@ -536,8 +536,336 @@
   font-size: 16px;
   color: rgba(173, 173, 173, 1);
 }
+.mobileBut{
+  display: none;
+}
+.modile{
+  display: none;
+}
 @media (max-width: 400px) {
+  .container{
+    height: 100vh;
+    overflow: auto;
+  }
   .container .header-top{
     display: none;
+  }
+  .PC{
+    display: none;
+  }
+  .modile{
+    display: inline-block;
+  }
+  .isShow{
+    display: block;
+  }
+  .container .header{
+    padding: 67px 15px 60px 15px;
+  }
+  .container .header .nav .mobileBut{
+    display: block;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    text-align: center;
+    line-height: 68px;
+    cursor: pointer;
+  }
+  .container .header .nav img{
+    width: 50px;
+    height: 50px;
+  }
+  .container .header .nav .navButton{
+    padding-top: 0;
+  }
+  .container .header .nav .navButton .joinNew{
+    margin-right: 0;
+  }
+  .container .header .nav .mobileBut img{
+    width: 28px;
+    height: 28px;
+  }
+  .MenuList{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9;
+  }
+  .Menu{
+    width: 70%;
+    height: 100%;
+    background: rgba(23, 24, 44, 1) 0% 0% no-repeat padding-box;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  .Menu .logo{
+    width: 40px;
+    margin: 60px 20% 20px;
+  }
+  .Menu img{
+    width: 30px;
+    margin-left: 21%;
+  }
+  .container .header .support img{
+    width: 100%;
+  }
+  .introduce .large .marginRight{
+    margin-bottom: 20px;
+  }
+  .introduce .large .marginLeft{
+    margin-bottom: 20px;
+  }
+  .introduce .trade div{
+    font-size: 12px;
+    line-height: 20px;
+    margin-right: 10px;
+  }
+  .introduce .trade img{
+    width: 30%;
+    margin-bottom: 40px;
+  }
+  .introduce .flex .start{
+    margin-left: 10%;
+    height: 46px;
+    font-size: 12px;
+  }
+  .introduce .flex .learn{
+    font-size: 12px;
+  }
+  .introduce .flex .start img{
+    width: 14px;
+  }
+  .container .header .introduce{
+    padding-bottom: 100px;
+    border-bottom: 1px solid rgba(255, 255, 255, .3);
+    margin-bottom: 20px;
+  }
+  .container .header .Mask{
+    width: 80%;
+    left: 40px;
+  }
+  .container .header .EllipseLeft{
+    bottom: 20%;
+    width: 80%;
+  }
+  .container .header .Ellipse{
+    width: 100%;
+    left: -20%;
+  }
+  .container .header .MaskTable{
+    width: 70%;
+    left: -20%;
+  }
+  .container .main{
+    padding: 60px 15px;
+    background-size: 100% 100%;
+  }
+  .container .main .box{
+    margin-bottom: 60px;
+    position: relative;
+  }
+  .container .main .box .title{
+    width: 60%;
+    margin-bottom: 40px;
+  }
+  .container .main .box .choose{
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+  .container .main .box .choose .chooseBut{
+    height: 44px;
+    font-size: 12px;
+    margin-bottom: 10px;
+    line-height: 15px;
+  }
+  .container .main .box .choose .chooseInf{
+    width: 100%;
+    font-size: 18px;
+    line-height: 30px;
+    text-align: center;
+  }
+  .container .main .box .choose img{
+    width: 40%;
+    left: -20px;
+  }
+  .container .main .box .cardList{
+    flex-direction: column;
+  }
+  .container .main .box .cardList .card{
+    padding: 30px 20px;
+    width: 100%;
+    height: auto;
+    padding-bottom: 70px;
+    margin-bottom: 10px;
+  }
+  .container .main .box .cardList .card .ball{
+    margin-bottom: 30px;
+  }
+  .container .main .box .cardList .card .title{
+    font-size: 18px;
+    margin-bottom: 30px;
+  }
+  .container .main .box .cardList .card .inner{
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .container .main .box .cardList .card img{
+    bottom: 20px;
+  }
+  .container .main .box .howToWork{
+    flex-direction: column;
+    align-items: center;
+  }
+  .container .main .box .howToWork .greenStart{
+    width: 20px;
+    margin-bottom: 20px;
+  }
+  .container .main .box .howToWork .HowAGXWorks{
+    width: 60%;
+    margin-bottom: 20px;
+  }
+  .container .main .box .howToWork .workInfo{
+    width: 100%;
+    font-size: 14px;
+    padding-top: 0;
+    padding-bottom: 40px;
+    background-position: 40% bottom;
+    background-size: 80%;
+    color: rgba(162, 162, 162, 1);
+  }
+  .container .main .box .stepList{
+    flex-wrap: wrap;
+  }
+  .container .main .box .stepList .step{
+    width: 49%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .container .main .box .stepList .step img{
+    margin-bottom: 10px;
+  }
+  .container .main .box .stepList .step .title{
+    font-size: 17px;
+    margin-bottom: 10px;
+    width: 100%;
+    text-align: center;
+  }
+  .container .main .box .stepList .step .inner{
+    font-size: 14px;
+    width: 100%;
+    text-align: center;
+    color: rgba(162, 162, 162, 1);
+    line-height: 20px;
+  }
+  .container .main .box .AGXAndALP,.container .main .box .token,.container .main .box .fair,.container .main .box .advanced{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .container .main .box .AGXAndALP .purpleStart{
+    width: 20px;
+    margin-bottom: 20px;
+  }
+  .container .main .box .AGXAndALP .AGXandALPTokens{
+    width: 80%;
+    margin-bottom: 20px;
+  }
+  .container .main .box .AGXAndALP .AGXBall{
+    width: 60%;
+  }
+  .container .main .box .token img{
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  .container .main .box .fair img{
+    width: 100%;
+    margin: 0;
+  }
+  .container .main .box .fair .FairBall{
+    width: 80%;
+    margin-top: -50px;
+    height: 300px;
+    margin-left: 0;
+  }
+  .container .main .box .fair .fairBox,.container .main .box .fair .FairLaunch{
+    width: 100%;
+    margin-left: 0;
+  }
+  .container .main .box .fair .FairLaunch{
+    width: 60%;
+    margin-right: 0;
+  }
+  .container .main .box .advanced{
+    margin-top: 60px;
+    margin-bottom: 40px;
+  }
+  .container .main .box .advanced .darkpurpleStart{
+    margin-bottom: 20px;
+  }
+  .container .main .box .fairBox{
+    display: none;
+  }
+  .container .main .box .Protocol{
+    width: 100%;
+    margin-bottom: 40px;
+  }
+  .container .main .box .mobileprotoool1{
+    width: 100%;
+    position: absolute;
+    top: 10px;
+  }
+  .container .main .box .mobileprotoool{
+    width: 100%;
+  }
+  .container .main .box .other{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .container .main .box .fairBox .startTrade,.container .main .box .fairBox .chain{
+    width: 100%;
+  }
+  .container .main .box .fairBox .startTrade{
+    height: 375px;
+    margin-bottom: 20px;
+  }
+  .container .main .box .fairBox .chain{
+    height: 520px;
+  }
+  .container .main .box .fairBox .startTrade .joinNow{
+    height: 44px;
+    font-size: 14px;
+    line-height: 15px;
+    left: calc(50% - 58px);
+    bottom: 125px;
+    padding: 14px 24px;
+  }
+  .container .main .box .fairBox .chain .link{
+    padding: 0 66px;
+    bottom: 29px;
+  }
+  .container .main .box .fairBox .chain .link a{
+    width: 40px;
+    height: 40px;
+    line-height: 55px;
+  }
+  .container .footer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 15px;
+  }
+  .container .footer .scrollBox .scroll{
+    font-size: 14px;
+  }
+  .container .footer .copyright{
+    font-size: 12px;
+    color: rgba(173, 173, 173, 1);
   }
 }
