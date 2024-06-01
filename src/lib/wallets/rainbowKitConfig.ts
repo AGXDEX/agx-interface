@@ -109,10 +109,9 @@ const othersWalletList: WalletList = [
 export const rainbowKitConfig = getDefaultConfig({
   appName: APP_NAME,
   projectId: WALLET_CONNECT_PROJECT_ID,
-  chains: [arbitrum, avalanche, ...(isDevelopment() ? [arbitrumGoerli, avalancheFuji] : [])],
+  chains: [arbitrum],
   transports: {
     [arbitrum.id]: http(),
-    [avalanche.id]: http(),
     [arbitrumGoerli.id]: http(),
     [avalancheFuji.id]: http(),
   },
