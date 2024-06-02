@@ -1,6 +1,6 @@
 /* eslint-disable react/hook-use-state */
 import { Trans, t } from "@lingui/macro";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import _ from "lodash";
 
 import { toByteArray } from "base64-js";
@@ -57,6 +57,58 @@ import { cn } from "utils/classname";
 
 const EXTERNAL_LINK_CHAIN_CONFIG = process.env.REACT_APP_ENV === "development" ? "nova_sepolia" : "nova_mainnet";
 
+const fetchNFTData = async (account) => {
+  const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
+    query: `{
+      nfts(where: {owner: "${account}"}) {
+        tokenId
+        owner
+      }
+    }`,
+  });
+
+  return data.data.nfts.map((item) => Number(item.tokenId));
+};
+
+const fetchStakeLiquidity = async () => {
+  const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
+    query: `{
+      incentives {
+        liquidity
+      }
+    }`,
+  });
+
+  return data.data.incentives[0].liquidity;
+};
+
+const fetchNFTClaimed = async () => {
+  const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
+    query: `{
+      incentives {
+        id
+        liquidity
+        claimedToken
+      }
+    }`,
+  });
+
+  return data.data.incentives[0].claimedToken;
+};
+
+const fetchTotalReward = async (account) => {
+  const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
+    query: `{
+      totalRewards(where: {owner: "${account}"}) {
+        owner
+        reward
+      }
+    }`,
+  });
+
+  return data.data.totalRewards[0]?.reward;
+};
+
 export default function StakeV2() {
   const queryClient = useQueryClient();
   const { active, signer, account } = useWallet();
@@ -74,11 +126,6 @@ export default function StakeV2() {
   const [stakeMethodName, setStakeMethodName] = useState("");
 
   const [selectTab, setselectTab] = useState("Pool2");
-  const [NFTdata, setNFTData] = useState<any[]>([]);
-  const [stakeliquidity, setstakeliquidity] = useState("");
-  const [NFTClaimed, setNFTClaimed] = useState("");
-  const [totalReward, setTotalReward] = useState("");
-
   const [isUnstaking, setIsUnstakeLoading] = useState(false);
   const [isStaking, setIsStaking] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
@@ -140,6 +187,28 @@ export default function StakeV2() {
     setClaimModalVisible(true);
   };
 
+  const { data: NFTData } = useQuery({
+    queryKey: ["NFTData", account],
+    queryFn: () => fetchNFTData(account),
+    enabled: !!account,
+  });
+
+  const { data: stakeliquidity } = useQuery({
+    queryKey: ["stakeliquidity"],
+    queryFn: fetchStakeLiquidity,
+  });
+
+  const { data: NFTClaimed } = useQuery({
+    queryKey: ["NFTClaimed"],
+    queryFn: fetchNFTClaimed,
+  });
+
+  const { data: totalReward } = useQuery({
+    queryKey: ["totalReward", account],
+    queryFn: () => fetchTotalReward(account),
+    enabled: !!account,
+  });
+
   const fetchClaimHistories = async ({ queryKey }) => {
     const [, account] = queryKey;
     const response = await axios.post(STAKER_SUBGRAPH_URL, {
@@ -176,7 +245,6 @@ export default function StakeV2() {
         owner
         staked
         liquidity
-        incentiveId
       }
     }`,
     });
@@ -283,7 +351,7 @@ export default function StakeV2() {
     if (!signer || !dexreaderAddress) return;
 
     const dexReaderContract = new Contract(dexreaderAddress, DexReader.abi, signer);
-    const result = await dexReaderContract.getSpecificNftIds(NFTdata, AGXAddress, wethAddress);
+    const result = await dexReaderContract.getSpecificNftIds(NFTData, AGXAddress, wethAddress);
     return result;
   };
   const { data: NFTlist } = useQuery({
@@ -561,9 +629,7 @@ export default function StakeV2() {
       stakeAPRValue,
     };
   };
-  const {
-    data: poolData,
-  } = useQuery({
+  const { data: poolData } = useQuery({
     queryKey: ["poolData", Pooladdress],
     queryFn: () => fetchPoolData(Pooladdress),
     enabled: !!Pooladdress,
@@ -578,52 +644,6 @@ export default function StakeV2() {
 
   const userStakedAGXAmount = stakedAGXAmount === "NaN" ? "0.00" : stakedAGXAmount;
   const formattedPoolValue = isNaN(poolValue || 0) ? 0 : poolValue;
-
-
-  useEffect(() => {
-    axios
-      .post(
-        STAKER_SUBGRAPH_URL,
-        '{"query":"{\\n  nfts(where: {owner: \\"' + account + '\\"}) {\\n    tokenId\\n    owner\\n    }\\n}"}'
-      )
-      .then((response) => {
-        const array = response.data.data.nfts.map((item) => Number(item.tokenId));
-        setNFTData(array);
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
-    axios
-      .post(STAKER_SUBGRAPH_URL, '{"query":"{\\n  incentives {\\n    liquidity\\n    }\\n}"}')
-      .then((response) => {
-        setstakeliquidity(response.data.data.incentives[0].liquidity);
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
-    axios
-      .post(
-        STAKER_SUBGRAPH_URL,
-        '{"query":"{\\n  incentives {\\n    id\\n    liquidity\\n    claimedToken\\n    }\\n}"}'
-      )
-      .then((response) => {
-        setNFTClaimed(response.data.data.incentives[0].claimedToken);
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
-    axios
-      .post(
-        STAKER_SUBGRAPH_URL,
-        '{"query":"{\\n  totalRewards(where: {owner: \\"' + account + '\\"})  {\\n    owner\\n    reward\\n    }\\n}"}'
-      )
-      .then((response) => {
-        setTotalReward(response.data.data.totalRewards[0]?.reward);
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
-  }, [account, depositModalVisible, isWithdrawing]);
 
   return (
     <div className="default-container page-layout">
@@ -654,7 +674,6 @@ export default function StakeV2() {
         wrappedTokenSymbol={wrappedTokenSymbol}
         showNFTdata={NFTlist}
         URLlist={urlList}
-        setNFTData={setNFTData}
         Pool2ewards={Pool2ewards}
         rewards={rewards}
       />
@@ -682,7 +701,6 @@ export default function StakeV2() {
         URLlist={urlList}
         depBaselist={depBaselist}
         baseUriList={baselist}
-        setNFTData={setNFTData}
         refetchDepNFTlist={refetchDepNFTlist}
       />
       <div className="box-padding">

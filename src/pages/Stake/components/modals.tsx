@@ -77,7 +77,6 @@ function ClaimAllModal(props) {
     setPendingTxns,
     showNFTdata,
     URLlist,
-    setNFTData,
     Pool2ewards,
     rewards,
   } = props;
@@ -283,7 +282,6 @@ function DepositModal(props) {
             tokenId: String(tokenId),
             stake: false,
             owner: account,
-            incentiveId: "0xd11b602a24a9bb891c3d6568c5a91630139d9673d6495f72a12afeb228089f19",
           },
         ];
         return updatedPositions;
