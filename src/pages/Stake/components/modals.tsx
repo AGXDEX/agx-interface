@@ -43,7 +43,7 @@ import { approveTokens } from "domain/tokens";
 import { STAKER_SUBGRAPH_URL } from "config/subgraph";
 import { useQueryClient } from "@tanstack/react-query";
 // import { UiModal } from "components/ui/Modal";
-import { displayAddress } from "utils/formatter";
+import { displayAddress, displayTransactionHash, formatTimestamp } from "utils/formatter";
 import {
   Dialog,
   DialogContent,
@@ -53,6 +53,8 @@ import {
   DialogTitle,
 } from "components/ui/dialog";
 import { X } from "lucide-react";
+import { getExplorerUrl } from "config/chains";
+import { useChainId } from "lib/chains";
 
 const { AddressZero } = ethers.constants;
 function ClaimAllModal(props) {
@@ -191,8 +193,20 @@ function ClaimAllModal(props) {
 }
 
 function DepositModal(props) {
-  const { isVisible, setIsVisible, chainId, title, active, account, signer, setPendingTxns, showNFTdata, URLlist } =
-    props;
+  const {
+    isVisible,
+    setIsVisible,
+    chainId,
+    title,
+    active,
+    account,
+    signer,
+    setPendingTxns,
+    showNFTdata,
+    depBaselist,
+    baseUriList,
+    URLlist,
+  } = props;
   const dexreaderAddress = getContract(chainId, "dexreader");
   const queryClient = useQueryClient();
   const [tokenId, setTokenId] = useState(null);
@@ -231,13 +245,32 @@ function DepositModal(props) {
         }
       );
       queryClient.setQueryData(
+        [`StakeV2:getDepositedTokenURIs:${active}`, chainId, dexreaderAddress, "getTokenURIs"],
+        (prevNFTlist: any) => {
+          const formattedId = ethers.BigNumber.from(tokenId);
+          if (prevNFTlist) {
+            const updatedList = prevNFTlist[1].map((tId) => tId);
+            if (!updatedList.some((tId) => tId.eq(formattedId))) {
+              updatedList.push(formattedId);
+              const tokenIndex = baseUriList[1].findIndex((tId) => tId.eq(formattedId));
+              const selectedDepBase = baseUriList[0][tokenIndex];
+              return [[...prevNFTlist[0], selectedDepBase], updatedList];
+            }
+          }
+          else {
+            return [prevNFTlist[0], [formattedId]];
+          }
+          return prevNFTlist;
+        }
+      );
+      queryClient.setQueryData(
         [`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress],
         (prevNFTlist: any) => {
           return prevNFTlist.filter((tId) => Number(tId.toString()) !== tokenId);
         }
       );
       queryClient.setQueryData(
-        [`StakeV2:getSpecificNftId:${active}`, chainId, dexreaderAddress],
+        [`StakeV2:getDepositSpecificNftId:${active}`, chainId, dexreaderAddress],
         (prevNFTlist: any) => {
           return [...prevNFTlist, ethers.BigNumber.from(tokenId)];
         }
@@ -1219,13 +1252,14 @@ function ClaimModal(props) {
 }
 
 export function ClaimHistoryModal(props) {
+  const { chainId } = useChainId();
   const { isVisible, setIsVisible, data } = props;
-  if(!isVisible) return null;
+  if (!isVisible) return null;
   return (
     <Dialog open={isVisible}>
-      <DialogContent className="sm:max-w-[925px] bg-[#292B2F]">
+      <DialogContent className="sm:max-w-[925px] bg-[#292B2F] focus:outline-none">
         <div
-          className="absolute cursor-pointer right-6 top-6 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-white/10 p-5 rounded-full"
+          className="absolute cursor-pointer right-6 top-6 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-white/10 p-5 rounded-full"
           onClick={() => {
             setIsVisible(false);
           }}
@@ -1261,6 +1295,12 @@ export function ClaimHistoryModal(props) {
                     scope="col"
                     className="px-6 py-3 text-left text-2xl font-medium text-[#88898F] uppercase tracking-wider"
                   >
+                    Time
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-left text-2xl font-medium text-[#88898F] uppercase tracking-wider"
+                  >
                     Tx Hash
                   </th>
                 </tr>
@@ -1272,10 +1312,19 @@ export function ClaimHistoryModal(props) {
                       {Number(item.type) === 1 ? "Pool2 mining" : "Liquidity mining"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-2xl text-white">
-                      {formatAmount(ethers.BigNumber.from(item.amount), 18, 4, true)}
+                      {formatAmount(ethers.BigNumber.from(item.amount), 18, 4, true)} AGX
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-2xl text-white underline">
-                      {displayAddress(item.transactionHash)}
+                    <td className="px-6 py-4 whitespace-nowrap text-2xl text-white">
+                      {formatTimestamp(item.blockTimestamp)}
+                    </td>
+                    <td
+                      className="px-6 py-4 whitespace-nowrap text-2xl text-white underline cursor-pointer"
+                      onClick={() => {
+                        const txUrl = getExplorerUrl(chainId) + "tx/" + item.transactionHash;
+                        window.open(txUrl, "_blank");
+                      }}
+                    >
+                      {displayTransactionHash(item.transactionHash)}
                     </td>
                   </tr>
                 ))}

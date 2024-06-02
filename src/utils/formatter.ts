@@ -13,6 +13,13 @@ const displayAddress = (address = '', startOffset = 4, endOffset = 4): string =>
   return `${address.slice(0, startOffset)}...${address.slice(-endOffset)}`;
 };
 
+const displayTransactionHash = (hash = "", startOffset = 6, endOffset = 6): string => {
+  if (!hash) return "--";
+  if (hash.length <= startOffset + endOffset) return hash;
+
+  return `${hash.slice(0, startOffset)}...${hash.slice(-endOffset)}`;
+};
+
 const ONE_BILLION = 1000000000;
 const ONE_MILLION = 1000000;
 const ONE_THOUSAND = 1000;
@@ -74,4 +81,9 @@ const displayFloat = (value: number, decimals = 4, isCurrency?: boolean, isRound
   return value === undefined ? '0.0' : isCurrency ? `$${formattedString}` : formattedString;
 };
 
-export { displayAddress, formatNumberWithCommas, displayFloat };
+const formatTimestamp = (timestamp) => {
+  const date = new Date(Number(timestamp) * 1000);
+  return date.toLocaleString();
+};
+
+export { displayAddress, displayTransactionHash, formatNumberWithCommas, formatTimestamp, displayFloat };
