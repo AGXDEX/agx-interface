@@ -46,15 +46,14 @@ import { getBuyGlpFromAmount } from "lib/legacy";
 
 import { getEmissionData, calculateManage } from "./utilts";
 
-import { useLocalStorageByChainId } from "lib/localStorage";
 import { DepositTooltipContent } from "components/Synthetics/MarketsList/DepositTooltipContent";
-const { AddressZero } = ethers.constants;
 
 import { ClaimAllModal, ClaimHistoryModal, DepositModal } from "./components/modals";
 
 import noNFT from "img/noNFT.svg";
 import { STAKER_SUBGRAPH_URL, SWAP_SUBGRAPH_URL } from "config/subgraph";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { cn } from "utils/classname";
 
 const EXTERNAL_LINK_CHAIN_CONFIG = process.env.REACT_APP_ENV === "development" ? "nova_sepolia" : "nova_mainnet";
 
@@ -319,26 +318,26 @@ export default function StakeV2() {
     enabled: !!signer && !!dexreaderAddress && !!NFTlist,
     refetchOnWindowFocus: false,
   });
+  const urlList = useMemo(() => {
+    if (!NFTlist || !baselist || !baselist[0]) return [];
+
+    return NFTlist.map((id) => {
+      const baseIndex = baselist[1]?.findIndex((baseId) => Number(baseId) === Number(id));
+      const base = baselist[0]?.[baseIndex];
+
+      if (!base) return {};
+
+      const decodedBase = new TextDecoder().decode(toByteArray(base.split(",")[1]));
+      return JSON.parse(decodedBase);
+    });
+  }, [NFTlist, baselist]);
+
   const { data: Pool2ewards } = useSWR([`StakeV2:rewards:${active}`, chainId, uniV3StakerAddress, "rewards"], {
     fetcher: contractFetcher(signer, UniV3Staker, [AGXAddress, account]),
   });
   const { data: Pooladdress } = useSWR([`StakeV2:getPool:${active}`, chainId, v3FactoryAddress, "getPool"], {
     fetcher: contractFetcher(signer, UniswapV3Factory, [AGXAddress, EthPoolAddress, 10000]),
   });
-  const urlList =
-    NFTlist &&
-    NFTlist.map((id, ind) => {
-      let obj = {};
-      baselist &&
-        baselist[0] &&
-        baselist[0].length > 0 &&
-        baselist[0].map((base, index) => {
-          if (Number(id) === Number(baselist[1][index])) {
-            obj = JSON.parse(Buffer.from(base.split(",")[1], "base64").toString("utf-8"));
-          }
-        });
-      return obj;
-    });
   const { data: rewardRate } = useSWR([`StakeV2:rewardRate:${active}`, chainId, yieldTrackerAddress, "rewardRate"], {
     fetcher: contractFetcher(signer, YieldEmission),
   });
@@ -932,14 +931,23 @@ export default function StakeV2() {
                   return (
                     <div key={item.tokenId}>
                       <div className={cx("")}>
-                        {/* {depUrlList[index]?.image && !imageLoaded && !isDepBaseListLoading && (
-                          <div className="bg-white p-2 sm:p-4 sm:h-64 rounded-2xl shadow-lg flex flex-col sm:flex-row gap-5 select-none ">
-                            <div className="h-52 sm:h-full sm:w-72 rounded-xl bg-gray-200 animate-pulse"></div>
+                        {depUrlList[index]?.image && !imageLoaded && !isDepBaseListLoading && (
+                          <div className="bg-white/10 p-2 sm:p-4 sm:h-[300px] rounded-3xl shadow-lg flex flex-col sm:flex-row gap-5 select-none ">
+                            <div className="h-[290px] sm:h-full sm:w-[170px] rounded-xl bg-[#181818] animate-pulse"></div>
                           </div>
-                        )} */}
-                        <img src={depUrlList[index]?.image || ""} alt="" />
+                        )}
+                        <img
+                         className={cn('block',{
+                          'hidden': !imageLoaded || isDepBaseListLoading
+                         })}
+                          src={depUrlList[index]?.image || ""}
+                          onLoad={() => setImageLoaded(true)}
+                          alt=""
+                        />
                       </div>
-                      <div className="depButton">
+                      <div className={cn("depButton", {
+                        "hidden": !imageLoaded || isDepBaseListLoading,
+                      })}>
                         <Button
                           variant="secondary"
                           className={cx("stakeButton ishide", { show: !item.staked }, { showMobile: !item.staked })}
@@ -979,12 +987,13 @@ export default function StakeV2() {
                     </div>
                   );
                 })}
-              {(!mergedDepNFTlists || mergedDepNFTlists.length === 0) && (
-                <div className="noNFT">
-                  <img src={noNFT} alt="" />
-                  <div className="noNFTInner">Your active V3 liquidity positions will appear here.</div>
-                </div>
-              )}
+              {(!mergedDepNFTlists || mergedDepNFTlists.length === 0) &&
+                !isDepBaseListLoading && (
+                  <div className="noNFT">
+                    <img src={noNFT} alt="" />
+                    <div className="noNFTInner">Your active V3 liquidity positions will appear here.</div>
+                  </div>
+                )}
             </div>
           </div>
           <div className={cx("liquidity", { ishide: selectTab !== "Liquidity", show: selectTab === "Liquidity" })}>
