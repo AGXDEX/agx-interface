@@ -14,7 +14,7 @@ export const ETH_MAINNET = 1;
 export const AVALANCHE = 810180;
 export const AVALANCHE_FUJI = 43113;
 type ArbitrumType = 810181 | 810180;
-console.log(process.env.REACT_APP_ENV, process.env.REACT_APP_CHAIN_ID);
+
 
 const currentChain = process.env.REACT_APP_ENV === "development" ? 810181 : 810180;
 export const ARBITRUM = currentChain;
