@@ -7666,7 +7666,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"base64-js@npm:^1.3.1":
+"base64-js@npm:1.5.1, base64-js@npm:^1.3.1":
   version: 1.5.1
   resolution: "base64-js@npm:1.5.1"
   checksum: 669632eb3745404c2f822a18fc3a0122d2f9a7a13f7fb8b5823ee19d1d2ff9ee5b52c53367176ea4ad093c332fd5ab4bd0ebae5a8e27917a4105a4cfc86b1005
@@ -11142,6 +11142,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-json-parse@npm:1.0.3":
+  version: 1.0.3
+  resolution: "fast-json-parse@npm:1.0.3"
+  checksum: c19117c56ec18a9aa133c8ebf450c99d1037117e47a3cb9aff91b60580ba48d0fd8484b696c26749a1b9cb4914084177b3fa9ebef72063a74dee7d9ead987603
+  languageName: node
+  linkType: hard
+
 "fast-json-stable-stringify@npm:^2.0.0, fast-json-stable-stringify@npm:^2.1.0":
   version: 2.1.0
   resolution: "fast-json-stable-stringify@npm:2.1.0"
@@ -11688,6 +11695,7 @@ __metadata:
     "@uniswap/v3-sdk": 3.9.0
     "@wagmi/connectors": 4.1.14
     "@wagmi/core": 2.6.5
+    base64-js: 1.5.1
     bigdecimal: 0.6.1
     bignumber.js: ^9.1.1
     buffer: 6.0.3
@@ -11707,6 +11715,7 @@ __metadata:
     eslint-plugin-react-perf: 3.3.2
     eth-testing: 1.9.1
     ethers: 5.6.8
+    fast-json-parse: 1.0.3
     framer-motion: 11.2.10
     graphql: 15.8.0
     hex-to-rgba: 2.0.1

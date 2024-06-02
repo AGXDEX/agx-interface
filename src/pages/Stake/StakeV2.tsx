@@ -1,6 +1,9 @@
 /* eslint-disable react/hook-use-state */
 import { Trans, t } from "@lingui/macro";
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
+import _ from "lodash";
+
+import { toByteArray } from "base64-js";
 
 import cx from "classnames";
 import { useHistory } from "react-router-dom";
@@ -26,7 +29,6 @@ import { getContract } from "config/contracts";
 
 import Button from "components/Button/Button";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getIcons } from "config/icons";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { bigNumberify, expandDecimals, formatAmount, parseValue } from "lib/numbers";
@@ -44,32 +46,78 @@ import { getBuyGlpFromAmount } from "lib/legacy";
 
 import { getEmissionData, calculateManage } from "./utilts";
 
-import { useLocalStorageByChainId } from "lib/localStorage";
 import { DepositTooltipContent } from "components/Synthetics/MarketsList/DepositTooltipContent";
-const { AddressZero } = ethers.constants;
 
 import { ClaimAllModal, ClaimHistoryModal, DepositModal } from "./components/modals";
 
 import noNFT from "img/noNFT.svg";
 import { STAKER_SUBGRAPH_URL, SWAP_SUBGRAPH_URL } from "config/subgraph";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { cn } from "utils/classname";
 
 const EXTERNAL_LINK_CHAIN_CONFIG = process.env.REACT_APP_ENV === "development" ? "nova_sepolia" : "nova_mainnet";
+
+const fetchNFTData = async (account) => {
+  const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
+    query: `{
+      nfts(where: {owner: "${account}"}) {
+        tokenId
+        owner
+      }
+    }`,
+  });
+
+  return data.data.nfts.map((item) => Number(item.tokenId));
+};
+
+const fetchStakeLiquidity = async () => {
+  const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
+    query: `{
+      incentives {
+        liquidity
+      }
+    }`,
+  });
+
+  return data.data.incentives[0].liquidity;
+};
+
+const fetchNFTClaimed = async () => {
+  const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
+    query: `{
+      incentives {
+        id
+        liquidity
+        claimedToken
+      }
+    }`,
+  });
+
+  return data.data.incentives[0].claimedToken;
+};
+
+const fetchTotalReward = async (account) => {
+  const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
+    query: `{
+      totalRewards(where: {owner: "${account}"}) {
+        owner
+        reward
+      }
+    }`,
+  });
+
+  return data.data.totalRewards[0]?.reward;
+};
 
 export default function StakeV2() {
   const queryClient = useQueryClient();
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
-
   const [, setPendingTxns] = usePendingTxns();
-
-  const icons = getIcons(chainId)!;
-  const hasInsurance = true;
-  const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const [isClaimHistoryModalVisible, setIsClaimHistoryModalVisible] = useState(false);
   const [depositModalVisible, setDepositModalVisible] = useState(false);
   const [claimModalVisible, setClaimModalVisible] = useState(false);
-  const [stakeModalTitle, setStakeModalTitle] = useState("");
   const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState<BigNumber | undefined>(undefined);
   const [stakeValue, setStakeValue] = useState("");
   const [stakingTokenSymbol, setStakingTokenSymbol] = useState("");
@@ -78,15 +126,6 @@ export default function StakeV2() {
   const [stakeMethodName, setStakeMethodName] = useState("");
 
   const [selectTab, setselectTab] = useState("Pool2");
-  const [NFTdata, setNFTData] = useState<any[]>([]);
-  const [stakeliquidity, setstakeliquidity] = useState("");
-  const [NFTClaimed, setNFTClaimed] = useState("");
-  const [totalReward, setTotalReward] = useState("");
-  const [poolValue, setpoolValue] = useState(0);
-  const [stakeAllValue, setstakeAllValue] = useState(0);
-  const [stakeAPRValue, setstakeAPRValue] = useState("");
-  const [AGXVFTValue, setAGXVFTValue] = useState("");
-
   const [isUnstaking, setIsUnstakeLoading] = useState(false);
   const [isStaking, setIsStaking] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
@@ -114,51 +153,6 @@ export default function StakeV2() {
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const wrappedTokenSymbol = getConstant(chainId, "wrappedTokenSymbol");
 
-  useEffect(() => {
-    axios
-      .post(
-        STAKER_SUBGRAPH_URL,
-        '{"query":"{\\n  nfts(where: {owner: \\"' + account + '\\"}) {\\n    tokenId\\n    owner\\n    }\\n}"}'
-      )
-      .then((response) => {
-        const array = response.data.data.nfts.map((item) => Number(item.tokenId));
-        setNFTData(array);
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
-    axios
-      .post(STAKER_SUBGRAPH_URL, '{"query":"{\\n  incentives {\\n    liquidity\\n    }\\n}"}')
-      .then((response) => {
-        setstakeliquidity(response.data.data.incentives[0].liquidity);
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
-    axios
-      .post(
-        STAKER_SUBGRAPH_URL,
-        '{"query":"{\\n  incentives {\\n    id\\n    liquidity\\n    claimedToken\\n    }\\n}"}'
-      )
-      .then((response) => {
-        setNFTClaimed(response.data.data.incentives[0].claimedToken);
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
-    axios
-      .post(
-        STAKER_SUBGRAPH_URL,
-        '{"query":"{\\n  totalRewards(where: {owner: \\"' + account + '\\"})  {\\n    owner\\n    reward\\n    }\\n}"}'
-      )
-      .then((response) => {
-        setTotalReward(response.data.data.totalRewards[0]?.reward);
-      })
-      .catch((error) => {
-        console.log("Error:", error);
-      });
-  }, [account, depositModalVisible, isWithdrawing]);
-
   const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
     fetcher: contractFetcher(signer, GlpManager),
   });
@@ -182,8 +176,6 @@ export default function StakeV2() {
     }
   };
   const showStakeGmxModals = () => {
-    setIsStakeModalVisible(true);
-    setStakeModalTitle(t`Stake AGX`);
     setStakeValue("");
     setStakingTokenSymbol("AGX");
     setStakingTokenAddress(gmxAddress);
@@ -194,6 +186,28 @@ export default function StakeV2() {
   const onClickPrimary = () => {
     setClaimModalVisible(true);
   };
+
+  const { data: NFTData } = useQuery({
+    queryKey: ["NFTData", account],
+    queryFn: () => fetchNFTData(account),
+    enabled: !!account,
+  });
+
+  const { data: stakeliquidity } = useQuery({
+    queryKey: ["stakeliquidity"],
+    queryFn: fetchStakeLiquidity,
+  });
+
+  const { data: NFTClaimed } = useQuery({
+    queryKey: ["NFTClaimed"],
+    queryFn: fetchNFTClaimed,
+  });
+
+  const { data: totalReward } = useQuery({
+    queryKey: ["totalReward", account],
+    queryFn: () => fetchTotalReward(account),
+    enabled: !!account,
+  });
 
   const fetchClaimHistories = async ({ queryKey }) => {
     const [, account] = queryKey;
@@ -231,7 +245,6 @@ export default function StakeV2() {
         owner
         staked
         liquidity
-        incentiveId
       }
     }`,
     });
@@ -264,7 +277,7 @@ export default function StakeV2() {
   };
 
   const { data: depNFTlist, refetch: refetchDepNFTlist } = useQuery({
-    queryKey: [`StakeV2:getSpecificNftId:${active}`, chainId, dexreaderAddress],
+    queryKey: [`StakeV2:getDepositSpecificNftId:${active}`, chainId, dexreaderAddress],
     queryFn: fetchSpecificNftIds,
     enabled: !!signer && !!dexreaderAddress && !!postionTokenIds,
     refetchOnWindowFocus: false,
@@ -286,23 +299,38 @@ export default function StakeV2() {
       fetcher: contractFetcher(signer, DexReader, [IncentiveKeyAddress, stakedTokens]),
     }
   );
-  const { data: depBaselist } = useSWR([`StakeV2:getTokenURI:${active}`, chainId, dexreaderAddress, "getTokenURIs"], {
-    fetcher: contractFetcher(signer, DexReader, [postionTokenIds ? postionTokenIds.map((i) => Number(i)) : []]),
+
+  const fetchDepBaselist = async ({ queryKey }) => {
+    const [, , dexreaderAddress] = queryKey;
+    if (!signer || !DexReader || !postionTokenIds || !dexreaderAddress) return [];
+
+    const dexReaderContract = new Contract(dexreaderAddress, DexReader.abi, signer);
+    const tokenIds = postionTokenIds.map((i) => Number(i));
+    const result = await dexReaderContract.getTokenURIs(tokenIds);
+    return result;
+  };
+  const { data: depBaselist, isLoading: isDepBaseListLoading } = useQuery({
+    queryKey: [`StakeV2:getDepositedTokenURIs:${active}`, chainId, dexreaderAddress, "getTokenURIs"],
+    queryFn: fetchDepBaselist,
+    enabled: !!signer && !!dexreaderAddress && !!postionTokenIds,
+    refetchOnWindowFocus: false,
   });
-  const depUrlList =
-    filteredDepNFTlists &&
-    filteredDepNFTlists.map((it, ind) => {
-      let obj = {};
-      depBaselist &&
-        depBaselist[0] &&
-        depBaselist[0].length > 0 &&
-        depBaselist[0].map((base, index) => {
-          if (Number(it.tokenId) === Number(depBaselist[1][index])) {
-            obj = JSON.parse(Buffer.from(base.split(",")[1], "base64").toString("utf-8"));
-          }
-        });
-      return obj;
+
+  const depUrlList = useMemo(() => {
+    if (!filteredDepNFTlists || !depBaselist || !depBaselist[0]) return [];
+
+    return filteredDepNFTlists.map((it) => {
+      const tokenId = Number(it.tokenId);
+      const baseIndex = depBaselist[1]?.findIndex((id) => Number(id) === tokenId);
+      const base = depBaselist[0]?.[baseIndex];
+
+      if (!base) return {};
+
+      const decodedBase = new TextDecoder().decode(toByteArray(base.split(",")[1]));
+      return JSON.parse(decodedBase);
     });
+  }, [filteredDepNFTlists, depBaselist]);
+
   const rewardInfos = stakedRewardInfos?.length
     ? stakedRewardInfos.map((_, index) => ({
         reward: Number(formatAmount(stakedRewardInfos[0][index], 18, 2, true)),
@@ -323,7 +351,7 @@ export default function StakeV2() {
     if (!signer || !dexreaderAddress) return;
 
     const dexReaderContract = new Contract(dexreaderAddress, DexReader.abi, signer);
-    const result = await dexReaderContract.getSpecificNftIds(NFTdata, AGXAddress, wethAddress);
+    const result = await dexReaderContract.getSpecificNftIds(NFTData, AGXAddress, wethAddress);
     return result;
   };
   const { data: NFTlist } = useQuery({
@@ -346,26 +374,26 @@ export default function StakeV2() {
     enabled: !!signer && !!dexreaderAddress && !!NFTlist,
     refetchOnWindowFocus: false,
   });
+  const urlList = useMemo(() => {
+    if (!NFTlist || !baselist || !baselist[0]) return [];
+
+    return NFTlist.map((id) => {
+      const baseIndex = baselist[1]?.findIndex((baseId) => Number(baseId) === Number(id));
+      const base = baselist[0]?.[baseIndex];
+
+      if (!base) return {};
+
+      const decodedBase = new TextDecoder().decode(toByteArray(base.split(",")[1]));
+      return JSON.parse(decodedBase);
+    });
+  }, [NFTlist, baselist]);
+
   const { data: Pool2ewards } = useSWR([`StakeV2:rewards:${active}`, chainId, uniV3StakerAddress, "rewards"], {
     fetcher: contractFetcher(signer, UniV3Staker, [AGXAddress, account]),
   });
   const { data: Pooladdress } = useSWR([`StakeV2:getPool:${active}`, chainId, v3FactoryAddress, "getPool"], {
     fetcher: contractFetcher(signer, UniswapV3Factory, [AGXAddress, EthPoolAddress, 10000]),
   });
-  const urlList =
-    NFTlist &&
-    NFTlist.map((id, ind) => {
-      let obj = {};
-      baselist &&
-        baselist[0] &&
-        baselist[0].length > 0 &&
-        baselist[0].map((base, index) => {
-          if (Number(id) === Number(baselist[1][index])) {
-            obj = JSON.parse(Buffer.from(base.split(",")[1], "base64").toString("utf-8"));
-          }
-        });
-      return obj;
-    });
   const { data: rewardRate } = useSWR([`StakeV2:rewardRate:${active}`, chainId, yieldTrackerAddress, "rewardRate"], {
     fetcher: contractFetcher(signer, YieldEmission),
   });
@@ -377,45 +405,6 @@ export default function StakeV2() {
       fetcher: contractFetcher(undefined, Vault) as any,
     }
   );
-
-  useEffect(() => {
-    if (Pooladdress) {
-      axios
-        .post(
-          SWAP_SUBGRAPH_URL,
-          '{"query":"{\\n pool(id: \\"' +
-            Pooladdress.toLowerCase() +
-            '\\") {\\n token0 {\\nid\\n}\\n token1 {\\nid\\n}\\n liquidity\\n totalValueLockedToken0\\n totalValueLockedToken1\\n }\\n}"}'
-        )
-        .then((response) => {
-          let num = 0;
-          const { token0, token1, liquidity, totalValueLockedToken0, totalValueLockedToken1 } = response.data.data.pool;
-
-          if (token0.id.toLowerCase() === AGXAddress?.toLowerCase()) {
-            num =
-              Number(totalValueLockedToken0) * agxPrice +
-              Number(totalValueLockedToken1) * (Number(ethPrice) / 10 ** 30);
-            const AGXVFTValue = (Number(stakeliquidity) / Number(liquidity)) * Number(totalValueLockedToken0);
-            setAGXVFTValue(Number(AGXVFTValue.toFixed(2)).toLocaleString());
-          } else {
-            num =
-              Number(totalValueLockedToken1) * agxPrice +
-              Number(totalValueLockedToken0) * (Number(ethPrice) / 10 ** 30);
-            const AGXVFTValue = (Number(stakeliquidity) / Number(liquidity)) * Number(totalValueLockedToken1);
-            setAGXVFTValue(Number(AGXVFTValue.toFixed(2)).toLocaleString());
-          }
-
-          setpoolValue(num);
-          setstakeAllValue((num * Number(stakeliquidity)) / Number(liquidity));
-
-          const stakeAPRValue = Number(stakeliquidity) === 0 ? "0" : ((agxPrice * 20000000) / stakeAllValue).toFixed(2);
-          setstakeAPRValue(Number((Number(stakeAPRValue) * 100).toFixed(2)).toLocaleString());
-        })
-        .catch((error) => {
-          console.log("Error:", error);
-        });
-    }
-  }, [Pooladdress, agxPrice, ethPrice, stakeliquidity, stakeAllValue]);
 
   const stakeFn = async (tokenId) => {
     setIsStaking(true);
@@ -492,7 +481,7 @@ export default function StakeV2() {
         }
       );
       queryClient.setQueryData(
-        [`StakeV2:getSpecificNftId:${active}`, chainId, dexreaderAddress],
+        [`StakeV2:getDepositSpecificNftId:${active}`, chainId, dexreaderAddress],
         (prevNFTlist: any) => {
           return prevNFTlist?.filter((tId) => Number(tId.toString()) !== Number(tokenId));
         }
@@ -590,15 +579,8 @@ export default function StakeV2() {
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
 
-  const swapLabel = "BuyAlp";
-  const [swapTokenAddress, setSwapTokenAddress] = useLocalStorageByChainId(
-    chainId,
-    `${swapLabel}-swap-token-address`,
-    AddressZero
-  );
   const history = useHistory();
   const selectToken = (token) => {
-    setSwapTokenAddress(token.address);
     history.push("/buy");
   };
 
@@ -606,16 +588,70 @@ export default function StakeV2() {
     ?.filter((entry) => entry && typeof entry.liquidity !== "undefined")
     .reduce((sum, { liquidity }) => sum + BigInt(liquidity), BigInt(0));
 
+  const fetchPoolData = async (poolAddress) => {
+    if (!poolAddress) return null;
+
+    const { data } = await axios.post(SWAP_SUBGRAPH_URL, {
+      query: `{
+      pool(id: "${poolAddress.toLowerCase()}") {
+        token0 { id }
+        token1 { id }
+        liquidity
+        totalValueLockedToken0
+        totalValueLockedToken1
+      }
+    }`,
+    });
+
+    return data.data.pool;
+  };
+
+  const calculatePoolValues = (poolData, agxPrice, ethPrice, stakeliquidity) => {
+    if (!poolData) return null;
+
+    const { token0, token1, liquidity, totalValueLockedToken0, totalValueLockedToken1 } = poolData;
+    const isAGXToken0 = _.toLower(token0.id) === _.toLower(AGXAddress);
+    const totalValueLocked = _.map([totalValueLockedToken0, totalValueLockedToken1], _.toNumber);
+
+    const poolValue = _.defaultTo(
+      totalValueLocked[isAGXToken0 ? 0 : 1] * agxPrice + (totalValueLocked[isAGXToken0 ? 1 : 0] * ethPrice) / 1e30,
+      0
+    );
+    const AGXVFTValue = _.defaultTo((stakeliquidity / liquidity) * totalValueLocked[isAGXToken0 ? 0 : 1], 0);
+    const stakeAllValue = _.defaultTo((poolValue * stakeliquidity) / liquidity, 0);
+    const stakeAPRValue =
+      stakeliquidity === 0 ? "0" : _.defaultTo((((agxPrice * 2e7) / stakeAllValue) * 100).toFixed(2), "0");
+
+    return {
+      poolValue,
+      AGXVFTValue: AGXVFTValue.toFixed(2),
+      stakeAllValue,
+      stakeAPRValue,
+    };
+  };
+  const { data: poolData } = useQuery({
+    queryKey: ["poolData", Pooladdress],
+    queryFn: () => fetchPoolData(Pooladdress),
+    enabled: !!Pooladdress,
+    refetchInterval: 60000,
+    select: (data) => calculatePoolValues(data, agxPrice, ethPrice, stakeliquidity),
+  });
+  const { poolValue, AGXVFTValue, stakeAPRValue } = poolData || {};
   const stakedAGXAmount = (
     (Number(totalUserStakedLiquidity) * Number(AGXVFTValue?.replace(/,/g, "") ?? "0")) /
     Number(stakeliquidity)
   ).toFixed(2);
 
   const userStakedAGXAmount = stakedAGXAmount === "NaN" ? "0.00" : stakedAGXAmount;
-  const formattedPoolValue = isNaN(poolValue) ? 0 : poolValue;
+  const formattedPoolValue = isNaN(poolValue || 0) ? 0 : poolValue;
 
   return (
     <div className="default-container page-layout">
+      <ClaimHistoryModal
+        isVisible={isClaimHistoryModalVisible}
+        setIsVisible={setIsClaimHistoryModalVisible}
+        data={claimHistories}
+      />
       <ClaimAllModal
         isVisible={claimModalVisible}
         setIsVisible={setClaimModalVisible}
@@ -638,7 +674,6 @@ export default function StakeV2() {
         wrappedTokenSymbol={wrappedTokenSymbol}
         showNFTdata={NFTlist}
         URLlist={urlList}
-        setNFTData={setNFTData}
         Pool2ewards={Pool2ewards}
         rewards={rewards}
       />
@@ -664,8 +699,8 @@ export default function StakeV2() {
         wrappedTokenSymbol={wrappedTokenSymbol}
         showNFTdata={NFTlist}
         URLlist={urlList}
+        depBaselist={depBaselist}
         baseUriList={baselist}
-        setNFTData={setNFTData}
         refetchDepNFTlist={refetchDepNFTlist}
       />
       <div className="box-padding">
@@ -693,7 +728,29 @@ export default function StakeV2() {
               </div>
             </div>
             <div className="StakeV2-totalBox">
-              <div className="StakeV2-tit">Current Emisions</div>
+              <div className="StakeV2-tit">
+                <TooltipWithPortal
+                  renderContent={() => {
+                    return (
+                      <div className="flex-col space-y-3">
+                        <div>
+                          Under Fair Launch Mode, the AGX Token release decrease every week follow up with the formula.
+                        </div>
+                        <div
+                          className="underline cursor-pointer"
+                          onClick={() => {
+                            window.open("https://agx-1.gitbook.io/agx/tokenomics/usdagx");
+                          }}
+                        >
+                          Read more
+                        </div>
+                      </div>
+                    );
+                  }}
+                >
+                  Current Emisions
+                </TooltipWithPortal>
+              </div>
               <div>
                 {rewardRate && Number(((Number(rewardRate) / 10 ** 18) * 86400 + 59523).toFixed(2)).toLocaleString()}{" "}
                 /day
@@ -709,27 +766,30 @@ export default function StakeV2() {
           <div className="StakeV2-title">Claimable Rewards</div>
           <div className="StakeV2-box">
             <div className="StakeV2-claimBox">
-              <div className="StakeV2-claimNum">
-                {agxPrice &&
-                  Pool2ewards &&
-                  rewards &&
-                  Number(
-                    ((Number(Pool2ewards) / 10 ** 18 + Number(rewards) / 10 ** 18) * agxPrice).toFixed(2)
-                  ).toLocaleString()}
-              </div>
-              <div className="StakeV2-claimToken">USDT</div>
+              <TooltipWithPortal
+                renderContent={() => {
+                  return <>Claimable AGX = Claimable AGX * Current Prices</>;
+                }}
+              >
+                <div className="StakeV2-claimNum">
+                  {agxPrice && Pool2ewards && rewards
+                    ? Number(
+                        ((Number(Pool2ewards) / 10 ** 18 + Number(rewards) / 10 ** 18) * agxPrice).toFixed(2)
+                      ).toLocaleString()
+                    : 0}
+                </div>
+                <div className="StakeV2-claimToken">USDT</div>
+              </TooltipWithPortal>
             </div>
             <div className="StakeV2-claimBox">
               <div className="StakeV2-claimNum">
-                {Pool2ewards &&
-                  rewards &&
-                  Number((Number(Pool2ewards) / 10 ** 18 + Number(rewards) / 10 ** 18).toFixed(2)).toLocaleString()}
+                {Pool2ewards && rewards
+                  ? Number((Number(Pool2ewards) / 10 ** 18 + Number(rewards) / 10 ** 18).toFixed(2)).toLocaleString()
+                  : 0}
               </div>
               <div className="StakeV2-claimToken">AGX</div>
             </div>
-            <div
-              className="w-full flex justify-start items-center space-x-5"
-            >
+            <div className="w-full flex justify-start items-center space-x-5">
               <Button
                 variant="secondary"
                 className="p-2.5 px-5 !bg-[#5D00FB] max-w-[80px] w-full"
@@ -739,7 +799,7 @@ export default function StakeV2() {
                 Claim
               </Button>
               <span
-              className="cursor-pointer"
+                className="cursor-pointer"
                 onClick={() => {
                   setIsClaimHistoryModalVisible(true);
                 }}
@@ -749,12 +809,6 @@ export default function StakeV2() {
             </div>
           </div>
         </div>
-
-        <ClaimHistoryModal
-          isVisible={isClaimHistoryModalVisible}
-          setIsVisible={setIsClaimHistoryModalVisible}
-          data={claimHistories}
-        />
 
         <div className="App-card App-card-space-between StakeV2-content">
           <div className="tabBox">
@@ -793,15 +847,15 @@ export default function StakeV2() {
               <div className={cx("mobileBox", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">APR</div>
-                  <div>{stakeAPRValue === "NaN" ? "0.00" : stakeAPRValue}%</div>
+                  <div>{Number(stakeAPRValue === "NaN" ? "0.00" : stakeAPRValue).toLocaleString()}%</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Stake AGX in LP NFT:</div>
-                  <div>{AGXVFTValue}</div>
+                  <div>{Number(AGXVFTValue).toLocaleString()}</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">TVL</div>
-                  <div>${Number(formattedPoolValue.toFixed(2)).toLocaleString()}</div>
+                  <div>${Number(formattedPoolValue?.toFixed(2)).toLocaleString()}</div>
                 </div>
               </div>
             </div>
@@ -896,9 +950,25 @@ export default function StakeV2() {
                   return (
                     <div key={item.tokenId}>
                       <div className={cx("")}>
-                        <img src={depUrlList[index]?.image || ""} alt="" />
+                        {depUrlList[index]?.image && !imageLoaded && !isDepBaseListLoading && (
+                          <div className="bg-white/10 p-2 sm:p-4 sm:h-[300px] rounded-3xl shadow-lg flex flex-col sm:flex-row gap-5 select-none ">
+                            <div className="h-[290px] sm:h-full sm:w-[170px] rounded-xl bg-[#181818] animate-pulse"></div>
+                          </div>
+                        )}
+                        <img
+                          className={cn("block", {
+                            hidden: !imageLoaded || isDepBaseListLoading,
+                          })}
+                          src={depUrlList[index]?.image || ""}
+                          onLoad={() => setImageLoaded(true)}
+                          alt=""
+                        />
                       </div>
-                      <div className="depButton">
+                      <div
+                        className={cn("depButton", {
+                          hidden: !imageLoaded || isDepBaseListLoading,
+                        })}
+                      >
                         <Button
                           variant="secondary"
                           className={cx("stakeButton ishide", { show: !item.staked }, { showMobile: !item.staked })}
@@ -938,7 +1008,7 @@ export default function StakeV2() {
                     </div>
                   );
                 })}
-              {(!mergedDepNFTlists || mergedDepNFTlists.length === 0) && (
+              {(!mergedDepNFTlists || mergedDepNFTlists.length === 0) && !isDepBaseListLoading && (
                 <div className="noNFT">
                   <img src={noNFT} alt="" />
                   <div className="noNFTInner">Your active V3 liquidity positions will appear here.</div>
