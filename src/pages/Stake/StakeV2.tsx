@@ -1,6 +1,7 @@
 /* eslint-disable react/hook-use-state */
 import { Trans, t } from "@lingui/macro";
 import { useState, useEffect, useMemo } from "react";
+import _ from "lodash";
 
 import { toByteArray } from "base64-js";
 
@@ -28,7 +29,6 @@ import { getContract } from "config/contracts";
 
 import Button from "components/Button/Button";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { getIcons } from "config/icons";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { bigNumberify, expandDecimals, formatAmount, parseValue } from "lib/numbers";
@@ -61,17 +61,11 @@ export default function StakeV2() {
   const queryClient = useQueryClient();
   const { active, signer, account } = useWallet();
   const { chainId } = useChainId();
-
   const [, setPendingTxns] = usePendingTxns();
-
-  const icons = getIcons(chainId)!;
-  const hasInsurance = true;
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
   const [isClaimHistoryModalVisible, setIsClaimHistoryModalVisible] = useState(false);
   const [depositModalVisible, setDepositModalVisible] = useState(false);
   const [claimModalVisible, setClaimModalVisible] = useState(false);
-  const [stakeModalTitle, setStakeModalTitle] = useState("");
   const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState<BigNumber | undefined>(undefined);
   const [stakeValue, setStakeValue] = useState("");
   const [stakingTokenSymbol, setStakingTokenSymbol] = useState("");
@@ -84,10 +78,6 @@ export default function StakeV2() {
   const [stakeliquidity, setstakeliquidity] = useState("");
   const [NFTClaimed, setNFTClaimed] = useState("");
   const [totalReward, setTotalReward] = useState("");
-  const [poolValue, setpoolValue] = useState(0);
-  const [stakeAllValue, setstakeAllValue] = useState(0);
-  const [stakeAPRValue, setstakeAPRValue] = useState("");
-  const [AGXVFTValue, setAGXVFTValue] = useState("");
 
   const [isUnstaking, setIsUnstakeLoading] = useState(false);
   const [isStaking, setIsStaking] = useState(false);
@@ -139,8 +129,6 @@ export default function StakeV2() {
     }
   };
   const showStakeGmxModals = () => {
-    setIsStakeModalVisible(true);
-    setStakeModalTitle(t`Stake AGX`);
     setStakeValue("");
     setStakingTokenSymbol("AGX");
     setStakingTokenAddress(gmxAddress);
@@ -532,52 +520,65 @@ export default function StakeV2() {
     ?.filter((entry) => entry && typeof entry.liquidity !== "undefined")
     .reduce((sum, { liquidity }) => sum + BigInt(liquidity), BigInt(0));
 
+  const fetchPoolData = async (poolAddress) => {
+    if (!poolAddress) return null;
+
+    const { data } = await axios.post(SWAP_SUBGRAPH_URL, {
+      query: `{
+      pool(id: "${poolAddress.toLowerCase()}") {
+        token0 { id }
+        token1 { id }
+        liquidity
+        totalValueLockedToken0
+        totalValueLockedToken1
+      }
+    }`,
+    });
+
+    return data.data.pool;
+  };
+
+  const calculatePoolValues = (poolData, agxPrice, ethPrice, stakeliquidity) => {
+    if (!poolData) return null;
+
+    const { token0, token1, liquidity, totalValueLockedToken0, totalValueLockedToken1 } = poolData;
+    const isAGXToken0 = _.toLower(token0.id) === _.toLower(AGXAddress);
+    const totalValueLocked = _.map([totalValueLockedToken0, totalValueLockedToken1], _.toNumber);
+
+    const poolValue = _.defaultTo(
+      totalValueLocked[isAGXToken0 ? 0 : 1] * agxPrice + (totalValueLocked[isAGXToken0 ? 1 : 0] * ethPrice) / 1e30,
+      0
+    );
+    const AGXVFTValue = _.defaultTo((stakeliquidity / liquidity) * totalValueLocked[isAGXToken0 ? 0 : 1], 0);
+    const stakeAllValue = _.defaultTo((poolValue * stakeliquidity) / liquidity, 0);
+    const stakeAPRValue =
+      stakeliquidity === 0 ? "0" : _.defaultTo((((agxPrice * 2e7) / stakeAllValue) * 100).toFixed(2), "0");
+
+    return {
+      poolValue,
+      AGXVFTValue: AGXVFTValue.toFixed(2),
+      stakeAllValue,
+      stakeAPRValue,
+    };
+  };
+  const {
+    data: poolData,
+  } = useQuery({
+    queryKey: ["poolData", Pooladdress],
+    queryFn: () => fetchPoolData(Pooladdress),
+    enabled: !!Pooladdress,
+    refetchInterval: 60000,
+    select: (data) => calculatePoolValues(data, agxPrice, ethPrice, stakeliquidity),
+  });
+  const { poolValue, AGXVFTValue, stakeAPRValue } = poolData || {};
   const stakedAGXAmount = (
     (Number(totalUserStakedLiquidity) * Number(AGXVFTValue?.replace(/,/g, "") ?? "0")) /
     Number(stakeliquidity)
   ).toFixed(2);
 
   const userStakedAGXAmount = stakedAGXAmount === "NaN" ? "0.00" : stakedAGXAmount;
-  const formattedPoolValue = isNaN(poolValue) ? 0 : poolValue;
+  const formattedPoolValue = isNaN(poolValue || 0) ? 0 : poolValue;
 
-  useEffect(() => {
-    if (Pooladdress) {
-      axios
-        .post(
-          SWAP_SUBGRAPH_URL,
-          '{"query":"{\\n pool(id: \\"' +
-            Pooladdress.toLowerCase() +
-            '\\") {\\n token0 {\\nid\\n}\\n token1 {\\nid\\n}\\n liquidity\\n totalValueLockedToken0\\n totalValueLockedToken1\\n }\\n}"}'
-        )
-        .then((response) => {
-          let num = 0;
-          const { token0, token1, liquidity, totalValueLockedToken0, totalValueLockedToken1 } = response.data.data.pool;
-
-          if (token0.id.toLowerCase() === AGXAddress?.toLowerCase()) {
-            num =
-              Number(totalValueLockedToken0) * agxPrice +
-              Number(totalValueLockedToken1) * (Number(ethPrice) / 10 ** 30);
-            const AGXVFTValue = (Number(stakeliquidity) / Number(liquidity)) * Number(totalValueLockedToken0);
-            setAGXVFTValue(Number(AGXVFTValue.toFixed(2)).toLocaleString());
-          } else {
-            num =
-              Number(totalValueLockedToken1) * agxPrice +
-              Number(totalValueLockedToken0) * (Number(ethPrice) / 10 ** 30);
-            const AGXVFTValue = (Number(stakeliquidity) / Number(liquidity)) * Number(totalValueLockedToken1);
-            setAGXVFTValue(Number(AGXVFTValue.toFixed(2)).toLocaleString());
-          }
-
-          setpoolValue(num);
-          setstakeAllValue((num * Number(stakeliquidity)) / Number(liquidity));
-
-          const stakeAPRValue = Number(stakeliquidity) === 0 ? "0" : ((agxPrice * 20000000) / stakeAllValue).toFixed(2);
-          setstakeAPRValue(Number((Number(stakeAPRValue) * 100).toFixed(2)).toLocaleString());
-        })
-        .catch((error) => {
-          console.log("Error:", error);
-        });
-    }
-  }, [Pooladdress, agxPrice, ethPrice, stakeliquidity, stakeAllValue]);
 
   useEffect(() => {
     axios
@@ -828,15 +829,15 @@ export default function StakeV2() {
               <div className={cx("mobileBox", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">APR</div>
-                  <div>{stakeAPRValue === "NaN" ? "0.00" : stakeAPRValue}%</div>
+                  <div>{Number(stakeAPRValue === "NaN" ? "0.00" : stakeAPRValue).toLocaleString()}%</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Stake AGX in LP NFT:</div>
-                  <div>{AGXVFTValue}</div>
+                  <div>{Number(AGXVFTValue).toLocaleString()}</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">TVL</div>
-                  <div>${Number(formattedPoolValue.toFixed(2)).toLocaleString()}</div>
+                  <div>${Number(formattedPoolValue?.toFixed(2)).toLocaleString()}</div>
                 </div>
               </div>
             </div>
@@ -937,17 +938,19 @@ export default function StakeV2() {
                           </div>
                         )}
                         <img
-                         className={cn('block',{
-                          'hidden': !imageLoaded || isDepBaseListLoading
-                         })}
+                          className={cn("block", {
+                            hidden: !imageLoaded || isDepBaseListLoading,
+                          })}
                           src={depUrlList[index]?.image || ""}
                           onLoad={() => setImageLoaded(true)}
                           alt=""
                         />
                       </div>
-                      <div className={cn("depButton", {
-                        "hidden": !imageLoaded || isDepBaseListLoading,
-                      })}>
+                      <div
+                        className={cn("depButton", {
+                          hidden: !imageLoaded || isDepBaseListLoading,
+                        })}
+                      >
                         <Button
                           variant="secondary"
                           className={cx("stakeButton ishide", { show: !item.staked }, { showMobile: !item.staked })}
@@ -987,13 +990,12 @@ export default function StakeV2() {
                     </div>
                   );
                 })}
-              {(!mergedDepNFTlists || mergedDepNFTlists.length === 0) &&
-                !isDepBaseListLoading && (
-                  <div className="noNFT">
-                    <img src={noNFT} alt="" />
-                    <div className="noNFTInner">Your active V3 liquidity positions will appear here.</div>
-                  </div>
-                )}
+              {(!mergedDepNFTlists || mergedDepNFTlists.length === 0) && !isDepBaseListLoading && (
+                <div className="noNFT">
+                  <img src={noNFT} alt="" />
+                  <div className="noNFTInner">Your active V3 liquidity positions will appear here.</div>
+                </div>
+              )}
             </div>
           </div>
           <div className={cx("liquidity", { ishide: selectTab !== "Liquidity", show: selectTab === "Liquidity" })}>
