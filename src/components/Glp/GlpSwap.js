@@ -173,7 +173,7 @@ const dataList = [
   { name: "USDT", value: 0.25 },
   { name: "USDC", value: 0.25 },
   { name: "ETH", value: 0.20 },
-  { name: "WBTC", value: 0.15 },
+  { name: "wBTC", value: 0.15 },
   { name: "pufETH", value: 0.15 },
 ];
 export default function GlpSwap(props) {

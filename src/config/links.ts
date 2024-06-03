@@ -3,7 +3,7 @@ import { TOKENS_BY_SYMBOL_MAP } from "./tokens";
 
 const oneInchTokensMap = {
   [ARBITRUM]: {
-    BTC: "WBTC",
+    BTC: "wBTC",
   },
   [AVALANCHE]: {
     BTC: "BTC.b",

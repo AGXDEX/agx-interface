@@ -1490,7 +1490,7 @@
     "isDisabled": false,
     "longToken": {
       "name": "Bitcoin (WBTC)",
-      "symbol": "WBTC",
+      "symbol": "wBTC",
       "decimals": 8,
       "address": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
       "imageUrl": "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
@@ -1537,7 +1537,7 @@
     },
     "indexToken": {
       "name": "Bitcoin (WBTC)",
-      "symbol": "WBTC",
+      "symbol": "wBTC",
       "decimals": 8,
       "address": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
       "imageUrl": "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
@@ -1855,7 +1855,7 @@
     "isDisabled": false,
     "longToken": {
       "name": "Bitcoin (WBTC)",
-      "symbol": "WBTC",
+      "symbol": "wBTC",
       "decimals": 8,
       "address": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
       "imageUrl": "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
@@ -1902,7 +1902,7 @@
     },
     "indexToken": {
       "name": "Bitcoin (WBTC)",
-      "symbol": "WBTC",
+      "symbol": "wBTC",
       "decimals": 8,
       "address": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
       "imageUrl": "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
@@ -6274,7 +6274,7 @@
     },
     "indexToken": {
       "name": "Bitcoin (WBTC)",
-      "symbol": "WBTC",
+      "symbol": "wBTC",
       "decimals": 8,
       "address": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
       "imageUrl": "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
@@ -6961,7 +6961,7 @@
     "isDisabled": false,
     "longToken": {
       "name": "Bitcoin (WBTC)",
-      "symbol": "WBTC",
+      "symbol": "wBTC",
       "decimals": 8,
       "address": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
       "imageUrl": "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
@@ -6984,7 +6984,7 @@
     },
     "shortToken": {
       "name": "Bitcoin (WBTC)",
-      "symbol": "WBTC",
+      "symbol": "wBTC",
       "decimals": 8,
       "address": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
       "imageUrl": "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
@@ -7007,7 +7007,7 @@
     },
     "indexToken": {
       "name": "Bitcoin (WBTC)",
-      "symbol": "WBTC",
+      "symbol": "wBTC",
       "decimals": 8,
       "address": "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
       "imageUrl": "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
