@@ -78,9 +78,9 @@ export function approveTokens({
               There is not enough {nativeToken.symbol} in your account on {networkName} to send this transaction.
               <br />
               <br />
-              <Link to="/buy_gmx#bridge">
-                Buy or Transfer {nativeToken.symbol} to {networkName}
-              </Link>
+              <a href="https://portal.zklink.io/" target="_blank" rel="noreferrer">
+                Buy or Transfer
+              </a>
             </Trans>
           </div>
         );

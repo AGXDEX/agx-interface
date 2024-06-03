@@ -309,12 +309,6 @@ function FullApp() {
               <Route exact path="/buy_glp">
                 <BuyGlp />
               </Route>
-              <Route exact path="/jobs">
-                <Jobs />
-              </Route>
-              <Route exact path="/buy_gmx">
-                <BuyGMX />
-              </Route>
               <Route exact path="/ecosystem">
                 <Ecosystem />
               </Route>
