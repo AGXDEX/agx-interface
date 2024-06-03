@@ -6,7 +6,6 @@ import { InfoTokens, TokenInfo } from "./types";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { t, Trans } from "@lingui/macro";
 import { getNativeToken } from "config/tokens";
-import { Link } from "react-router-dom";
 
 type Params = {
   setIsApproving: (val: boolean) => void;
