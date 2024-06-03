@@ -141,10 +141,10 @@
   width: 35%;
   margin-bottom: 60px;
 }
-.introduce .flex a{
+.introduce .intro-flex a{
   text-decoration: none;
 }
-.introduce .flex .start{
+.introduce .intro-flex .start{
   height: 52px;
   padding: 14px 38px 14px 38px;
   border-radius: 30px;
@@ -158,16 +158,16 @@
   margin-right: 8%;
   cursor: pointer;
 }
-.introduce .flex .start img{
+.introduce .intro-flex .start img{
   display: inline-block;
   width: 24px;
   vertical-align: top;
 }
-.introduce .flex{
+.introduce .intro-flex{
   display: flex;
 }
 
-.introduce .flex .learn{
+.introduce .intro-flex .learn{
   font-family: Neue Haas Grotesk Display Pro;
   font-size: 18px;
   font-weight: 600;
@@ -634,15 +634,15 @@
     width: 30%;
     margin-bottom: 40px;
   }
-  .introduce .flex .start{
+  .introduce .intro-flex .start{
     margin-left: 10%;
     height: 46px;
     font-size: 12px;
   }
-  .introduce .flex .learn{
+  .introduce .intro-flex .learn{
     font-size: 12px;
   }
-  .introduce .flex .start img{
+  .introduce .intro-flex .start img{
     width: 14px;
   }
   .home-container .home-header .introduce{
