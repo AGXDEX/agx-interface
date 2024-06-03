@@ -69,7 +69,7 @@ const ChainToken: Token[] = [
   },
   {
     name: "Bitcoin (WBTC)",
-    symbol: "WBTC",
+    symbol: "wBTC",
     assetSymbol: "WBTC",
     decimals: 8,
     address: "0xbEacb61e11940e38EAdCf41860b9ea31E2a90deC",
@@ -276,7 +276,7 @@ const novaSepoliaChain = [
   },
   {
     name: "Bitcoin (WBTC)",
-    symbol: "WBTC",
+    symbol: "wBTC",
     assetSymbol: "WBTC",
     decimals: 8,
     address: "0xbEacb61e11940e38EAdCf41860b9ea31E2a90deC",
@@ -367,7 +367,7 @@ const novaChain = [
     },
     {
       name: "Bitcoin (WBTC)",
-      symbol: "WBTC",
+      symbol: "wBTC",
       assetSymbol: "WBTC",
       decimals: 8,
       address: "0xDa4AaEd3A53962c83B35697Cd138cc6df43aF71f",
@@ -692,7 +692,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Bitcoin (WBTC)",
-      symbol: "WBTC",
+      symbol: "wBTC",
       decimals: 8,
       address: "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
       imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
@@ -836,7 +836,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
 export const TOKEN_COLOR_MAP = {
   ETH: "#6062a6",
   BTC: "#F7931A",
-  WBTC: "#F7931A",
+  wBTC: "#F7931A",
   USDC: "#2775CA",
   "USDC.e": "#2A5ADA",
   USDT: "#67B18A",
@@ -1011,7 +1011,7 @@ export function convertTokenAddress(chainId: number, address: string, convertTo?
 }
 
 export function getNormalizedTokenSymbol(tokenSymbol) {
-  if (["WBTC", "WETH", "WAVAX"].includes(tokenSymbol)) {
+  if (["wBTC", "WETH", "WAVAX"].includes(tokenSymbol)) {
     return tokenSymbol.substr(1);
   } else if (tokenSymbol.includes(".")) {
     return tokenSymbol.split(".")[0];

@@ -159,8 +159,9 @@
   cursor: pointer;
 }
 .introduce .intro-flex .start img{
+  display: inline-block;
   width: 24px;
-  vertical-align: bottom;
+  vertical-align: top;
 }
 .introduce .intro-flex{
   display: flex;
@@ -486,8 +487,8 @@
   margin-right: 30px;
   color: #000;
   cursor: pointer;
-  left: 242px;
-  bottom: 231px;
+  left: calc(50% - 81px);
+  top: 24.5vw;
 }
 .home-container .main .box .fairBox .chain{
   position: relative;
@@ -501,9 +502,9 @@
   display: flex;
   position: absolute;
   width: 100%;
-  bottom: 35px;
+  top: 36vw;
   justify-content: space-between;
-  padding: 0 80px;
+  padding: 0 18%;
 }
 .home-container .main .box .fairBox .chain .link a{
   background: #fff;
@@ -511,7 +512,10 @@
   width: 60px;
   height: 60px;
   text-align: center;
-  line-height: 75px;
+  line-height: 55px;
+}
+.home-container .main .box .fairBox .chain .link a img{
+  display: inline-block;
 }
 .home-container .footer{
   width: 100%;
@@ -541,7 +545,7 @@
 .modile{
   display: none;
 }
-@media (max-width: 400px) {
+@media (max-width: 450px) {
   .home-container{
     height: 100vh;
     overflow: auto;
@@ -568,8 +572,11 @@
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     text-align: center;
-    line-height: 68px;
+    line-height: 48px;
     cursor: pointer;
+  }
+  .home-container .home-header .nav .mobileBut img{
+    display: inline-block;
   }
   .home-container .home-header .nav img{
     width: 50px;
@@ -831,28 +838,29 @@
     width: 100%;
   }
   .home-container .main .box .fairBox .startTrade{
-    height: 375px;
+    height: 100vw;
     margin-bottom: 20px;
   }
   .home-container .main .box .fairBox .chain{
-    height: 520px;
+    height: 136vw;
   }
   .home-container .main .box .fairBox .startTrade .joinNow{
     height: 44px;
     font-size: 14px;
     line-height: 15px;
     left: calc(50% - 58px);
-    bottom: 125px;
+    top: 53vw;
     padding: 14px 24px;
   }
   .home-container .main .box .fairBox .chain .link{
-    padding: 0 66px;
-    bottom: 29px;
+    top: inherit;
+    padding: 0 19%;
+    bottom: 42px;
   }
   .home-container .main .box .fairBox .chain .link a{
     width: 40px;
     height: 40px;
-    line-height: 55px;
+    line-height: 38px;
   }
   .home-container .footer{
     display: flex;
@@ -866,5 +874,15 @@
   .home-container .footer .copyright{
     font-size: 12px;
     color: rgba(173, 173, 173, 1);
+  }
+}
+
+@media (min-width: 1580px) {
+  .home-container .main .box .fairBox .startTrade .joinNow{
+    top: 390px;
+  }
+  .home-container .main .box .fairBox .chain .link{
+    bottom: 35px;
+    top: inherit;
   }
 }
