@@ -159,10 +159,11 @@ function HomePage() {
               </div>
               <img src={Trading} />
             </div>
-            <div className="flex">
-              <div className="start">
+            <div className="intro-flex">
+              <div className="start items-center justify-center flex">
                 <Link to="/v1">
-                  Get Started Now <img src={ArrowRight} />
+                  <span>Get Started Now</span>
+                  <img className="inline-flex" src={ArrowRight} />
                 </Link>
               </div>
               <a href="https://docs.agx.xyz/" target="block">
