@@ -11,12 +11,12 @@ export const ENV_AVALANCHE_RPC_URLS = process.env.REACT_APP_AVALANCHE_RPC_URLS;
 export const BSС_MAINNET = 56;
 export const BSС_TESTNET = 97;
 export const ETH_MAINNET = 1;
-export const AVALANCHE = 810180;
 export const AVALANCHE_FUJI = 43113;
 type ArbitrumType = 810181 | 810180;
 
 
 const currentChain = process.env.REACT_APP_ENV === "development" ? 810181 : 810180;
+export const AVALANCHE = currentChain;
 export const ARBITRUM = currentChain;
 
 export const ARBITRUM_GOERLI = 421613;
