@@ -95,9 +95,9 @@ export function getErrorMessage(chainId: number, ex: TxError, txnMessage?: strin
           There is not enough {nativeToken.symbol} in your account on {getChainName(chainId)} to send this transaction.
           <br />
           <br />
-          <Link to="/buy_gmx#bridge">
+          <a href="https://portal.zklink.io/" target="_blank" rel="noreferrer">
             Buy or Transfer {nativeToken.symbol} to {getChainName(chainId)}
-          </Link>
+          </a>
         </Trans>
       );
       break;

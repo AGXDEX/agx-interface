@@ -1,22 +1,16 @@
 import "./HomePage.css";
-import cx from "classnames";
 import logoImg from "img/logo_GMX.svg";
 import File from "img/File.png";
 import XLogo from "img/XLogo.png";
 import TelegramLogo from "img/TelegramLogo.png";
 import DiscordLogo from "img/DiscordLogo.png";
-import start from "img/home/start.png";
-import zklink from "img/home/zklink.svg";
 import support from "img/home/support.svg";
 import BurstStar from "img/home/Burst-star.png";
 import Revolutionizing from "img/home/Revolutionizing.svg";
 import Decentralized from "img/home/Decentralized.svg";
 import Trading from "img/home/Trading.svg";
 import ArrowRight from "img/home/ArrowRight.png";
-import bg from "img/home/bg.png";
 import Multi from "img/home/Multi.svg";
-import multiChart from "img/home/multi-chart.svg";
-import multiMind from "img/home/multi-mind.svg";
 import work from "img/home/work.svg";
 import one from "img/home/01.svg";
 import two from "img/home/02.svg";
@@ -41,10 +35,6 @@ import ALP from "img/home/ALP Pool Structure.svg";
 import ALPPool from "img/home/ALPPool.svg";
 import OurJourney from "img/home/Our Journey Ahead.svg";
 import Journey from "img/home/Journey.svg";
-import Supported from "img/home/Supported Layers2s.svg";
-import startTrade from "img/home/startTrade.svg";
-import chain from "img/home/chain.svg";
-import Bitcoin from "img/home/Bitcoin.gif";
 import doc from "img/home/hugeicons_google-doc.png";
 import XLog from "img/home/XLogo.png";
 import Telegram from "img/home/TelegramLogo.png";
@@ -67,11 +57,10 @@ import mobileprotoool from "img/home/mobileprotoool.svg";
 import mobileprotoool1 from "img/home/mobileprotoool1.svg";
 
 import { Link } from "react-router-dom";
-import React, { ReactNode, useEffect, useState } from "react";
-import { AnimatePresence as FramerAnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 
 const scrollTo = (value) => {
-  document.getElementsByClassName('container')[0].scrollTo({
+  document.getElementsByClassName('home-container')[0].scrollTo({
     top: value === 7300? 5500:value === 10000? 6300: value,
     behavior: 'smooth' // 'auto' for instant scrolling
   });
@@ -88,78 +77,92 @@ function HomePage() {
   return (
     <div>
       {isshowMenu && (
-        <div className="MenuList"  onClick={() => setTimeout(()=>{showMenu(false)}, 500) }>
+        <div
+          className="MenuList"
+          onClick={() =>
+            setTimeout(() => {
+              showMenu(false);
+            }, 500)
+          }
+        >
           <div className="Menu">
-            <img className="logo" src={logoImg}/>
+            <img className="logo" src={logoImg} />
             <a href="https://docs.agx.xyz/" target="block">
-              <img src={File}/>
+              <img src={File} />
             </a>
             <a href="https://x.com/AGX_XYZ" target="block">
-              <img src={XLogo}/>
+              <img src={XLogo} />
             </a>
             <a href="https://t.me/agx_xyz_channel" target="block">
-              <img src={TelegramLogo}/>
+              <img src={TelegramLogo} />
             </a>
             <a href="https://discord.gg/agxdefi" target="block">
-              <img src={DiscordLogo}/>
+              <img src={DiscordLogo} />
             </a>
           </div>
         </div>
       )}
-      <div className="container">
-        <div className="header">
-          <div className="header-top">
+      <div className="home-container">
+        <div className="home-header">
+          <div className="home-header-top">
             <div></div>
             <div></div>
-            <div className="icon">
+            <div className="flex items-center justify-center space-x-5">
               <a href="https://docs.agx.xyz/" target="block">
-                <img src={File}/>
+                <img src={File} />
               </a>
               <a href="https://x.com/AGX_XYZ" target="block">
-                <img src={XLogo}/>
+                <img src={XLogo} />
               </a>
               <a href="https://t.me/agx_xyz_channel" target="block">
-                <img src={TelegramLogo}/>
+                <img src={TelegramLogo} />
               </a>
               <a href="https://discord.gg/agxdefi" target="block">
-                <img src={DiscordLogo}/>
+                <img src={DiscordLogo} />
               </a>
             </div>
           </div>
           <div className="nav">
-              <div className="mobileBut" onClick={() => showMenu(true)}>
-                <img src={menu} />
+            <div className="mobileBut" onClick={() => showMenu(true)}>
+              <img src={menu} />
+            </div>
+            <img src={logoImg} />
+            <div className="navButton">
+              <div className="scroll PC" onClick={() => scrollTo(0)}>
+                Features
               </div>
-              <img src={logoImg}/>
-              <div className="navButton">
-                <div className="scroll PC" onClick={() => scrollTo(0)}>Features</div>
-                <div className="scroll PC" onClick={() => scrollTo(7300)}>Structures</div>
-                <div className="scroll PC" onClick={() => scrollTo(10000)}>Roadmap</div>
-                <Link to="/v1">
-                  <div className="joinNew">Join Now</div>
-                </Link>
-                
+              <div className="scroll PC" onClick={() => scrollTo(7300)}>
+                Structures
               </div>
+              <div className="scroll PC" onClick={() => scrollTo(10000)}>
+                Roadmap
+              </div>
+              <Link to="/v1">
+                <div className="joinNew">Join Now</div>
+              </Link>
+            </div>
           </div>
           <div className="support">
-            <img src={support}/>
+            <img src={support} />
           </div>
           <div className="introduce">
             <div className="large">
-              <img className="marginRight" src={Revolutionizing}/>
-              <img className="BurstStar" src={BurstStar}/>
+              <img className="marginRight" src={Revolutionizing} />
+              <img className="BurstStar" src={BurstStar} />
             </div>
             <div className="large">
-              <img className="marginLeft" src={Decentralized}/>
+              <img className="marginLeft" src={Decentralized} />
             </div>
             <div className="large trade">
-              <div>The First Ever LST & LRT Asset <br /> Supported Multi-Chain Perpetual DEX</div>
-              <img src={Trading}/>
+              <div>
+                The First Ever LST & LRT Asset <br /> Supported Multi-Chain Perpetual DEX
+              </div>
+              <img src={Trading} />
             </div>
             <div className="flex">
               <div className="start">
                 <Link to="/v1">
-                  Get Started Now  <img src={ArrowRight} />
+                  Get Started Now <img src={ArrowRight} />
                 </Link>
               </div>
               <a href="https://docs.agx.xyz/" target="block">
@@ -172,7 +175,6 @@ function HomePage() {
           <img className="EllipseLeft" src={EllipseLeft} />
           <img className="Mask" src={Mask} />
           <img className="MaskTable" src={MaskTable} />
-          
         </div>
         <div className="main">
           <div className="box">
@@ -183,7 +185,9 @@ function HomePage() {
             <div className="choose">
               <div className="chooseBut">Why Choose AGX?</div>
               <img src={BurstStar} />
-              <div className="chooseInf">Empower Your Trades, Maximize Your Gains, Seamless, Secure, and Smart, Experience the Future of Prep DEX</div>
+              <div className="chooseInf">
+                Empower Your Trades, Maximize Your Gains, Seamless, Secure, and Smart, Experience the Future of Prep DEX
+              </div>
             </div>
             <div className="cardList">
               <div className="card first">
@@ -201,18 +205,22 @@ function HomePage() {
               <div className="card thrid">
                 <div className="ball"></div>
                 <div className="title">Multi-Layer Yield</div>
-                <div className="inner">Maximize earnings with our multi-chain yield aggregator supported by zkLink.</div>
+                <div className="inner">
+                  Maximize earnings with our multi-chain yield aggregator supported by zkLink.
+                </div>
                 <img src={ArrowRight} />
               </div>
             </div>
           </div>
           <div className="box">
             <div className="howToWork">
-              <img className="PC" src={work}/>
-              <img className="modile greenStart" src={greenStart}/>
-              <img className="modile HowAGXWorks" src={HowAGXWorks}/>
+              <img className="PC" src={work} />
+              <img className="modile greenStart" src={greenStart} />
+              <img className="modile HowAGXWorks" src={HowAGXWorks} />
               <div className="workInfo">
-              Explore the seamless process of decentralized trading and yield maximization with AGX. From setting up your wallet to maximizing earnings through dynamic pricing and yield aggregation, our platform offers a streamlined experience for traders of all levels.
+                Explore the seamless process of decentralized trading and yield maximization with AGX. From setting up
+                your wallet to maximizing earnings through dynamic pricing and yield aggregation, our platform offers a
+                streamlined experience for traders of all levels.
               </div>
             </div>
           </div>
@@ -231,21 +239,25 @@ function HomePage() {
               <div className="step">
                 <img src={three} />
                 <div className="title">Trade & Earn</div>
-                <div className="inner">Trade with dynamic pricing and earn rewards through liquidity provision and market making.</div>
+                <div className="inner">
+                  Trade with dynamic pricing and earn rewards through liquidity provision and market making.
+                </div>
               </div>
               <div className="step">
                 <img src={four} />
                 <div className="title">Physical Settlement</div>
-                <div className="inner">Enjoy seamless trading with reliable settlement in underlying assets or $USDT.</div>
+                <div className="inner">
+                  Enjoy seamless trading with reliable settlement in underlying assets or $USDT.
+                </div>
               </div>
             </div>
           </div>
           <div className="box">
             <div className="AGXAndALP">
-              <img className="PC" src={AGXAndALP}/>
-              <img className="modile purpleStart" src={purpleStart}/>
-              <img className="modile AGXandALPTokens" src={AGXandALPTokens}/>
-              <img className="AGXBall" src={AGXBall}/>
+              <img className="PC" src={AGXAndALP} />
+              <img className="modile purpleStart" src={purpleStart} />
+              <img className="modile AGXandALPTokens" src={AGXandALPTokens} />
+              <img className="AGXBall" src={AGXBall} />
             </div>
             <div className="token">
               <img src={ALPToken} />
@@ -277,21 +289,31 @@ function HomePage() {
             </div>
             <div className="fairBox">
               <div className="security">
-                <img className="logo" src={securityLogo}/>
+                <img className="logo" src={securityLogo} />
                 <div className="title">Uncompromised Security</div>
-                <div className="inner">At AGX, security is paramount. Our platform is engineered with cutting-edge encryption protocols and decentralized architecture, ensuring that your assets are protected at all times.</div>
+                <div className="inner">
+                  At AGX, security is paramount. Our platform is engineered with cutting-edge encryption protocols and
+                  decentralized architecture, ensuring that your assets are protected at all times.
+                </div>
                 <div className="center">
                   <div className="button">
-                    <img src={securityFoot}/>Cutting-Edge Encryption
+                    <img src={securityFoot} />
+                    Cutting-Edge Encryption
                   </div>
                 </div>
-              </div><div className="security">
-                <img className="logo" src={tradeLogo}/>
+              </div>
+              <div className="security">
+                <img className="logo" src={tradeLogo} />
                 <div className="title">Seamless and Secure Trading</div>
-                <div className="inner">With dynamic pricing powered by Pyth oracles, we mitigate single points of failure and provide you with the peace of mind you deserve. Trade confidently, knowing that your transactions are executed seamlessly and securely, free from counterparty risk.</div>
+                <div className="inner">
+                  With dynamic pricing powered by Pyth oracles, we mitigate single points of failure and provide you
+                  with the peace of mind you deserve. Trade confidently, knowing that your transactions are executed
+                  seamlessly and securely, free from counterparty risk.
+                </div>
                 <div className="center">
                   <div className="button">
-                    <img src={tradeFoot}/>Seamless Execution
+                    <img src={tradeFoot} />
+                    Seamless Execution
                   </div>
                 </div>
               </div>
@@ -326,16 +348,16 @@ function HomePage() {
                 {/* <img className="Bitcoin" src={Bitcoin} /> */}
                 <div className="link">
                   <a href="https://docs.agx.xyz/" target="block">
-                    <img src={doc}/>
+                    <img src={doc} />
                   </a>
                   <a href="https://t.me/agx_xyz_channel" target="block">
-                    <img src={Telegram}/>
+                    <img src={Telegram} />
                   </a>
                   <a href="https://discord.gg/agxdefi" target="block">
-                    <img src={Discord}/>
+                    <img src={Discord} />
                   </a>
                   <a href="https://x.com/AGX_XYZ" target="block">
-                    <img src={XLog}/>
+                    <img src={XLog} />
                   </a>
                 </div>
               </div>
@@ -344,10 +366,15 @@ function HomePage() {
         </div>
         <div className="footer">
           <div className="scrollBox">
-
-            <div className="scroll" onClick={() => scrollTo(0)}>Features</div>
-            <div className="scroll" onClick={() => scrollTo(7300)}>Structures</div>
-            <div className="scroll" onClick={() => scrollTo(10000)}>Roadmap</div>
+            <div className="scroll" onClick={() => scrollTo(0)}>
+              Features
+            </div>
+            <div className="scroll" onClick={() => scrollTo(7300)}>
+              Structures
+            </div>
+            <div className="scroll" onClick={() => scrollTo(10000)}>
+              Roadmap
+            </div>
           </div>
           <div className="copyright">Copyright 2024, AGX. All Rights Reserved.</div>
         </div>

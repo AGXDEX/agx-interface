@@ -1,44 +1,44 @@
-.container{
+.home-container{
   width: 100%;
   height: 100%;
   background-color: #000;
   position: relative;
 }
-.container .header{
+.home-container .home-header{
   width: 100%;
   padding: 67px 15% 142px 15%;
   position: relative;
 }
-.container .header .hero{
+.home-container .home-header .hero{
   position: absolute;
   right: 0;
   bottom: 60px;
 }
-.container .header .Ellipse{
+.home-container .home-header .Ellipse{
   width: 50%;
   position: absolute;
   left: 20px;
   bottom: 60px;
 }
-.container .header .MaskTable{
+.home-container .home-header .MaskTable{
   width: 35%;
   position: absolute;
   left: 100px;
   bottom: 60px;
 }
-.container .header .EllipseLeft{
+.home-container .home-header .EllipseLeft{
   width: 25%;
   position: absolute;
   left: 0;
   bottom: 10%;
 }
-.container .header .Mask{
+.home-container .home-header .Mask{
   width: 50%;
   position: absolute;
   left: 15%;
   top: 0;
 }
-.container .header-top{
+.home-container .home-header-top{
   width: 100%;
   position: fixed;
   top: 0;
@@ -46,18 +46,17 @@
   height: 48px;
   display: flex;
   justify-content: space-around;
-  padding-top: 14px;
   background: linear-gradient(121.46deg, rgba(119, 246, 211, 0.2) -8.22%, rgba(95, 99, 240, 0.2) 37.56%, rgba(159, 87, 242, 0.2) 79.81%);
 }
-.container .header-top .icon{
+.home-container .home-header-top .icon{
 
 }
-.container .header-top .icon img{
+.home-container .home-header-top .icon img{
   width: 20px;
   height: 20px;
   margin-right: 22px;
 }
-.container .header .nav{
+.home-container .home-header .nav{
   position: relative;
   width: 100%;
   display: flex;
@@ -65,15 +64,15 @@
   margin-bottom: 47.5px;
   z-index: 1;
 }
-.container .header .nav img{
+.home-container .home-header .nav img{
   width: 75px;
   height: 75px;
 }
-.container .header .nav .navButton{
+.home-container .home-header .nav .navButton{
   display: flex;
   padding-top: 11.5px;
 }
-.container .header .nav .navButton .scroll{
+.home-container .home-header .nav .navButton .scroll{
   height: 50px;
   line-height: 20px;
   padding: 14px 38px 14px 38px;
@@ -86,7 +85,7 @@
   margin-right: 30px;
   cursor: pointer;
 }
-.container .header .nav .navButton .joinNew{
+.home-container .home-header .nav .navButton .joinNew{
   height: 50px;
   line-height: 20px;
   padding: 14px 38px 14px 38px;
@@ -101,16 +100,16 @@
   cursor: pointer;
 }
 
-.container .header .support{
+.home-container .home-header .support{
   position: relative;
   margin-bottom: 30px;
   z-index: 1;
 }
-.container .header .introduce{
+.home-container .home-header .introduce{
   position: relative;
   z-index: 1;
 }
-.container .header .support img{
+.home-container .home-header .support img{
   height: 40px;
 }
 .introduce .large{
@@ -175,34 +174,34 @@
   color: #fff;
   padding-top: 10px;
 }
-.container .main{
+.home-container .main{
   background-image: url("img/home/bg.png");
   background-size: 100%;
   background-repeat: no-repeat;
   padding: 130px 15%;
   margin-top: -60px;
 }
-.container .main .box{
+.home-container .main .box{
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 130px;
 }
-.container .main .box .title{
+.home-container .main .box .title{
   margin-bottom: 95px;
 }
-.container .main .box .charts{
+.home-container .main .box .charts{
   width: 100%;
   margin-bottom: 50px;
 }
-.container .main .box .choose{
+.home-container .main .box .choose{
   position: relative;
   width: 100%;
   display: flex;
   justify-content: space-between;
   margin-bottom: 120px;
 }
-.container .main .box .choose img{
+.home-container .main .box .choose img{
   position: absolute;
   width: 252px;
   z-index: 0;
@@ -210,7 +209,7 @@
   left: 30%;
   top: -40px;
 }
-.container .main .box .choose .chooseBut{
+.home-container .main .box .choose .chooseBut{
   height: 50px;
   line-height: 20px;
   padding: 14px 38px 14px 38px;
@@ -221,79 +220,79 @@
   font-weight: 500;
   border-radius: 30px;
 }
-.container .main .box .choose .chooseInf{
+.home-container .main .box .choose .chooseInf{
   width:750px;
   font-family: Neue Haas Grotesk Display Pro;
   font-size: 38px;
   font-weight: 500;
   line-height: 64.6px;
 }
-.container .main .box .cardList{
+.home-container .main .box .cardList{
   width: 100%;
   display: flex;
   justify-content: space-between;
 }
-.container .main .box .cardList .card{
+.home-container .main .box .cardList .card{
   width: 360px;
   height: 394px;
   border-radius: 30px;
   padding: 50px 30px;
   position: relative;
 }
-.container .main .box .cardList .card .ball{
+.home-container .main .box .cardList .card .ball{
   width: 20px;
   height: 20px;
   border-radius: 50%;
   margin-bottom: 40px;
 }
-.container .main .box .cardList .card img{
+.home-container .main .box .cardList .card img{
   position: absolute;
   right: 47px;
   bottom: 50px;
 }
-.container .main .box .cardList .card .title{
+.home-container .main .box .cardList .card .title{
   font-family: Neue Haas Grotesk Display Pro;
   font-size: 26px;
   font-weight: 500;
   margin-bottom: 40px;
 }
-.container .main .box .cardList .card .inner{
+.home-container .main .box .cardList .card .inner{
   width: 260px;
   font-family: Neue Haas Grotesk Display Pro;
   font-size: 18px;
   font-weight: 500;
   line-height: 30.6px;
 }
-.container .main .box .cardList .first{
+.home-container .main .box .cardList .first{
   background-image: url("img/home/cardbg-f.png");
   background-size: 100%;
   background-repeat: no-repeat;
 }
-.container .main .box .cardList .first .ball{
+.home-container .main .box .cardList .first .ball{
   background: rgba(93, 0, 251, 1);
 }
-.container .main .box .cardList .second{
+.home-container .main .box .cardList .second{
   background-image: url("img/home/cardbg-s.png");
   background-size: 100%;
   background-repeat: no-repeat;
 }
-.container .main .box .cardList .thrid{
+.home-container .main .box .cardList .thrid{
   background-image: url("img/home/cardbg-t.png");
   background-size: 100%;
   background-repeat: no-repeat;
 }
-.container .main .box .cardList .second .ball{
+.home-container .main .box .cardList .second .ball{
   background: rgba(119, 246, 211, 1);
 }
-.container .main .box .cardList .thrid .ball{
+.home-container .main .box .cardList .thrid .ball{
   background: rgba(159, 87, 242, 1);
 }
-.container .main .box .howToWork{
+.home-container .main .box .howToWork{
   width: 100%;
   display: flex;
   justify-content: space-between;
 }
-.container .main .box .howToWork .workInfo{
+.home-container .main .box .howToWork .workInfo{
   width: 550px;
   padding-top: 90px;
   background-image: url("img/home/listBg.png");
@@ -304,27 +303,27 @@
   font-weight: 500;
   line-height: 30.6px;
 }
-.container .main .box .stepList{
+.home-container .main .box .stepList{
   width: 100%;
   display: flex;
   justify-content: space-between;
 }
-.container .main .box .stepList .step{
+.home-container .main .box .stepList .step{
 
 }
-.container .main .box .stepList .step img{
+.home-container .main .box .stepList .step img{
   width: 55px;
   height: 55px;
   margin-bottom: 22px;
 }
-.container .main .box .stepList .step .title{
+.home-container .main .box .stepList .step .title{
   font-family: Neue Haas Grotesk Display Pro;
   font-size: 28px;
   font-weight: 500;
   line-height: 33.6px;
   margin-bottom: 22px;
 }
-.container .main .box .stepList .step .inner{
+.home-container .main .box .stepList .step .inner{
   width: 300px;
   font-family: Neue Haas Grotesk Display Pro;
   font-size: 18px;
@@ -332,51 +331,51 @@
   line-height: 30.6px;
 }
 
-.container .main .box .AGXAndALP{
+.home-container .main .box .AGXAndALP{
   width: 100%;
   display: flex;
   justify-content: space-between;
   margin-bottom: 70px;
 }
-.container .main .box .token{
+.home-container .main .box .token{
   width: 100%;
   display: flex;
   justify-content: space-between;
 }
-.container .main .box .fair{
+.home-container .main .box .fair{
   width: 100%;
   display: flex;
   justify-content: space-between;
 }
-.container .main .box .fair .fairBox{
+.home-container .main .box .fair .fairBox{
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-left: -80px;
 }
-.container .main .box .fair .FairLaunch{
+.home-container .main .box .fair .FairLaunch{
   margin-top: 10px;
   width: 370px;
   z-index: 2;
   margin-left: -250px;
 }
-.container .main .box .fair .FairBall{
+.home-container .main .box .fair .FairBall{
   width: 700px;
   height: 700px;
   margin-top: -200px;
   margin-left: -250px;
 }
-.container .main .box .fair img{
+.home-container .main .box .fair img{
   margin-top: -180px;
   margin-right: -50px;
 }
-.container .main .box .advanced{
+.home-container .main .box .advanced{
   width: 100%;
   margin-top: -50px;
   position: relative;
   margin-bottom: 70px;
 }
-.container .main .box .advanced .advancedLearn{
+.home-container .main .box .advanced .advancedLearn{
   height: 50px;
   line-height: 20px;
   padding: 14px 38px 14px 38px;
@@ -393,26 +392,26 @@
   right: 0;
   bottom: 0;
 }
-.container .main .box .advanced .advancedLearn a{
+.home-container .main .box .advanced .advancedLearn a{
   color: #000;
   font-family: Neue Haas Grotesk Display Pro;
   font-size: 18px;
   font-weight: 500;
   text-decoration: none;
 }
-.container .main .box .secure{
+.home-container .main .box .secure{
   width: 100%;
   margin-bottom: 40px;
 }
-.container .main .box .secure img{
+.home-container .main .box .secure img{
   width: 100%;
 }
-.container .main .box .fairBox{
+.home-container .main .box .fairBox{
   width: 100%;
   display: flex;
   justify-content: space-between;
 }
-.container .main .box .fairBox .security{
+.home-container .main .box .fairBox .security{
   width: 550px;
   height: 370px;
   background-image: url("img/home/tradeBG.png");
@@ -421,23 +420,23 @@
   padding: 51px;
   position: relative;
 }
-.container .main .box .fairBox .security .logo{
+.home-container .main .box .fairBox .security .logo{
   margin-bottom: 18px;
 }
-.container .main .box .fairBox .security .title{
+.home-container .main .box .fairBox .security .title{
   margin-bottom: 14px;
   font-family: Neue Haas Grotesk Display Pro;
   font-size: 28px;
   font-weight: 600;
   line-height: 33.6px;
 }
-.container .main .box .fairBox .security .inner{
+.home-container .main .box .fairBox .security .inner{
   font-family: Neue Haas Grotesk Display Pro;
   font-size: 14px;
   font-weight: 500;
   line-height: 30.6px;
 }
-.container .main .box .fairBox .security .center{
+.home-container .main .box .fairBox .security .center{
   width: 100%;
   display: flex;
   justify-content: center;
@@ -445,7 +444,7 @@
   bottom: -27px;
   left: 0;
 }
-.container .main .box .fairBox .security .button{
+.home-container .main .box .fairBox .security .button{
   height: 54px;
   padding: 8px 16px 8px 10px;
   border-radius: 30px;
@@ -455,17 +454,17 @@
   font-weight: 500;
   line-height: 26.4px;
 }
-.container .main .box .fairBox .security .button img{
+.home-container .main .box .fairBox .security .button img{
   margin-right: 10px;
 }
-.container .main .box .Protocol{
+.home-container .main .box .Protocol{
   width: 80%;
   margin-bottom: 90px;
 }
-.container .main .box .protoool{
+.home-container .main .box .protoool{
   width: 100%;
 }
-.container .main .box .fairBox .startTrade{
+.home-container .main .box .fairBox .startTrade{
   position: relative;
   width: 645px;
   height: 670px;
@@ -473,7 +472,7 @@
   background-size: 100%;
   background-repeat: no-repeat;
 }
-.container .main .box .fairBox .startTrade .joinNow{
+.home-container .main .box .fairBox .startTrade .joinNow{
   position: absolute;
   height: 50px;
   line-height: 20px;
@@ -490,7 +489,7 @@
   left: 242px;
   bottom: 231px;
 }
-.container .main .box .fairBox .chain{
+.home-container .main .box .fairBox .chain{
   position: relative;
   width: 455px;
   height: 670px;
@@ -498,7 +497,7 @@
   background-size: 100%;
   background-repeat: no-repeat;
 }
-.container .main .box .fairBox .chain .link{
+.home-container .main .box .fairBox .chain .link{
   display: flex;
   position: absolute;
   width: 100%;
@@ -506,7 +505,7 @@
   justify-content: space-between;
   padding: 0 80px;
 }
-.container .main .box .fairBox .chain .link a{
+.home-container .main .box .fairBox .chain .link a{
   background: #fff;
   border-radius: 50%;
   width: 60px;
@@ -514,7 +513,7 @@
   text-align: center;
   line-height: 75px;
 }
-.container .footer{
+.home-container .footer{
   width: 100%;
   height: 120px;
   background: linear-gradient(121.46deg, rgba(119, 246, 211, 0.2) -8.22%, rgba(95, 99, 240, 0.2) 37.56%, rgba(159, 87, 242, 0.2) 79.81%);
@@ -525,14 +524,14 @@
   font-size: 18px;
   font-weight: 500;
 }
-.container .footer .scrollBox{
+.home-container .footer .scrollBox{
   display: flex;
   gap: 40px;
 }
-.container .footer .scrollBox .scroll{
+.home-container .footer .scrollBox .scroll{
   cursor: pointer;
 }
-.container .footer .copyright{
+.home-container .footer .copyright{
   font-size: 16px;
   color: rgba(173, 173, 173, 1);
 }
@@ -543,11 +542,11 @@
   display: none;
 }
 @media (max-width: 400px) {
-  .container{
+  .home-container{
     height: 100vh;
     overflow: auto;
   }
-  .container .header-top{
+  .home-container .home-header-top{
     display: none;
   }
   .PC{
@@ -559,10 +558,10 @@
   .isShow{
     display: block;
   }
-  .container .header{
+  .home-container .home-header{
     padding: 67px 15px 60px 15px;
   }
-  .container .header .nav .mobileBut{
+  .home-container .home-header .nav .mobileBut{
     display: block;
     width: 50px;
     height: 50px;
@@ -572,17 +571,17 @@
     line-height: 68px;
     cursor: pointer;
   }
-  .container .header .nav img{
+  .home-container .home-header .nav img{
     width: 50px;
     height: 50px;
   }
-  .container .header .nav .navButton{
+  .home-container .home-header .nav .navButton{
     padding-top: 0;
   }
-  .container .header .nav .navButton .joinNew{
+  .home-container .home-header .nav .navButton .joinNew{
     margin-right: 0;
   }
-  .container .header .nav .mobileBut img{
+  .home-container .home-header .nav .mobileBut img{
     width: 28px;
     height: 28px;
   }
@@ -610,7 +609,7 @@
     width: 30px;
     margin-left: 21%;
   }
-  .container .header .support img{
+  .home-container .home-header .support img{
     width: 100%;
   }
   .introduce .large .marginRight{
@@ -639,97 +638,97 @@
   .introduce .flex .start img{
     width: 14px;
   }
-  .container .header .introduce{
+  .home-container .home-header .introduce{
     padding-bottom: 100px;
     border-bottom: 1px solid rgba(255, 255, 255, .3);
     margin-bottom: 20px;
   }
-  .container .header .Mask{
+  .home-container .home-header .Mask{
     width: 80%;
     left: 40px;
   }
-  .container .header .EllipseLeft{
+  .home-container .home-header .EllipseLeft{
     bottom: 20%;
     width: 80%;
   }
-  .container .header .Ellipse{
+  .home-container .home-header .Ellipse{
     width: 100%;
     left: -20%;
   }
-  .container .header .MaskTable{
+  .home-container .home-header .MaskTable{
     width: 70%;
     left: -20%;
   }
-  .container .main{
+  .home-container .main{
     padding: 60px 15px;
     background-size: 100% 100%;
   }
-  .container .main .box{
+  .home-container .main .box{
     margin-bottom: 60px;
     position: relative;
   }
-  .container .main .box .title{
+  .home-container .main .box .title{
     width: 60%;
     margin-bottom: 40px;
   }
-  .container .main .box .choose{
+  .home-container .main .box .choose{
     flex-direction: column;
     align-items: center;
     margin-bottom: 40px;
   }
-  .container .main .box .choose .chooseBut{
+  .home-container .main .box .choose .chooseBut{
     height: 44px;
     font-size: 12px;
     margin-bottom: 10px;
     line-height: 15px;
   }
-  .container .main .box .choose .chooseInf{
+  .home-container .main .box .choose .chooseInf{
     width: 100%;
     font-size: 18px;
     line-height: 30px;
     text-align: center;
   }
-  .container .main .box .choose img{
+  .home-container .main .box .choose img{
     width: 40%;
     left: -20px;
   }
-  .container .main .box .cardList{
+  .home-container .main .box .cardList{
     flex-direction: column;
   }
-  .container .main .box .cardList .card{
+  .home-container .main .box .cardList .card{
     padding: 30px 20px;
     width: 100%;
     height: auto;
     padding-bottom: 70px;
     margin-bottom: 10px;
   }
-  .container .main .box .cardList .card .ball{
+  .home-container .main .box .cardList .card .ball{
     margin-bottom: 30px;
   }
-  .container .main .box .cardList .card .title{
+  .home-container .main .box .cardList .card .title{
     font-size: 18px;
     margin-bottom: 30px;
   }
-  .container .main .box .cardList .card .inner{
+  .home-container .main .box .cardList .card .inner{
     font-size: 14px;
     line-height: 20px;
   }
-  .container .main .box .cardList .card img{
+  .home-container .main .box .cardList .card img{
     bottom: 20px;
   }
-  .container .main .box .howToWork{
+  .home-container .main .box .howToWork{
     flex-direction: column;
     align-items: center;
   }
-  .container .main .box .howToWork .greenStart{
+  .home-container .main .box .howToWork .greenStart{
     width: 20px;
     margin-bottom: 20px;
   }
-  .container .main .box .howToWork .HowAGXWorks{
+  .home-container .main .box .howToWork .HowAGXWorks{
     width: 60%;
     margin-bottom: 20px;
   }
-  .container .main .box .howToWork .workInfo{
+  .home-container .main .box .howToWork .workInfo{
     width: 100%;
     font-size: 14px;
     padding-top: 0;
@@ -738,107 +737,107 @@
     background-size: 80%;
     color: rgba(162, 162, 162, 1);
   }
-  .container .main .box .stepList{
+  .home-container .main .box .stepList{
     flex-wrap: wrap;
   }
-  .container .main .box .stepList .step{
+  .home-container .main .box .stepList .step{
     width: 49%;
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  .container .main .box .stepList .step img{
+  .home-container .main .box .stepList .step img{
     margin-bottom: 10px;
   }
-  .container .main .box .stepList .step .title{
+  .home-container .main .box .stepList .step .title{
     font-size: 17px;
     margin-bottom: 10px;
     width: 100%;
     text-align: center;
   }
-  .container .main .box .stepList .step .inner{
+  .home-container .main .box .stepList .step .inner{
     font-size: 14px;
     width: 100%;
     text-align: center;
     color: rgba(162, 162, 162, 1);
     line-height: 20px;
   }
-  .container .main .box .AGXAndALP,.container .main .box .token,.container .main .box .fair,.container .main .box .advanced{
+  .home-container .main .box .AGXAndALP,.home-container .main .box .token,.home-container .main .box .fair,.home-container .main .box .advanced{
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  .container .main .box .AGXAndALP .purpleStart{
+  .home-container .main .box .AGXAndALP .purpleStart{
     width: 20px;
     margin-bottom: 20px;
   }
-  .container .main .box .AGXAndALP .AGXandALPTokens{
+  .home-container .main .box .AGXAndALP .AGXandALPTokens{
     width: 80%;
     margin-bottom: 20px;
   }
-  .container .main .box .AGXAndALP .AGXBall{
+  .home-container .main .box .AGXAndALP .AGXBall{
     width: 60%;
   }
-  .container .main .box .token img{
+  .home-container .main .box .token img{
     width: 100%;
     margin-bottom: 20px;
   }
-  .container .main .box .fair img{
+  .home-container .main .box .fair img{
     width: 100%;
     margin: 0;
   }
-  .container .main .box .fair .FairBall{
+  .home-container .main .box .fair .FairBall{
     width: 80%;
     margin-top: -50px;
     height: 300px;
     margin-left: 0;
   }
-  .container .main .box .fair .fairBox,.container .main .box .fair .FairLaunch{
+  .home-container .main .box .fair .fairBox,.home-container .main .box .fair .FairLaunch{
     width: 100%;
     margin-left: 0;
   }
-  .container .main .box .fair .FairLaunch{
+  .home-container .main .box .fair .FairLaunch{
     width: 60%;
     margin-right: 0;
   }
-  .container .main .box .advanced{
+  .home-container .main .box .advanced{
     margin-top: 60px;
     margin-bottom: 40px;
   }
-  .container .main .box .advanced .darkpurpleStart{
+  .home-container .main .box .advanced .darkpurpleStart{
     margin-bottom: 20px;
   }
-  .container .main .box .fairBox{
+  .home-container .main .box .fairBox{
     display: none;
   }
-  .container .main .box .Protocol{
+  .home-container .main .box .Protocol{
     width: 100%;
     margin-bottom: 40px;
   }
-  .container .main .box .mobileprotoool1{
+  .home-container .main .box .mobileprotoool1{
     width: 100%;
     position: absolute;
     top: 10px;
   }
-  .container .main .box .mobileprotoool{
+  .home-container .main .box .mobileprotoool{
     width: 100%;
   }
-  .container .main .box .other{
+  .home-container .main .box .other{
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-  .container .main .box .fairBox .startTrade,.container .main .box .fairBox .chain{
+  .home-container .main .box .fairBox .startTrade,.home-container .main .box .fairBox .chain{
     width: 100%;
   }
-  .container .main .box .fairBox .startTrade{
+  .home-container .main .box .fairBox .startTrade{
     height: 375px;
     margin-bottom: 20px;
   }
-  .container .main .box .fairBox .chain{
+  .home-container .main .box .fairBox .chain{
     height: 520px;
   }
-  .container .main .box .fairBox .startTrade .joinNow{
+  .home-container .main .box .fairBox .startTrade .joinNow{
     height: 44px;
     font-size: 14px;
     line-height: 15px;
@@ -846,25 +845,25 @@
     bottom: 125px;
     padding: 14px 24px;
   }
-  .container .main .box .fairBox .chain .link{
+  .home-container .main .box .fairBox .chain .link{
     padding: 0 66px;
     bottom: 29px;
   }
-  .container .main .box .fairBox .chain .link a{
+  .home-container .main .box .fairBox .chain .link a{
     width: 40px;
     height: 40px;
     line-height: 55px;
   }
-  .container .footer{
+  .home-container .footer{
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px 15px;
   }
-  .container .footer .scrollBox .scroll{
+  .home-container .footer .scrollBox .scroll{
     font-size: 14px;
   }
-  .container .footer .copyright{
+  .home-container .footer .copyright{
     font-size: 12px;
     color: rgba(173, 173, 173, 1);
   }
