@@ -57,7 +57,25 @@ import { cn } from "utils/classname";
 
 const EXTERNAL_LINK_CHAIN_CONFIG = process.env.REACT_APP_ENV === "development" ? "nova_sepolia" : "nova_mainnet";
 
-const fetchNFTData = async (account) => {
+export const fetchPositions = async ({ queryKey }) => {
+  const [, account] = queryKey;
+  if (!account) return;
+
+  const response = await axios.post(STAKER_SUBGRAPH_URL, {
+    query: `{
+      positions(where: { owner: "${account}" }) {
+        tokenId
+        owner
+        staked
+        liquidity
+      }
+    }`,
+  });
+
+  return response.data.data.positions;
+};
+
+export const fetchNFTData = async (account) => {
   const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
     query: `{
       nfts(where: {owner: "${account}"}) {
@@ -70,7 +88,7 @@ const fetchNFTData = async (account) => {
   return data.data.nfts.map((item) => Number(item.tokenId));
 };
 
-const fetchStakeLiquidity = async () => {
+export const fetchStakeLiquidity = async () => {
   const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
     query: `{
       incentives {
@@ -82,7 +100,7 @@ const fetchStakeLiquidity = async () => {
   return data.data.incentives[0].liquidity;
 };
 
-const fetchNFTClaimed = async () => {
+export const fetchNFTClaimed = async () => {
   const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
     query: `{
       incentives {
@@ -234,23 +252,6 @@ export default function StakeV2() {
     enabled: !!account,
   });
 
-  const fetchPositions = async ({ queryKey }) => {
-    const [, account] = queryKey;
-    if (!account) return;
-
-    const response = await axios.post(STAKER_SUBGRAPH_URL, {
-      query: `{
-      positions(where: { owner: "${account}" }) {
-        tokenId
-        owner
-        staked
-        liquidity
-      }
-    }`,
-    });
-
-    return response.data.data.positions;
-  };
 
   const { data: positionsData } = useQuery({
     queryKey: ["positions", account],
@@ -293,12 +294,21 @@ export default function StakeV2() {
 
   const stakedTokens = (depNFTlist && filteredDepNFTlists?.filter((nft) => nft.staked).map((nft) => nft.tokenId)) || [];
 
-  const { data: stakedRewardInfos } = useSWR(
-    [`StakeV2:getRewardInfos:${active}`, chainId, dexreaderAddress, "getRewardInfos"],
-    {
-      fetcher: contractFetcher(signer, DexReader, [IncentiveKeyAddress, stakedTokens]),
-    }
-  );
+  const fetchRewardInfos = async ({ queryKey }) => {
+    const [, , , stakedTokens] = queryKey;
+    if (!signer || !dexreaderAddress) return;
+
+    const dexReaderContract = new Contract(dexreaderAddress, DexReader.abi, signer);
+    const result = await dexReaderContract.getRewardInfos(IncentiveKeyAddress, stakedTokens);
+    return result;
+  };
+
+  const { data: stakedRewardInfos } = useQuery({
+    queryKey: [`StakeV2:getRewardInfos:${active}`, chainId, dexreaderAddress, stakedTokens, "getRewardInfos"],
+    queryFn: fetchRewardInfos,
+    enabled: !!signer && !!dexreaderAddress && !!stakedTokens,
+    refetchInterval: 10000,
+  });
 
   const fetchDepBaselist = async ({ queryKey }) => {
     const [, , dexreaderAddress] = queryKey;
@@ -768,7 +778,7 @@ export default function StakeV2() {
             <div className="StakeV2-claimBox">
               <TooltipWithPortal
                 renderContent={() => {
-                  return <>Claimable AGX = Claimable AGX * Current Prices</>;
+                  return <>Claimable USDT = Claimable AGX * Current Prices</>;
                 }}
               >
                 <div className="StakeV2-claimNum">
@@ -806,6 +816,24 @@ export default function StakeV2() {
               >
                 Claim History {`>`}
               </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="App-card App-card-space-between StakeV2-content">
+          <div className="StakeV2-title">Accumlate Points</div>
+          <div className="StakeV2-box">
+            <div className="flex w-full items-center">
+              <div className="StakeV2-claimNum">0.0</div>
+              <div className="flex h-full pb-5 items-end pl-4">Eigen Layer Points</div>
+            </div>
+            <div className="flex w-full items-center">
+              <div className="StakeV2-claimNum">0.0</div>
+              <div className="flex h-full pb-5 items-end pl-4">Puffer Points</div>
+            </div>
+            <div className="flex w-full items-center">
+              <div className="StakeV2-claimNum">0.0</div>
+              <div className="flex h-full pb-5 items-end pl-4">Zklink Points</div>
             </div>
           </div>
         </div>
