@@ -293,12 +293,21 @@ export default function StakeV2() {
 
   const stakedTokens = (depNFTlist && filteredDepNFTlists?.filter((nft) => nft.staked).map((nft) => nft.tokenId)) || [];
 
-  const { data: stakedRewardInfos } = useSWR(
-    [`StakeV2:getRewardInfos:${active}`, chainId, dexreaderAddress, "getRewardInfos"],
-    {
-      fetcher: contractFetcher(signer, DexReader, [IncentiveKeyAddress, stakedTokens]),
-    }
-  );
+  const fetchRewardInfos = async ({ queryKey }) => {
+    const [, , , stakedTokens] = queryKey;
+    if (!signer || !dexreaderAddress) return;
+
+    const dexReaderContract = new Contract(dexreaderAddress, DexReader.abi, signer);
+    const result = await dexReaderContract.getRewardInfos(IncentiveKeyAddress, stakedTokens);
+    return result;
+  };
+
+  const { data: stakedRewardInfos } = useQuery({
+    queryKey: [`StakeV2:getRewardInfos:${active}`, chainId, dexreaderAddress, stakedTokens, "getRewardInfos"],
+    queryFn: fetchRewardInfos,
+    enabled: !!signer && !!dexreaderAddress && !!stakedTokens,
+    refetchInterval: 10000,
+  });
 
   const fetchDepBaselist = async ({ queryKey }) => {
     const [, , dexreaderAddress] = queryKey;
@@ -806,6 +815,24 @@ export default function StakeV2() {
               >
                 Claim History {`>`}
               </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="App-card App-card-space-between StakeV2-content">
+          <div className="StakeV2-title">Accumlate Points</div>
+          <div className="StakeV2-box">
+            <div className="flex w-full items-center">
+              <div className="StakeV2-claimNum">0.0</div>
+              <div className="flex h-full pb-5 items-end pl-4">Eigen Layer Points</div>
+            </div>
+            <div className="flex w-full items-center">
+              <div className="StakeV2-claimNum">0.0</div>
+              <div className="flex h-full pb-5 items-end pl-4">Puffer Points</div>
+            </div>
+            <div className="flex w-full items-center">
+              <div className="StakeV2-claimNum">0.0</div>
+              <div className="flex h-full pb-5 items-end pl-4">Zklink Points</div>
             </div>
           </div>
         </div>
