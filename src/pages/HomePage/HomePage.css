@@ -661,7 +661,11 @@
     font-size: 12px;
   }
   .introduce .intro-flex .start img{
-    width: 14px;
+    width: 2rem;
+    vertical-align: sub;
+  }
+  .introduce .intro-flex .start a{
+    text-wrap: nowrap;
   }
   .home-container .home-header .introduce{
     padding-bottom: 100px;
@@ -719,6 +723,7 @@
   }
   .home-container .main .box .cardList{
     flex-direction: column;
+    align-items: center;
   }
   .home-container .main .box .cardList .card{
     padding: 30px 20px;
@@ -766,6 +771,7 @@
     flex-wrap: wrap;
   }
   .home-container .main .box .stepList .step{
+    flex: 2;
     width: 49%;
     display: flex;
     flex-direction: column;
@@ -778,6 +784,7 @@
     font-size: 17px;
     margin-bottom: 10px;
     width: 100%;
+    min-width: 160px;
     text-align: center;
   }
   .home-container .main .box .stepList .step .inner{
@@ -801,7 +808,7 @@
     margin-bottom: 20px;
   }
   .home-container .main .box .AGXAndALP .AGXBall{
-    width: 60%;
+    width: 80%;
   }
   .home-container .main .box .token img{
     width: 100%;
@@ -856,8 +863,8 @@
     width: 100%;
   }
   .home-container .main .box .fairBox .startTrade{
-    height: 100vw;
-    margin-bottom: 20px;
+    height: 95vw;
+    /* margin-bottom: 20px; */
   }
   .home-container .main .box .fairBox .chain{
     height: 136vw;
@@ -893,6 +900,9 @@
     font-size: 12px;
     color: rgba(173, 173, 173, 1);
   }
+  .home-container .main .box .fair .fairImg{
+    width: 100%;
+  }
 }
 
 @media (min-width: 1580px) {
@@ -904,7 +914,7 @@
     top: inherit;
   }
 }
-@media (max-width: 1350px) {
+@media (max-width: 1350px) and (min-width: 450px) {
   .home-container .main{
     padding: 130px 10%;
   }
