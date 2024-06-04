@@ -778,7 +778,7 @@ export default function StakeV2() {
             <div className="StakeV2-claimBox">
               <TooltipWithPortal
                 renderContent={() => {
-                  return <>Claimable AGX = Claimable AGX * Current Prices</>;
+                  return <>Claimable USDT = Claimable AGX * Current Prices</>;
                 }}
               >
                 <div className="StakeV2-claimNum">
