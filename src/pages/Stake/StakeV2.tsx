@@ -127,6 +127,24 @@ const fetchTotalReward = async (account) => {
   return data.data.totalRewards[0]?.reward;
 };
 
+const fetchPoolData = async (poolAddress) => {
+  if (!poolAddress) return null;
+
+  const { data } = await axios.post(SWAP_SUBGRAPH_URL, {
+    query: `{
+      pool(id: "${poolAddress.toLowerCase()}") {
+        token0 { id }
+        token1 { id }
+        liquidity
+        totalValueLockedToken0
+        totalValueLockedToken1
+      }
+    }`,
+  });
+
+  return data.data.pool;
+};
+
 export default function StakeV2() {
   const queryClient = useQueryClient();
   const { active, signer, account } = useWallet();
@@ -251,7 +269,6 @@ export default function StakeV2() {
     queryFn: fetchClaimHistories,
     enabled: !!account,
   });
-
 
   const { data: positionsData } = useQuery({
     queryKey: ["positions", account],
@@ -398,14 +415,31 @@ export default function StakeV2() {
     });
   }, [NFTlist, baselist]);
 
-  const { data: Pool2ewards } = useSWR([`StakeV2:rewards:${active}`, chainId, uniV3StakerAddress, "rewards"], {
-    fetcher: contractFetcher(signer, UniV3Staker, [AGXAddress, account]),
+  const fetchPool2Rewards = async () => {
+    if (!signer || !uniV3StakerAddress || !account) return null;
+    const contract = new Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
+    return contract.rewards(AGXAddress, account);
+  };
+
+  const { data: Pool2Rewards } = useQuery({
+    queryKey: [`StakeV2:rewards:${active}`, chainId, uniV3StakerAddress, AGXAddress, account, "rewards"],
+    queryFn: fetchPool2Rewards,
+    enabled: !!signer && !!uniV3StakerAddress && !!account,
+    refetchInterval: 10000,
   });
   const { data: Pooladdress } = useSWR([`StakeV2:getPool:${active}`, chainId, v3FactoryAddress, "getPool"], {
     fetcher: contractFetcher(signer, UniswapV3Factory, [AGXAddress, EthPoolAddress, 10000]),
   });
-  const { data: rewardRate } = useSWR([`StakeV2:rewardRate:${active}`, chainId, yieldTrackerAddress, "rewardRate"], {
-    fetcher: contractFetcher(signer, YieldEmission),
+  const fetchRewardRate = async () => {
+    if (!signer || !yieldTrackerAddress) return null;
+    const contract = new Contract(yieldTrackerAddress, YieldEmission.abi, signer);
+    return contract.rewardRate();
+  };
+  const { data: rewardRate } = useQuery({
+    queryKey: [`StakeV2:rewardRate:${active}`, chainId, yieldTrackerAddress, "rewardRate"],
+    queryFn: fetchRewardRate,
+    enabled: !!signer && !!yieldTrackerAddress,
+    refetchInterval: 10000,
   });
   const { agxPrice } = useAGXPrice();
   const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address;
@@ -598,24 +632,6 @@ export default function StakeV2() {
     ?.filter((entry) => entry && typeof entry.liquidity !== "undefined")
     .reduce((sum, { liquidity }) => sum + BigInt(liquidity), BigInt(0));
 
-  const fetchPoolData = async (poolAddress) => {
-    if (!poolAddress) return null;
-
-    const { data } = await axios.post(SWAP_SUBGRAPH_URL, {
-      query: `{
-      pool(id: "${poolAddress.toLowerCase()}") {
-        token0 { id }
-        token1 { id }
-        liquidity
-        totalValueLockedToken0
-        totalValueLockedToken1
-      }
-    }`,
-    });
-
-    return data.data.pool;
-  };
-
   const calculatePoolValues = (poolData, agxPrice, ethPrice, stakeliquidity) => {
     if (!poolData) return null;
 
@@ -639,6 +655,7 @@ export default function StakeV2() {
       stakeAPRValue,
     };
   };
+
   const { data: poolData } = useQuery({
     queryKey: ["poolData", Pooladdress],
     queryFn: () => fetchPoolData(Pooladdress),
@@ -684,7 +701,7 @@ export default function StakeV2() {
         wrappedTokenSymbol={wrappedTokenSymbol}
         showNFTdata={NFTlist}
         URLlist={urlList}
-        Pool2ewards={Pool2ewards}
+        Pool2Rewards={Pool2Rewards}
         rewards={rewards}
       />
       <DepositModal
@@ -782,9 +799,9 @@ export default function StakeV2() {
                 }}
               >
                 <div className="StakeV2-claimNum">
-                  {agxPrice && Pool2ewards && rewards
+                  {agxPrice && Pool2Rewards && rewards
                     ? Number(
-                        ((Number(Pool2ewards) / 10 ** 18 + Number(rewards) / 10 ** 18) * agxPrice).toFixed(2)
+                        ((Number(Pool2Rewards) / 10 ** 18 + Number(rewards) / 10 ** 18) * agxPrice).toFixed(2)
                       ).toLocaleString()
                     : 0}
                 </div>
@@ -793,8 +810,8 @@ export default function StakeV2() {
             </div>
             <div className="StakeV2-claimBox">
               <div className="StakeV2-claimNum">
-                {Pool2ewards && rewards
-                  ? Number((Number(Pool2ewards) / 10 ** 18 + Number(rewards) / 10 ** 18).toFixed(2)).toLocaleString()
+                {Pool2Rewards && rewards
+                  ? Number((Number(Pool2Rewards) / 10 ** 18 + Number(rewards) / 10 ** 18).toFixed(2)).toLocaleString()
                   : 0}
               </div>
               <div className="StakeV2-claimToken">AGX</div>
@@ -920,7 +937,7 @@ export default function StakeV2() {
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Claimable Rewards</div>
-                  <div>{Pool2ewards && (Number(Pool2ewards) / 10 ** 18).toFixed(2).toLocaleString()}</div>
+                  <div>{Pool2Rewards && (Number(Pool2Rewards) / 10 ** 18).toFixed(2).toLocaleString()}</div>
                 </div>
               </div>
             </div>
