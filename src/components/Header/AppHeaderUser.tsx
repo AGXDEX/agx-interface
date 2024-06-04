@@ -11,7 +11,6 @@ import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
 import { getAccountUrl, isHomeSite } from "lib/legacy";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
-import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import ChainDropdown from "components/ChainDropDown/ChainDropdown";
 import "./Header.scss";
 import { HeaderLink } from "./HeaderLink";
@@ -20,8 +19,6 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useTradePageVersion } from "lib/useTradePageVersion";
 import { chainList } from "config/networks";
 import { helperToast } from "lib/helperToast";
-import { rainbowKitConfig } from "lib/wallets/rainbowKitConfig";
-import { switchChain } from "@wagmi/core";
 import { useQuery } from "@tanstack/react-query";
 
 type Props = {
@@ -65,7 +62,7 @@ const project = "agx";
 
 const fetchNovaPoints = async (address, project) => {
   const response = await axios.get(
-    `https://lrt-points.zklink.io/nova/points/project?address=${address}&project=${project}`
+    `https://app-api.zklink.io/lrt-points/nova/points/project?address=${address}&project=${project}`
   );
   return response.data;
 };
@@ -82,7 +79,15 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
     queryFn: () => fetchNovaPoints(account, project),
     enabled: !!account,
     //TODO: Confirm data structure
-    select: (data) => data.data.length || 0,
+    select: (data) => {
+      if (data.data && data.data.length > 0) {
+        const totalPoints = data.data.reduce((sum, item) => {
+          return sum + parseFloat(item.points);
+        }, 0);
+        return totalPoints;
+      }
+      return 0;
+    },
   });
 
   // const tradeLink = tradePageVersion === 2 ? "/trade" : "/v1";
@@ -187,14 +192,11 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
   };
   return (
     <div className="App-header-user">
-      {/* <div className="network-img-box">
-        <img className="network-dropdown-icon network-img" src={icon} alt={selectorLabel} />
-      </div> */}
       <div className="moreButton">
         <div className="addNova" onClick={() => addNovaChain()}>
           Add Nova Network to Wallet
         </div>
-        <div className="novaPoints">Nova Points: {novaPointsData || 0}</div>
+        <div className="novaPoints">Nova Points: {(novaPointsData || 0)?.toFixed(2)}</div>
       </div>
       <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
       <div className={cx("App-header-trade-link")}>
