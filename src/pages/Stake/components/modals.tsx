@@ -77,7 +77,7 @@ function ClaimAllModal(props) {
     setPendingTxns,
     showNFTdata,
     URLlist,
-    Pool2ewards,
+    Pool2Rewards,
     rewards,
   } = props;
   const [tokenId, setTokenId] = useState("");
@@ -107,7 +107,7 @@ function ClaimAllModal(props) {
     } else if (tokenId === "Staking") {
       setIsDeposit(true);
       const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
-      callContract(chainId, contract, "claimReward", [AGXAddress, account, Pool2ewards.toNumber()], {
+      callContract(chainId, contract, "claimReward", [AGXAddress, account, Pool2Rewards.toNumber()], {
         sentMsg: t`Claim submitted.`,
         failMsg: t`Claim failed.`,
         successMsg: t`Claim completed!`,
@@ -119,7 +119,7 @@ function ClaimAllModal(props) {
     } else {
       setIsDeposit(true);
       const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
-      callContract(chainId, contract, "claimReward", [AGXAddress, account, Pool2ewards], {
+      callContract(chainId, contract, "claimReward", [AGXAddress, account, Pool2Rewards], {
         sentMsg: t`Claim submitted.`,
         failMsg: t`Claim failed.`,
         successMsg: t`Claim completed!`,
@@ -162,7 +162,7 @@ function ClaimAllModal(props) {
                 </span>
               </Checkbox>
             </div>
-            <div>{Pool2ewards && Number((Number(Pool2ewards) / 10 ** 18).toFixed(2)).toLocaleString()} AGX</div>
+            <div>{Pool2Rewards && Number((Number(Pool2Rewards) / 10 ** 18).toFixed(2)).toLocaleString()} AGX</div>
           </div>
           <div className="tabBox">
             <div>
