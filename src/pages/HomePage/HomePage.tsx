@@ -17,10 +17,10 @@ import two from "img/home/02.svg";
 import three from "img/home/03.svg";
 import four from "img/home/04.svg";
 import AGXAndALP from "img/home/AGXAndALP.svg";
-import AGXBall from "img/home/AGXBall.gif";
+import AGXBall from "img/home/AGXBall.svg";
 import ALPToken from "img/home/ALPToken.svg";
 import AGXToken from "img/home/AGXToken.svg";
-// import FairBall from "img/home/FairBall.gif";
+import FairBall from "img/home/FairBall.svg";
 import FairLaunch from "img/home/Fair Launch.svg";
 import fair from "img/home/fair.svg";
 import advanced from "img/home/advanced.svg";
@@ -261,18 +261,18 @@ function HomePage() {
               <img className="AGXBall" src={AGXBall} />
             </div>
             <div className="token">
-              <img src={ALPToken} />
-              <img src={AGXToken} />
+              <img className="flex-1 w-[45%]" src={ALPToken} />
+              <img className="flex-1 w-[45%]" src={AGXToken} />
             </div>
           </div>
           <div className="box">
             <div className="fair">
               <div className="fairBox">
                 <img className="FairLaunch" src={FairLaunch} />
-                <div className="FairBall"></div>
-                {/* <img className="FairBall" src={FairBall} /> */}
+                {/* <div className="FairBall"></div> */}
+                <img className="FairBall" src={FairBall} />
               </div>
-              <img src={fair} />
+              <img className="fairImg" src={fair} />
             </div>
             <div className="advanced">
               <img className="PC" src={advanced} />

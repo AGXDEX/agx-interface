@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Gridular';
+    src: url('Gridular-Regular.woff2') format('woff2'),
+        url('Gridular-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
