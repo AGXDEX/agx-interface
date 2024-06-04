@@ -11,9 +11,7 @@ import { getAppBaseUrl, isHomeSite, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy
 import { decodeReferralCode, encodeReferralCode } from "domain/referrals";
 import Actions from "pages/Actions/Actions";
 import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
-import Buy from "pages/Buy/Buy";
 import BuyGlp from "pages/BuyGlp/BuyGlp";
-import BuyGMX from "pages/BuyGMX/BuyGMX";
 import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
@@ -48,7 +46,6 @@ import VaultV2 from "abis/VaultV2.json";
 import VaultV2b from "abis/VaultV2b.json";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { getContract } from "config/contracts";
-import Jobs from "pages/Jobs/Jobs";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import ReferralTerms from "pages/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "pages/TermsAndConditions/TermsAndConditions";

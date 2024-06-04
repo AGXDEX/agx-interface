@@ -57,7 +57,25 @@ import { cn } from "utils/classname";
 
 const EXTERNAL_LINK_CHAIN_CONFIG = process.env.REACT_APP_ENV === "development" ? "nova_sepolia" : "nova_mainnet";
 
-const fetchNFTData = async (account) => {
+export const fetchPositions = async ({ queryKey }) => {
+  const [, account] = queryKey;
+  if (!account) return;
+
+  const response = await axios.post(STAKER_SUBGRAPH_URL, {
+    query: `{
+      positions(where: { owner: "${account}" }) {
+        tokenId
+        owner
+        staked
+        liquidity
+      }
+    }`,
+  });
+
+  return response.data.data.positions;
+};
+
+export const fetchNFTData = async (account) => {
   const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
     query: `{
       nfts(where: {owner: "${account}"}) {
@@ -70,7 +88,7 @@ const fetchNFTData = async (account) => {
   return data.data.nfts.map((item) => Number(item.tokenId));
 };
 
-const fetchStakeLiquidity = async () => {
+export const fetchStakeLiquidity = async () => {
   const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
     query: `{
       incentives {
@@ -82,7 +100,7 @@ const fetchStakeLiquidity = async () => {
   return data.data.incentives[0].liquidity;
 };
 
-const fetchNFTClaimed = async () => {
+export const fetchNFTClaimed = async () => {
   const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
     query: `{
       incentives {
@@ -234,23 +252,6 @@ export default function StakeV2() {
     enabled: !!account,
   });
 
-  const fetchPositions = async ({ queryKey }) => {
-    const [, account] = queryKey;
-    if (!account) return;
-
-    const response = await axios.post(STAKER_SUBGRAPH_URL, {
-      query: `{
-      positions(where: { owner: "${account}" }) {
-        tokenId
-        owner
-        staked
-        liquidity
-      }
-    }`,
-    });
-
-    return response.data.data.positions;
-  };
 
   const { data: positionsData } = useQuery({
     queryKey: ["positions", account],

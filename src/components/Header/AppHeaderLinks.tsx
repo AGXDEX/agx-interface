@@ -1,13 +1,14 @@
-import React, { useCallback } from "react";
 import { FiX } from "react-icons/fi";
 import { Trans } from "@lingui/macro";
 import { Link } from "react-router-dom";
 
 import { HeaderLink } from "./HeaderLink";
 import "./Header.scss";
-import { isHomeSite } from "lib/legacy";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import logoImg from "img/logo_GMX.svg";
+import { useQueryClient } from "@tanstack/react-query";
+import useWallet from "lib/wallets/useWallet";
+import { fetchNFTData, fetchPositions, fetchStakeLiquidity } from "pages/Stake/StakeV2";
 
 type Props = {
   small?: boolean;
@@ -17,10 +18,27 @@ type Props = {
 };
 
 export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedirectModal }: Props) {
-  const isLeaderboardActive = useCallback(
-    (match, location) => Boolean(match) || location.pathname.startsWith("/competitions"),
-    []
-  );
+  const { account } = useWallet();
+
+  const queryClient = useQueryClient();
+
+  const prefetchData = async () => {
+    await queryClient.prefetchQuery({
+      queryKey: ["positions", account],
+      queryFn: fetchPositions,
+      staleTime: 10000,
+    });
+    await queryClient.prefetchQuery({
+      queryKey: ["NFTData", account],
+      queryFn: () => fetchNFTData(account),
+      staleTime: 10000,
+    });
+    await queryClient.prefetchQuery({
+      queryKey: ["stakeliquidity"],
+      queryFn: fetchStakeLiquidity,
+      staleTime: 10000,
+    });
+  };
   return (
     <div className="App-header-links">
       {small && (
@@ -36,17 +54,12 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
           </div>
         </div>
       )}
-      {/* <div className="App-header-link-container">
-        <HeaderLink to="/dashboard" showRedirectModal={showRedirectModal}>
-          <Trans>Dashboard</Trans>
-        </HeaderLink>
-      </div> */}
       <div className="App-header-link-container">
         <HeaderLink to="/buy" showRedirectModal={showRedirectModal}>
           <Trans>Buy</Trans>
         </HeaderLink>
       </div>
-      <div className="App-header-link-container">
+      <div className="App-header-link-container" onMouseEnter={prefetchData}>
         <HeaderLink to="/earn" showRedirectModal={showRedirectModal}>
           <Trans>Earn</Trans>
         </HeaderLink>
@@ -66,24 +79,11 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
           <Trans>Leaderboard</Trans>
         </HeaderLink>
       </div>
-      {/* <div className="App-header-link-container">
-        <HeaderLink to="/ecosystem" showRedirectModal={showRedirectModal}>
-          <Trans>Ecosystem</Trans>
-        </HeaderLink>
-      </div> */}
       <div className="App-header-link-container">
         <ExternalLink href="https://agx-1.gitbook.io">
           <Trans>Docs</Trans>
         </ExternalLink>
       </div>
-      {/* {small && !isHomeSite() && ( */}
-      {/* <div className="App-header-link-container"> */}
-      {/* eslint-disable-next-line */}
-      {/* <a href="#" onClick={openSettings}> */}
-      {/* <Trans>Settings</Trans> */}
-      {/* </a> */}
-      {/* </div> */}
-      {/* )} */}
     </div>
   );
 }
