@@ -113,9 +113,10 @@ function FeesTooltip({
 
   return (
     <div className="PositionSeller-fees-tooltip">
-          {feesRows.map(({ label, value }) => (
+          {feesRows.length > 1 && feesRows.map(({ label, value }) => (
             <StatsTooltipRow key={label} label={label} showDollar={false} value={value} />
           ))}
+          {feesRows.length === 1 && (feesRows[0].value)}
           <br />
         </div>
   );

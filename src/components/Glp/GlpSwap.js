@@ -173,7 +173,7 @@ const dataList = [
   { name: "USDT", value: 0.25 },
   { name: "USDC", value: 0.25 },
   { name: "ETH", value: 0.20 },
-  { name: "WBTC", value: 0.15 },
+  { name: "wBTC", value: 0.15 },
   { name: "pufETH", value: 0.15 },
 ];
 export default function GlpSwap(props) {
@@ -1326,6 +1326,31 @@ const alpApr = calculateAlpAPR(glpSupplyUsd, rewardRate, agxPrice);
                 <div className="mobile-token-card">
                   <TokenIcon symbol={token.symbol} displaySize={24} importSize={24} />
                   <div className="token-symbol-text">{token.symbol}</div>
+                  {token.symbol === "pufETH" && (
+                    <div className="cursor-pointer group relative pl-2 bg-gradient-to-r from-[#e1b84e] via-[#eb537e] via-[#c34de5] via-[#4672e2] to-[#17a2b7] bg-clip-text text-transparent font-bold text-lg leading-normal">
+                      +4 POINTS
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-5 text-white text-lg px-4 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-[200px] bg-[#333333] py-5 items-center">
+                        <div className="flex-col space-y-1">
+                          <div className="rounded-full bg-[#d4d4d4]/20 justify-center px-3 py-2 inline-flex">
+                            + EigenLayer Points
+                          </div>
+                          <div className="h-1"></div>
+                          <div className="rounded-full bg-[#67DBFF] justify-center px-3 py-2 inline-flex text-black">
+                            + Puffer Points
+                          </div>
+                          <div className="h-1"></div>
+                          <div className="rounded-full bg-[#C3FF66] justify-center px-3 py-2 inline-flex text-black">
+                            + Nova Points
+                          </div>
+                          <div className="h-1"></div>
+                          <div className="rounded-full bg-[#686FE0] justify-center px-3 py-2 inline-flex text-black">
+                            + AGX Yield
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* <div>
                     <AssetDropdown token={token} />
                   </div> */}
