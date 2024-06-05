@@ -766,7 +766,7 @@ export default function StakeV2() {
                         <div
                           className="underline cursor-pointer"
                           onClick={() => {
-                            window.open("https://agx-1.gitbook.io/agx/tokenomics/usdagx");
+                            window.open("https://docs.agx.xyz/");
                           }}
                         >
                           Read more
