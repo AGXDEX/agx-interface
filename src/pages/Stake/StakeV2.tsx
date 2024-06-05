@@ -48,7 +48,7 @@ import { getEmissionData, calculateManage } from "./utilts";
 
 import { DepositTooltipContent } from "components/Synthetics/MarketsList/DepositTooltipContent";
 
-import { ClaimAllModal, ClaimHistoryModal, DepositModal } from "./components/modals";
+import { ClaimAllModal, ClaimHistoryModal, DepositModal, StakingModal } from "./components/modals";
 
 import noNFT from "img/noNFT.svg";
 import { STAKER_SUBGRAPH_URL, SWAP_SUBGRAPH_URL } from "config/subgraph";
@@ -152,6 +152,7 @@ export default function StakeV2() {
   const [, setPendingTxns] = usePendingTxns();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isClaimHistoryModalVisible, setIsClaimHistoryModalVisible] = useState(false);
+   const [isStakingModalVisible, setIsStakingModalVisible] = useState(false);
   const [depositModalVisible, setDepositModalVisible] = useState(false);
   const [claimModalVisible, setClaimModalVisible] = useState(false);
   const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState<BigNumber | undefined>(undefined);
@@ -679,6 +680,7 @@ export default function StakeV2() {
         setIsVisible={setIsClaimHistoryModalVisible}
         data={claimHistories}
       />
+      <StakingModal isVisible={isStakingModalVisible} setIsVisible={setIsStakingModalVisible} data={claimHistories} />
       <ClaimAllModal
         isVisible={claimModalVisible}
         setIsVisible={setClaimModalVisible}
@@ -779,7 +781,7 @@ export default function StakeV2() {
                 </TooltipWithPortal>
               </div>
               <div>
-                {rewardRate && Number(((Number(rewardRate) / 10 ** 18) * 86400 + 59523).toFixed(2)).toLocaleString()}{" "}
+                {rewardRate && Number(((Number(rewardRate) / 10 ** 18) * 86400 + 59523).toFixed(2)).toLocaleString()}
                 /day
               </div>
             </div>
@@ -892,7 +894,11 @@ export default function StakeV2() {
               <div className={cx("mobileBox", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">APR</div>
-                  <div>{Number(stakeAPRValue === "NaN" ? "0.00" : stakeAPRValue).toLocaleString()}%</div>
+                  <div>
+                    {stakeAPRValue === "NaN" || !isFinite(Number(stakeAPRValue))
+                      ? "0.00%"
+                      : `${Number(stakeAPRValue).toLocaleString()}%`}
+                  </div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Stake AGX in LP NFT:</div>
@@ -949,7 +955,7 @@ export default function StakeV2() {
             })}
           >
             <div className="StakeV2-stakeTitle padLeft">Stake AGX</div>
-            <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => showStakeGmxModals()} disabled>
+            <Button variant="secondary" className="StakeV2-stakeButton" onClick={() => setIsStakingModalVisible(true)}>
               <Trans>Stake AGX</Trans>
             </Button>
           </div>
