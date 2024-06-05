@@ -60,12 +60,25 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 const scrollTo = (value) => {
+  let arr:any = document.getElementsByClassName('main')[0].childNodes
+  let sum = document.getElementsByClassName('home-header')[0].clientHeight
+  let marginBottom = window.getComputedStyle(arr[0]).marginBottom.split('px')[0]
+  if (value === 1) {
+    for (let i=0; i<6; i++) {
+      sum += (arr[i].clientHeight + Number(marginBottom))
+    }
+  } else if (value === 2) {
+    for (let i=0; i<8; i++) {
+      sum += (arr[i].clientHeight + Number(marginBottom))
+    }
+  }
+  let top = value === 0 ? 0: sum;
   document.getElementsByClassName('home-container')[0].scrollTo({
-    top: value === 7300? 5500:value === 10000? 6300: value,
+    top: top,
     behavior: 'smooth' // 'auto' for instant scrolling
   });
   window.scrollTo({
-    top: value,
+    top: top,
     behavior: 'smooth' // 'auto' for instant scrolling
   });
 };
@@ -131,10 +144,10 @@ function HomePage() {
               <div className="scroll PC" onClick={() => scrollTo(0)}>
                 Features
               </div>
-              <div className="scroll PC" onClick={() => scrollTo(7300)}>
+              <div className="scroll PC" onClick={() => scrollTo(1)}>
                 Structures
               </div>
-              <div className="scroll PC" onClick={() => scrollTo(10000)}>
+              <div className="scroll PC" onClick={() => scrollTo(2)}>
                 Roadmap
               </div>
               <Link to="/v1">
@@ -370,10 +383,10 @@ function HomePage() {
             <div className="scroll" onClick={() => scrollTo(0)}>
               Features
             </div>
-            <div className="scroll" onClick={() => scrollTo(7300)}>
+            <div className="scroll" onClick={() => scrollTo(1)}>
               Structures
             </div>
-            <div className="scroll" onClick={() => scrollTo(10000)}>
+            <div className="scroll" onClick={() => scrollTo(2)}>
               Roadmap
             </div>
           </div>
