@@ -3100,6 +3100,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hookform/resolvers@npm:3.6.0":
+  version: 3.6.0
+  resolution: "@hookform/resolvers@npm:3.6.0"
+  peerDependencies:
+    react-hook-form: ^7.0.0
+  checksum: a230fd2d0b571ddb8795f587284211e17f942de6b75ba235f613f54d3c17561e3a6483deee48c7dd5a6f52131769c5e59e4ed04823447084c28b6191d7e2d9dd
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.11.10":
   version: 0.11.10
   resolution: "@humanwhocodes/config-array@npm:0.11.10"
@@ -11671,6 +11680,7 @@ __metadata:
     "@floating-ui/dom": 1.6.3
     "@floating-ui/react": 0.26.9
     "@headlessui/react": 1.6.1
+    "@hookform/resolvers": 3.6.0
     "@lingui/cli": 3.13.3
     "@lingui/core": 3.13.3
     "@lingui/loader": 3.13.3
@@ -11734,6 +11744,7 @@ __metadata:
     react-dom: 18.2.0
     react-error-boundary: 4.0.13
     react-helmet: 6.1.0
+    react-hook-form: 7.51.5
     react-hot-toast: 2.2.0
     react-icons: 4.3.1
     react-jazzicon: 1.0.4
@@ -11757,6 +11768,7 @@ __metadata:
     viem: 2.7.20
     wagmi: 2.5.7
     web-vitals: 1.1.2
+    zod: 3.23.8
   languageName: unknown
   linkType: soft
 
@@ -17683,6 +17695,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-hook-form@npm:7.51.5":
+  version: 7.51.5
+  resolution: "react-hook-form@npm:7.51.5"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18
+  checksum: 6b6a56b6520ddb68d491e2f07791538aa611c13fcd76052a499ba10bdaf7f77f4a5f7191e6ca9d9ab0af739bf07171c6e8d97f6c4da06f576aa74caed71828f1
+  languageName: node
+  linkType: hard
+
 "react-hot-toast@npm:2.2.0":
   version: 2.2.0
   resolution: "react-hot-toast@npm:2.2.0"
@@ -22061,6 +22082,13 @@ __metadata:
   version: 0.8.15
   resolution: "zen-observable@npm:0.8.15"
   checksum: b7289084bc1fc74a559b7259faa23d3214b14b538a8843d2b001a35e27147833f4107590b1b44bf5bc7f6dfe6f488660d3a3725f268e09b3925b3476153b7821
+  languageName: node
+  linkType: hard
+
+"zod@npm:3.23.8":
+  version: 3.23.8
+  resolution: "zod@npm:3.23.8"
+  checksum: 15949ff82118f59c893dacd9d3c766d02b6fa2e71cf474d5aa888570c469dbf5446ac5ad562bb035bf7ac9650da94f290655c194f4a6de3e766f43febd432c5c
   languageName: node
   linkType: hard
 
