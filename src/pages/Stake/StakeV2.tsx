@@ -48,7 +48,7 @@ import { getEmissionData, calculateManage } from "./utilts";
 
 import { DepositTooltipContent } from "components/Synthetics/MarketsList/DepositTooltipContent";
 
-import { ClaimAllModal, ClaimHistoryModal, DepositModal } from "./components/modals";
+import { ClaimAllModal, ClaimHistoryModal, DepositModal, UnstakeModal } from "./components/modals";
 
 import noNFT from "img/noNFT.svg";
 import { STAKER_SUBGRAPH_URL, SWAP_SUBGRAPH_URL } from "config/subgraph";
@@ -681,6 +681,7 @@ export default function StakeV2() {
         setIsVisible={setIsClaimHistoryModalVisible}
         data={claimHistories}
       />
+      <UnstakeModal isVisible={false} />
       <StakingModal isVisible={isStakingModalVisible} setIsVisible={setIsStakingModalVisible} data={claimHistories} />
       <ClaimAllModal
         isVisible={claimModalVisible}

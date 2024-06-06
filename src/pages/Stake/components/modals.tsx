@@ -559,13 +559,14 @@ function UnstakeModal(props) {
           showMaxButton={false}
         >
           <div className="Stake-modal-icons">
-            <img
+            {/* <img
               className="mr-xs icon"
               height="22"
-              src={icons[unstakingTokenSymbol.toLowerCase()]}
+              src={icons[unstakingTokenSymbol?.toLowerCase()]}
               alt={unstakingTokenSymbol}
-            />
-            {unstakingTokenSymbol}
+            /> */}
+            test
+            {/* {unstakingTokenSymbol} */}
           </div>
         </BuyInputSele>
         {reservedAmount && reservedAmount.gt(0) && (

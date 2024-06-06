@@ -2,7 +2,6 @@ import { useState } from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import NModal as Modal from "components/ui/Modal";
 
 import Token from "abis/Token.json";
 import StakeAGX from "abis/StakeAGX.json";
@@ -13,11 +12,9 @@ import { Contract, ethers } from "ethers";
 import { getContract } from "config/contracts";
 
 import Button from "components/Button/Button";
-// import "../Stake.css";
 
 import { STAKER_SUBGRAPH_URL } from "config/subgraph";
-import { useMutation, useQuery } from "@tanstack/react-query";
-// import { UiModal } from "components/ui/Modal";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -30,10 +27,6 @@ import { cn } from "utils/classname";
 import useWallet from "lib/wallets/useWallet";
 
 const { AddressZero } = ethers.constants;
-
-
-
-
 
 
 export const useStakeAGXContract = (chainId) => {
@@ -57,7 +50,6 @@ const tags = [
   { duration: "1 month", days: 30, multiplier: "1x" },
 ];
 
-// 查询用户当前的stake列表
 const fetchStakedAGXs = async (account) => {
   const query = `
     query($account: String!) {
@@ -118,8 +110,8 @@ function useAGXAllowance(account, chainId) {
   });
 }
 
-// Approve AGX
-const useApproveAGX = (chainId) => {
+const useApproveAGX = (account, chainId) => {
+  const queryClient = useQueryClient();
   const stakeContract = useStakeAGXContract(chainId);
   const contract = useAGXContract(chainId);
   return useMutation({
@@ -127,24 +119,28 @@ const useApproveAGX = (chainId) => {
       const tx = await contract.approve(stakeContract.address, ethers.constants.MaxUint256);
       await tx.wait();
     },
-  });
-};
-
-// Stake AGX
-const useStakeAGX = (chainId) => {
-  const contract = useStakeAGXContract(chainId);
-  // console.log(contract, "StakeAGXContract--->");
-  return useMutation({
-    mutationFn: async ({ amount, period }) => {
-      const formattedAmount = ethers.utils.parseEther(amount);
-      const tx = await contract.stake(formattedAmount, period);
-      console.log(tx, "tx--->")
-      await tx.wait();
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["agxAllowance", account, chainId] });
     },
   });
 };
 
-// Unstake AGX
+const useStakeAGX = (account, chainId) => {
+  const queryClient = useQueryClient();
+  const contract = useStakeAGXContract(chainId);
+  return useMutation({
+    mutationFn: async ({ amount, period }) => {
+      const formattedAmount = ethers.utils.parseEther(amount);
+      const tx = await contract.stake(formattedAmount, period);
+      console.log(tx, "tx--->");
+      await tx.wait();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["agxBalance", account, chainId] });
+    }
+  });
+};
+
 const useUnstakeAGX = (chainId) => {
   const contract = useStakeAGXContract(chainId);
   return useMutation({
@@ -155,7 +151,6 @@ const useUnstakeAGX = (chainId) => {
   });
 };
 
-// 查询可领取的奖励
 const fetchClaimableReward = async (contract, account) => {
   const reward = await contract.claimable(account);
   return reward.toString();
@@ -171,7 +166,6 @@ const useClaimableReward = (account, chainId) => {
   });
 };
 
-// 领取奖励
 const useClaimReward = (chainId) => {
   const contract = useStakeAGXContract(chainId);
   return useMutation({
@@ -189,11 +183,10 @@ const stakeSchema = z.object({
 });
 export function StakingModal(props) {
   const { chainId } = useChainId();
-  const [amount, setAmount] = useState("");
   const { active, signer, account } = useWallet();
   const { data: stakedAGXs, isLoading: isLoadingStakedAGXs } = useStakedAGXs(account);
-  const { mutate: approveAGX } = useApproveAGX(chainId);
-  const { mutate: stakeAGX, isPending } = useStakeAGX(chainId);
+  const { mutate: approveAGX, isPending:isApproving } = useApproveAGX(account, chainId);
+  const { mutate: stakeAGX, isPending } = useStakeAGX(account, chainId);
   const { mutate: unstakeAGX } = useUnstakeAGX(chainId);
   const { data: balance, isLoading: isLoadingBalance } = useAGXBalance(account, chainId);
   const { data: allowance, isLoading: isLoadingAllowance } = useAGXAllowance(account, chainId);
@@ -201,10 +194,6 @@ export function StakingModal(props) {
   const { mutate: claimReward } = useClaimReward(chainId);
   const { isVisible, setIsVisible, data } = props;
   const [selectedTag, setSelectedTag] = useState<any>(tags[0]);
-
-  const handleClickTag = (tag) => {
-    setSelectedTag(tag);
-  };
 
    const {
      register,
@@ -214,6 +203,10 @@ export function StakingModal(props) {
      resolver: zodResolver(stakeSchema),
      mode: "onChange",
    });
+
+  const handleClickTag = (tag) => {
+       setSelectedTag(tag);
+  };
   const onSubmit = async (data) => {
     const { amount } = data;
     const amountInWei = ethers.utils.parseEther(amount);
@@ -257,6 +250,8 @@ export function StakingModal(props) {
               </div>
             </div>
             <input
+              step="any"
+              autoComplete="off"
               type="number"
               {...register("amount")}
               placeholder="Enter AGX amount"
@@ -264,7 +259,7 @@ export function StakingModal(props) {
                 "input-error": errors.amount,
               })}
             />
-            {errors.amount && <p className="my-2 text-sm text-red-500">{errors.amount.message}</p>}
+            {errors.amount && <p className="my-2 text-sm text-red-500">{errors?.amount?.message || ""}</p>}
 
             <div className="grid grid-cols-3 gap-4">
               {tags.map((tag) => (
@@ -304,7 +299,7 @@ export function StakingModal(props) {
               type="submit"
               variant="primary"
               className="justify-center items-center px-16 py-4 !text-lg leading-6 text-center text-black whitespace-nowrap rounded-md max-md:px-5 max-md:max-w-full font-bold"
-              loading={isPending}
+              loading={isPending || isApproving}
             >
               Confirm
             </Button>
