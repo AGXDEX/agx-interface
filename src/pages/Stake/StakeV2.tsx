@@ -174,9 +174,6 @@ export default function StakeV2() {
 
   const EthPoolAddress = getContract(chainId, "UniswapAGXEthPool");
   const vaultAddress = getContract(chainId, "Vault");
-  // const gmxAddress = getContract(chainId, "GMX");
-
-  // const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
 
   const glpManagerAddress = getContract(chainId, "GlpManager");
 
@@ -213,13 +210,6 @@ export default function StakeV2() {
       setDepositModalVisible(true);
     }
   };
-  // const showStakeGmxModals = () => {
-  //   setStakeValue("");
-  //   setStakingTokenSymbol("AGX");
-  //   setStakingTokenAddress(gmxAddress);
-  //   setStakingFarmAddress(stakedGmxTrackerAddress);
-  //   setStakeMethodName("stakeGmx");
-  // };
 
   const onClickPrimary = () => {
     setClaimModalVisible(true);
@@ -976,8 +966,16 @@ export default function StakeV2() {
             </div>
             <div className="StakeV2-claimBox">
               <div className="StakeV2-claimNum">
-                {Pool2Rewards && rewards
-                  ? Number((Number(Pool2Rewards) / 10 ** 18 + Number(rewards) / 10 ** 18).toFixed(2)).toLocaleString()
+                {Pool2Rewards && rewards && claimableReward
+                  ? Number(
+                      (
+                        Number(Pool2Rewards) / 10 ** 18 +
+                        Number(rewards) / 10 ** 18 +
+                        Number(ethers.utils.formatEther(claimableReward))
+                      ).toFixed(2)
+                    ).toLocaleString()
+                  : claimableReward
+                  ? Number(ethers.utils.formatEther(claimableReward)).toFixed(2).toLocaleString()
                   : 0}
               </div>
               <div className="StakeV2-claimToken">AGX</div>

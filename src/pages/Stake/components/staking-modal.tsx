@@ -153,7 +153,6 @@ const stakeSchema = z.object({
 export function StakingModal(props) {
   const { chainId } = useChainId();
   const { active, signer, account } = useWallet();
-  const { data: stakedAGXs, isLoading: isLoadingStakedAGXs } = useStakedAGXs(account);
   const { mutate: approveAGX, isPending: isApproving } = useApproveAGX(account, chainId);
   const { mutate: stakeAGX, isPending } = useStakeAGX(account, chainId);
   const { mutate: unstakeAGX } = useUnstakeAGX(chainId);
