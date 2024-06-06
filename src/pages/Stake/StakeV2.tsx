@@ -868,7 +868,6 @@ export default function StakeV2() {
             </div>
             <div className={cx("tab", { active: selectTab === "Staking" })} onClick={() => setselectTab("Staking")}>
               Staking
-              <span className="soons">soon</span>
             </div>
           </div>
           <div className={cx("StakeV2-box between", { ishide: selectTab === "Liquidity" })}>
