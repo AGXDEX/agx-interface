@@ -601,7 +601,7 @@ export default function StakeV2() {
   const useTotalClaim = (chainId) => {
     const contract = useStakeAGXContract(chainId);
     return useQuery({
-      queryKey: ["totalClaim", chainId],
+      queryKey: ["totalStakingClaim", chainId],
       queryFn: () => fetchTotalClaim(contract),
       enabled: !!chainId,
     });
@@ -1084,7 +1084,6 @@ export default function StakeV2() {
               <Trans>Stake AGX</Trans>
             </Button>
           </div>
-          <StakeList />
           <div className="tolong">
             <div
               className={cx(

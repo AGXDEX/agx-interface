@@ -22,13 +22,13 @@ import useWallet from "lib/wallets/useWallet";
 
 
 export const useStakeAGXContract = (chainId) => {
-  const { active, signer, account } = useWallet();
+  const { signer } = useWallet();
   const stakeAGXAddress = getContract(chainId, "StakeAGX");
   return new Contract(stakeAGXAddress, StakeAGX.abi, signer);
 };
 
 export const useAGXContract = (chainId) => {
-  const { active, signer, account } = useWallet();
+  const { signer } = useWallet();
   const AGXAddress = getContract(chainId, "AGX");
   return new Contract(AGXAddress, Token.abi, signer);
 };
@@ -95,6 +95,9 @@ const useStakeAGX = (account, chainId) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["agxBalance", account, chainId] });
     },
+    onError: (error) => {
+      console.error(error);
+    }
   });
 };
 
