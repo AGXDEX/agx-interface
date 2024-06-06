@@ -213,13 +213,13 @@ export default function StakeV2() {
       setDepositModalVisible(true);
     }
   };
-  const showStakeGmxModals = () => {
-    setStakeValue("");
-    setStakingTokenSymbol("AGX");
-    setStakingTokenAddress(gmxAddress);
-    setStakingFarmAddress(stakedGmxTrackerAddress);
-    setStakeMethodName("stakeGmx");
-  };
+  // const showStakeGmxModals = () => {
+  //   setStakeValue("");
+  //   setStakingTokenSymbol("AGX");
+  //   setStakingTokenAddress(gmxAddress);
+  //   setStakingFarmAddress(stakedGmxTrackerAddress);
+  //   setStakeMethodName("stakeGmx");
+  // };
 
   const onClickPrimary = () => {
     setClaimModalVisible(true);
@@ -770,7 +770,7 @@ const useAvgMultiplier = (account, chainId) => {
   });
 };
 
-const fetchTotalReward = async (account) => {
+const fetchTotalStakingReward = async (account) => {
   const query = `
     query($account: String!) {
       stakeAGXRewards(where: {owner: $account}) {
@@ -797,7 +797,7 @@ const fetchTotalReward = async (account) => {
 const useTotalStakingReward = (account) => {
   return useQuery({
     queryKey: ["totalStakingReward", account],
-    queryFn: () => fetchTotalReward(account),
+    queryFn: () => fetchTotalStakingReward(account),
     enabled: !!account,
   });
 };
