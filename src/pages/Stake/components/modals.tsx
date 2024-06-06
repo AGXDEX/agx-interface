@@ -67,15 +67,6 @@ const useClaimableReward = (account, chainId) => {
   });
 };
 
-// const useClaimReward = (chainId) => {
-//   const contract = useStakeAGXContract(chainId);
-//   return useMutation({
-//     mutationFn: async () => {
-//       const tx = await contract.claim();
-//       await tx.wait();
-//     },
-//   });
-// };
 
 const { AddressZero } = ethers.constants;
 function ClaimAllModal(props) {
