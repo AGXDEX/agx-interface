@@ -1044,7 +1044,7 @@ const { data: totalStakingReward } = useTotalReward(account);
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Total Staking Reward</div>
-                  <div>{totalClaim}</div>
+                  <div>{Number(Number(totalClaim)?.toFixed(2)).toLocaleString()}</div>
                 </div>
               </div>
               <div className={cx("mobileBox", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
@@ -1089,7 +1089,9 @@ const { data: totalStakingReward } = useTotalReward(account);
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Total Reward</div>
-                  <div>{totalStakingReward}</div>
+                  <div>
+                    {Number(Number(totalStakingReward)?.toFixed(2)).toLocaleString()}
+                  </div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Claimable Rewards</div>
