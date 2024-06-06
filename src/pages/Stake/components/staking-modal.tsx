@@ -121,10 +121,9 @@ const useStakeAGX = (account, chainId) => {
   const queryClient = useQueryClient();
   const contract = useStakeAGXContract(chainId);
   return useMutation({
-    mutationFn: async ({ amount, period }) => {
+    mutationFn: async ({ amount, period }:any) => {
       const formattedAmount = ethers.utils.parseEther(amount);
       const tx = await contract.stake(formattedAmount, period);
-      console.log(tx, "tx--->");
       await tx.wait();
     },
     onSuccess: () => {
@@ -182,7 +181,7 @@ export function StakingModal(props) {
     const amountInWei = ethers.utils.parseEther(amount);
 
     if (allowance.lt(amountInWei)) {
-      await approveAGX(ethers.constants.MaxUint256);
+      await approveAGX(amount);
     }
 
     await stakeAGX({ amount, period: selectedTag.days * 86400 });
@@ -229,13 +228,18 @@ export function StakingModal(props) {
                 "input-error": errors.amount,
               })}
             />
-            {errors.amount && <p className="my-2 text-sm text-red-500">{errors?.amount?.message || ""}</p>}
+            {errors.amount && typeof errors.amount === "string" && (
+              <p className="my-2 text-sm text-red-500">{errors.amount}</p>
+            )}
 
             <div className="grid grid-cols-3 gap-4">
               {tags.map((tag) => (
                 <div key={tag.days} className="relative flex items-center p-6 bg-[#18191E] rounded-lg cursor-pointer">
                   <div className="absolute left-3 top-3">
-                    <label className="relative flex items-center rounded-full cursor-pointer" htmlFor="purple">
+                    <label
+                      className="relative flex items-center rounded-full cursor-pointer"
+                      htmlFor={`duration-${tag.days}`}
+                    >
                       <input
                         type="radio"
                         className="p-3 before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-blue-gray-200 text-[#5D00FB] transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-[#5D00FB] checked:before:bg-[#5D00FB] hover:before:opacity-10"
@@ -244,6 +248,7 @@ export function StakingModal(props) {
                         checked={selectedTag?.days === tag?.days}
                         onChange={() => handleClickTag(tag)}
                         id={`duration-${tag.days}`}
+                        aria-label={`${tag.days} days`}
                       />
                       <span className="absolute text-[#5D00FB] transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
                         <svg
