@@ -789,6 +789,7 @@ const fetchTotalReward = async (account) => {
     }),
   });
   const { data } = await response.json();
+  console.log(data, "fetchTotalReward--->");
   const rewards = data.stakeAGXRewards.map((reward) => parseFloat(ethers.utils.formatUnits(reward.reward, 18)));
   const totalReward = rewards.reduce((sum, reward) => sum + reward, 0);
   return totalReward.toString();
@@ -829,7 +830,8 @@ const useClaimableReward = (account, chainId) => {
      const { data: balance, isLoading: isLoadingBalance } = useAGXBalance(account, chainId);
 const { data: totalStakingReward } = useTotalReward(account);
 
-  const { data: claimableReward, isLoading: isLoadingClaimableReward } = useClaimableReward(account, chainId);
+  const { data: claimableReward } = useClaimableReward(account, chainId);
+
 
   return (
     <div className="default-container page-layout">

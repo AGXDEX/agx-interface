@@ -159,7 +159,7 @@ export function StakingModal(props) {
   const { mutate: stakeAGX, isPending } = useStakeAGX(account, chainId);
   const { mutate: unstakeAGX } = useUnstakeAGX(chainId);
   const { data: balance, isLoading: isLoadingBalance } = useAGXBalance(account, chainId);
-  const { data: allowance, isLoading: isLoadingAllowance } = useAGXAllowance(account, chainId);
+  const { data: allowance } = useAGXAllowance(account, chainId);
 
 
   const { isVisible, setIsVisible, data } = props;
@@ -273,9 +273,6 @@ export function StakingModal(props) {
             >
               Confirm
             </Button>
-            {/* <button onClick={handleClaim} type="button">
-              Claim Reward
-            </button> */}
           </div>
         </form>
       </DialogContent>
