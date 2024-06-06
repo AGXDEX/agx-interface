@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { useEffect, useState } from "react";
-
+import { useState } from "react";
 import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
 // import NModal as Modal from "components/ui/Modal";
@@ -10,7 +9,6 @@ import RewardRouter from "abis/RewardRouter.json";
 import Token from "abis/Token.json";
 import Vester from "abis/Vester.json";
 import GLP from "abis/GLP.json";
-import StakeAGX from "abis/StakeAGX.json";
 import NFTPositionsManager from "abis/NFTPositionsManager.json";
 import UniV3Staker from "abis/UniV3Staker.json";
 
@@ -38,26 +36,20 @@ import { bigNumberify, formatAmount, formatAmountFree, limitDecimals, parseValue
 // import "../Stake.css";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import axios from "axios";
 
 import { approveTokens } from "domain/tokens";
-import { STAKER_SUBGRAPH_URL } from "config/subgraph";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 // import { UiModal } from "components/ui/Modal";
-import { displayAddress, displayTransactionHash, formatTimestamp } from "utils/formatter";
+import { displayTransactionHash, formatTimestamp } from "utils/formatter";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "components/ui/dialog";
 import { X } from "lucide-react";
 import { getExplorerUrl } from "config/chains";
 import { useChainId } from "lib/chains";
-import { cn } from "utils/classname";
-import useWallet from "lib/wallets/useWallet";
 
 const { AddressZero } = ethers.constants;
 function ClaimAllModal(props) {
@@ -1332,233 +1324,6 @@ export function ClaimHistoryModal(props) {
             </table>
           </>
         )}
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-export const useStakeAGXContract = (chainId) => {
-  const { active, signer, account } = useWallet();
-  const stakeAGXAddress = getContract(chainId, "StakeAGX");
-  return new Contract(stakeAGXAddress, StakeAGX.abi, signer);
-};
-
-export const useAGXContract=(chainId)=>{
-  const { active, signer, account } = useWallet();
-  const AGXAddress = getContract(chainId, "AGX");
-  return new Contract(AGXAddress, Token.abi, signer);
-
-}
-
-const tags = [
-  { duration: "12 months", days: 360, multiplier: "5x" },
-  { duration: "6 months", days: 180, multiplier: "4x" },
-  { duration: "3 months", days: 90, multiplier: "3x" },
-  { duration: "2 months", days: 60, multiplier: "2x" },
-  { duration: "1 month", days: 30, multiplier: "1x" },
-];
-
-// 查询用户当前的stake列表
-const fetchStakedAGXs = async (account) => {
-  const query = `
-    query($account: String!) {
-      stakeAGXs(where: {owner: $account}) {
-        id
-        owner
-        period
-        startTime
-        amount
-      }
-    }
-  `;
-  const response = await fetch(STAKER_SUBGRAPH_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      query,
-      variables: { account },
-    }),
-  });
-  const { data } = await response.json();
-  return data.stakeAGXs;
-};
-
-const useStakedAGXs = (account) => {
-  return useQuery({
-    queryKey: ["stakedAGXs", account],
-    queryFn: () => fetchStakedAGXs(account),
-    enabled: !!account,
-  });
-};
-
-// Approve AGX
-const useApproveAGX = (chainId) => {
-  const stakeContract = useStakeAGXContract(chainId);
-  const contract = useAGXContract(chainId);
-  return useMutation({
-    mutationFn: async (amount) => {
-      const tx = await contract.approve(stakeContract.address, ethers.constants.MaxUint256);
-      await tx.wait();
-    },
-  });
-};
-
-// Stake AGX
-const useStakeAGX = (chainId) => {
-  const contract = useStakeAGXContract(chainId);
-  // console.log(contract, "StakeAGXContract--->");
-  return useMutation({
-    mutationFn: async ({ amount, period }) => {
-      const formattedAmount = ethers.utils.parseEther(amount);
-      const tx = await contract.stake(formattedAmount, period);
-      console.log(tx, "tx--->")
-      await tx.wait();
-    },
-  });
-};
-
-// Unstake AGX
-const useUnstakeAGX = (chainId) => {
-  const contract = useStakeAGXContract(chainId);
-  return useMutation({
-    mutationFn: async (id) => {
-      const tx = await contract.unStake(id);
-      await tx.wait();
-    },
-  });
-};
-
-// 查询可领取的奖励
-const fetchClaimableReward = async (contract, account) => {
-  const reward = await contract.claimable(account);
-  return reward.toString();
-};
-
-const useClaimableReward = (account, chainId) => {
-  const contract = useStakeAGXContract(chainId);
-  return useQuery({
-    queryKey: ["claimableReward", account, chainId],
-    queryFn: () => fetchClaimableReward(contract, account),
-    enabled: !!account && !!chainId,
-    refetchInterval: 10000,
-  });
-};
-
-// 领取奖励
-const useClaimReward = (chainId) => {
-  const contract = useStakeAGXContract(chainId);
-  return useMutation({
-    mutationFn: async () => {
-      const tx = await contract.claim();
-      await tx.wait();
-    },
-  });
-};
-export function StakingModal(props) {
-  const { chainId } = useChainId();
-  const [amount, setAmount] = useState("");
-  const { active, signer, account } = useWallet();
-  const { data: stakedAGXs, isLoading: isLoadingStakedAGXs } = useStakedAGXs(account);
-  const { mutate: approveAGX } = useApproveAGX(chainId);
-  const { mutate: stakeAGX, isError } = useStakeAGX(chainId);
-  const { mutate: unstakeAGX } = useUnstakeAGX(chainId);
-  const { data: claimableReward, isLoading: isLoadingClaimableReward } = useClaimableReward(account, chainId);
-  const { mutate: claimReward } = useClaimReward(chainId);
-  const { isVisible, setIsVisible, data } = props;
-  const [selectedTag, setSelectedTag] = useState<any>(tags[0]);
-
-  const handleClickTag = (tag) => {
-    setSelectedTag(tag);
-  };
-
-  const handleAmountChange = (e) => {
-    setAmount(e.target.value);
-  };
-
-  const handleApprove = () => {
-    approveAGX(amount);
-  };
-
-  const handleStake = () => {
-    if (!selectedTag) return;
-    console.log(selectedTag.days, "selectedTag.days");
-    stakeAGX({ amount, period: selectedTag.days * 86400 });
-  };
-
-  const handleClaim = () => {
-    claimReward();
-  };
-  console.log(isError, "isError--->");
-  if (!isVisible) return null;
-  return (
-    <Dialog open={isVisible}>
-      <DialogContent className="sm:max-w-[525px] bg-[#292B2F] focus:outline-none">
-        <div
-          className="absolute cursor-pointer right-6 top-6 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-white/10 p-5 rounded-full"
-          onClick={() => {
-            setIsVisible(false);
-          }}
-        >
-          <X size={18} />
-          <span className="sr-only">Close</span>
-        </div>
-        <DialogHeader className="items-center py-4">
-          <DialogTitle className="text-3xl">Claim History</DialogTitle>
-        </DialogHeader>
-
-        <div className="flex flex-col grow px-4 py-5 w-full rounded bg-zinc-800 max-md:mt-10 max-md:max-w-full">
-          <div className="flex gap-5 justify-between items-start max-md:flex-wrap max-md:max-w-full">
-            <div className="self-end mt-14 text-lg leading-5 text-zinc-400 max-md:mt-10">Amount</div>
-            <div className="flex flex-col mt-1">
-              <div className="flex gap-2.5 mt-4">
-                <div className="text-lg leading-5 text-zinc-400">Balance:</div>
-                <div className="text-lg leading-5 text-white text-opacity-90">0 EQU</div>
-              </div>
-            </div>
-          </div>
-          <input type="number" value={amount} onChange={handleAmountChange} placeholder="Enter AGX amount" />
-          <button onClick={handleApprove} type="button">Approve AGX</button>
-          {/* <div className="shrink-0 mt-2 h-11 rounded bg-zinc-900 max-md:max-w-full" /> */}
-          {/* <div className="mt-6 text-lg leading-5 text-left text-white text-opacity-90 max-md:max-w-full">
-            270,771.09 USDT
-          </div> */}
-          <div className="grid grid-cols-2 gap-4">
-            {tags.map((tag) => (
-              <label
-                key={tag.days}
-                className={cn("flex items-center p-4 bg-[#18191E] rounded-lg cursor-pointer", {
-                  "border-2 border-green-500 opacity-60": selectedTag?.days === tag?.days,
-                })}
-              >
-                <input
-                  type="radio"
-                  className="text-green-500 mr-2"
-                  name="duration"
-                  value={tag.days}
-                  checked={selectedTag?.days === tag?.days}
-                  onChange={() => handleClickTag(tag)}
-                />
-                <div className="flex-col items-center justify-center">
-                  <span className="text-white flex">{tag.days} days</span>
-                  <span className="text-gray-400 flex">Multiplier {tag.multiplier}</span>
-                </div>
-              </label>
-            ))}
-          </div>
-          <Button
-            type="button"
-            variant="primary"
-            className="justify-center items-center px-16 py-4 mt-6 text-sm leading-6 text-center text-black whitespace-nowrap bg-lime-400 rounded max-md:px-5 max-md:max-w-full"
-            onClick={handleStake}
-          >
-            Confirm
-          </Button>
-          <button onClick={handleClaim} type="button">
-            Claim Reward
-          </button>
-        </div>
       </DialogContent>
     </Dialog>
   );

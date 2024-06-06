@@ -48,12 +48,13 @@ import { getEmissionData, calculateManage } from "./utilts";
 
 import { DepositTooltipContent } from "components/Synthetics/MarketsList/DepositTooltipContent";
 
-import { ClaimAllModal, ClaimHistoryModal, DepositModal, StakingModal } from "./components/modals";
+import { ClaimAllModal, ClaimHistoryModal, DepositModal } from "./components/modals";
 
 import noNFT from "img/noNFT.svg";
 import { STAKER_SUBGRAPH_URL, SWAP_SUBGRAPH_URL } from "config/subgraph";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { cn } from "utils/classname";
+import StakingModal from "./components/staking-modal";
 
 const EXTERNAL_LINK_CHAIN_CONFIG = process.env.REACT_APP_ENV === "development" ? "nova_sepolia" : "nova_mainnet";
 
