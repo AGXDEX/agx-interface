@@ -143,30 +143,7 @@ const useUnstakeAGX = (chainId) => {
   });
 };
 
-const fetchClaimableReward = async (contract, account) => {
-  const reward = await contract.claimable(account);
-  return reward.toString();
-};
 
-const useClaimableReward = (account, chainId) => {
-  const contract = useStakeAGXContract(chainId);
-  return useQuery({
-    queryKey: ["claimableReward", account, chainId],
-    queryFn: () => fetchClaimableReward(contract, account),
-    enabled: !!account && !!chainId,
-    refetchInterval: 10000,
-  });
-};
-
-const useClaimReward = (chainId) => {
-  const contract = useStakeAGXContract(chainId);
-  return useMutation({
-    mutationFn: async () => {
-      const tx = await contract.claim();
-      await tx.wait();
-    },
-  });
-};
 
 const stakeSchema = z.object({
   amount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
@@ -183,10 +160,7 @@ export function StakingModal(props) {
   const { mutate: unstakeAGX } = useUnstakeAGX(chainId);
   const { data: balance, isLoading: isLoadingBalance } = useAGXBalance(account, chainId);
   const { data: allowance, isLoading: isLoadingAllowance } = useAGXAllowance(account, chainId);
-  const { data: claimableReward, isLoading: isLoadingClaimableReward } = useClaimableReward(account, chainId);
-  const { mutate: claimReward } = useClaimReward(chainId);
 
-  //view
 
   const { isVisible, setIsVisible, data } = props;
   const [selectedTag, setSelectedTag] = useState<any>(tags[0]);

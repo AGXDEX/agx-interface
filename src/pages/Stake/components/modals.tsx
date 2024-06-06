@@ -38,7 +38,7 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 
 import { approveTokens } from "domain/tokens";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 // import { UiModal } from "components/ui/Modal";
 import { displayTransactionHash, formatTimestamp } from "utils/formatter";
 import {
@@ -50,6 +50,32 @@ import {
 import { X } from "lucide-react";
 import { getExplorerUrl } from "config/chains";
 import { useChainId } from "lib/chains";
+import { useStakeAGXContract } from "./staking-modal";
+
+const fetchClaimableReward = async (contract, account) => {
+  const reward = await contract.claimable(account);
+  return reward.toString();
+};
+
+const useClaimableReward = (account, chainId) => {
+  const contract = useStakeAGXContract(chainId);
+  return useQuery({
+    queryKey: ["claimableReward", account, chainId],
+    queryFn: () => fetchClaimableReward(contract, account),
+    enabled: !!account && !!chainId,
+    refetchInterval: 10000,
+  });
+};
+
+// const useClaimReward = (chainId) => {
+//   const contract = useStakeAGXContract(chainId);
+//   return useMutation({
+//     mutationFn: async () => {
+//       const tx = await contract.claim();
+//       await tx.wait();
+//     },
+//   });
+// };
 
 const { AddressZero } = ethers.constants;
 function ClaimAllModal(props) {
@@ -82,6 +108,24 @@ function ClaimAllModal(props) {
   const ALPAddress = getContract(chainId, "ALP");
   const AGXAddress = getContract(chainId, "AGX");
 
+  const { data: claimableReward, isLoading: isLoadingClaimableReward } = useClaimableReward(account, chainId);
+
+  const useClaimReward = (chainId) => {
+    const contract = useStakeAGXContract(chainId);
+    return useMutation({
+      mutationFn: async () => {
+        const tx = await contract.claim();
+        await tx.wait();
+      },
+      onSuccess: () => {
+        setIsDeposit(false);
+        setIsVisible(false);
+      }
+    });
+  };
+
+  const { mutate: claimReward } = useClaimReward(chainId);
+
   const [isDeposit, setIsDeposit] = useState(false);
   const goDeposit = () => {
     if (isDeposit || !tokenId) {
@@ -101,16 +145,16 @@ function ClaimAllModal(props) {
       });
     } else if (tokenId === "Staking") {
       setIsDeposit(true);
-      const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
-      callContract(chainId, contract, "claimReward", [AGXAddress, account, Pool2Rewards.toNumber()], {
-        sentMsg: t`Claim submitted.`,
-        failMsg: t`Claim failed.`,
-        successMsg: t`Claim completed!`,
-        setPendingTxns,
-      }).finally(() => {
-        setIsDeposit(false);
-        setIsVisible(false);
-      });
+      claimReward();
+      // callContract(chainId, contract, "claimReward", [AGXAddress, account, Pool2Rewards.toNumber()], {
+      //   sentMsg: t`Claim submitted.`,
+      //   failMsg: t`Claim failed.`,
+      //   successMsg: t`Claim completed!`,
+      //   setPendingTxns,
+      // }).finally(() => {
+      //   setIsDeposit(false);
+      //   setIsVisible(false);
+      // });
     } else {
       setIsDeposit(true);
       const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
@@ -142,7 +186,12 @@ function ClaimAllModal(props) {
                 </span>
               </Checkbox>
             </div>
-            <div>0 AGX</div>
+            <div>
+              {Number(Number(ethers.utils.formatEther(claimableReward || 0))
+                .toFixed(2))
+                .toLocaleString()}
+              AGX
+            </div>
           </div>
           <div className="tabBox">
             <div>

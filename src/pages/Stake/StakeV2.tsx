@@ -1033,10 +1033,6 @@ const { data: totalStakingReward } = useTotalReward(account);
               <div className="StakeV2-stakeTitle padLeft">Overview</div>
               <div className={cx("mobileBox", { ishide: selectTab !== "Staking", show: selectTab === "Staking" })}>
                 <div className="StakeV2-fomBox">
-                  <div className="StakeV2-tit">APR</div>
-                  <div>{maxAPR}</div>
-                </div>
-                <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Stake APR</div>
                   <div>{maxAPR}</div>
                 </div>
