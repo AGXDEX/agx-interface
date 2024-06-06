@@ -153,7 +153,7 @@ export default function StakeV2() {
   const [, setPendingTxns] = usePendingTxns();
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isClaimHistoryModalVisible, setIsClaimHistoryModalVisible] = useState(false);
-   const [isStakingModalVisible, setIsStakingModalVisible] = useState(false);
+  const [isStakingModalVisible, setIsStakingModalVisible] = useState(false);
   const [depositModalVisible, setDepositModalVisible] = useState(false);
   const [claimModalVisible, setClaimModalVisible] = useState(false);
   const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState<BigNumber | undefined>(undefined);
@@ -174,9 +174,9 @@ export default function StakeV2() {
 
   const EthPoolAddress = getContract(chainId, "UniswapAGXEthPool");
   const vaultAddress = getContract(chainId, "Vault");
-  const gmxAddress = getContract(chainId, "GMX");
+  // const gmxAddress = getContract(chainId, "GMX");
 
-  const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
+  // const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
 
   const glpManagerAddress = getContract(chainId, "GlpManager");
 
@@ -674,163 +674,160 @@ export default function StakeV2() {
   const userStakedAGXAmount = stakedAGXAmount === "NaN" ? "0.00" : stakedAGXAmount;
   const formattedPoolValue = isNaN(poolValue || 0) ? 0 : poolValue;
 
-const fetchTotalStakedWithoutMultiplier = async (contract) => {
-  const result = await contract.totalStakedWithoutMultiplier();
-  return ethers.utils.formatUnits(result, 18);
-};
+  const fetchTotalStakedWithoutMultiplier = async (contract) => {
+    const result = await contract.totalStakedWithoutMultiplier();
+    return ethers.utils.formatUnits(result, 18);
+  };
 
-const useTotalStakedWithoutMultiplier = (chainId) => {
-  const contract = useStakeAGXContract(chainId);
-  return useQuery({
-    queryKey: ["totalStakedWithoutMultiplier", chainId],
-    queryFn: () => fetchTotalStakedWithoutMultiplier(contract),
-    enabled: !!chainId,
-  });
-};
+  const useTotalStakedWithoutMultiplier = (chainId) => {
+    const contract = useStakeAGXContract(chainId);
+    return useQuery({
+      queryKey: ["totalStakedWithoutMultiplier", chainId],
+      queryFn: () => fetchTotalStakedWithoutMultiplier(contract),
+      enabled: !!chainId,
+    });
+  };
 
-const fetchTotalClaim = async (contract) => {
-  const result = await contract.totalClaim();
-  return ethers.utils.formatUnits(result, 18);
-};
+  const fetchTotalClaim = async (contract) => {
+    const result = await contract.totalClaim();
+    return ethers.utils.formatUnits(result, 18);
+  };
 
-const useTotalClaim = (chainId) => {
-  const contract = useStakeAGXContract(chainId);
-  return useQuery({
-    queryKey: ["totalClaim", chainId],
-    queryFn: () => fetchTotalClaim(contract),
-    enabled: !!chainId,
-  });
-};
+  const useTotalClaim = (chainId) => {
+    const contract = useStakeAGXContract(chainId);
+    return useQuery({
+      queryKey: ["totalClaim", chainId],
+      queryFn: () => fetchTotalClaim(contract),
+      enabled: !!chainId,
+    });
+  };
 
-const fetchMaxAPR = async (contract) => {
-  const [rewardRate, totalStakedWithMultiplier] = await Promise.all([
-    contract.rewardRate(),
-    contract.totalStakedWithMultiplier(),
-  ]);
+  const fetchMaxAPR = async (contract) => {
+    const [rewardRate, totalStakedWithMultiplier] = await Promise.all([
+      contract.rewardRate(),
+      contract.totalStakedWithMultiplier(),
+    ]);
 
-  const rewardRateFormatted = parseFloat(ethers.utils.formatUnits(rewardRate, 18));
-  const totalStakedWithMultiplierFormatted = parseFloat(ethers.utils.formatUnits(totalStakedWithMultiplier, 18));
+    const rewardRateFormatted = parseFloat(ethers.utils.formatUnits(rewardRate, 18));
+    const totalStakedWithMultiplierFormatted = parseFloat(ethers.utils.formatUnits(totalStakedWithMultiplier, 18));
 
-  const maxAPR = (rewardRateFormatted * 31536000) / totalStakedWithMultiplierFormatted / 5;
+    const maxAPR = (rewardRateFormatted * 31536000) / totalStakedWithMultiplierFormatted / 5;
 
-  return `${(maxAPR * 100).toFixed(2)}%`;
-};
+    return `${(maxAPR * 100).toFixed(2)}%`;
+  };
 
-const useMaxAPR = (chainId) => {
-  const contract = useStakeAGXContract(chainId);
-  return useQuery({
-    queryKey: ["maxAPR", chainId],
-    queryFn: () => fetchMaxAPR(contract),
-    enabled: !!chainId,
-  });
-};
+  const useMaxAPR = (chainId) => {
+    const contract = useStakeAGXContract(chainId);
+    return useQuery({
+      queryKey: ["maxAPR", chainId],
+      queryFn: () => fetchMaxAPR(contract),
+      enabled: !!chainId,
+    });
+  };
 
+  const fetchUserTotalStakedWithoutMultiplier = async (contract, account) => {
+    const result = await contract.userTotalStakedWithoutMultiplier(account);
+    return ethers.utils.formatUnits(result, 18);
+  };
 
-const fetchUserTotalStakedWithoutMultiplier = async (contract, account) => {
-  const result = await contract.userTotalStakedWithoutMultiplier(account);
-  return ethers.utils.formatUnits(result, 18);
-};
+  const useUserTotalStakedWithoutMultiplier = (account, chainId) => {
+    const contract = useStakeAGXContract(chainId);
+    return useQuery({
+      queryKey: ["userTotalStakedWithoutMultiplier", account, chainId],
+      queryFn: () => fetchUserTotalStakedWithoutMultiplier(contract, account),
+      enabled: !!account && !!chainId,
+    });
+  };
 
-const useUserTotalStakedWithoutMultiplier = (account, chainId) => {
-  const contract = useStakeAGXContract(chainId);
-  return useQuery({
-    queryKey: ["userTotalStakedWithoutMultiplier", account, chainId],
-    queryFn: () => fetchUserTotalStakedWithoutMultiplier(contract, account),
-    enabled: !!account && !!chainId,
-  });
-};
+  const fetchAvgMultiplier = async (contract, account) => {
+    const [userTotalStakedWithMultiplier, userTotalStakedWithoutMultiplier] = await Promise.all([
+      contract.userTotalStakedWithMultiplier(account),
+      contract.userTotalStakedWithoutMultiplier(account),
+    ]);
 
-const fetchAvgMultiplier = async (contract, account) => {
-  const [userTotalStakedWithMultiplier, userTotalStakedWithoutMultiplier] = await Promise.all([
-    contract.userTotalStakedWithMultiplier(account),
-    contract.userTotalStakedWithoutMultiplier(account),
-  ]);
+    const userTotalStakedWithMultiplierFormatted = parseFloat(
+      ethers.utils.formatUnits(userTotalStakedWithMultiplier, 18)
+    );
+    const userTotalStakedWithoutMultiplierFormatted = parseFloat(
+      ethers.utils.formatUnits(userTotalStakedWithoutMultiplier, 18)
+    );
 
-  const userTotalStakedWithMultiplierFormatted = parseFloat(
-    ethers.utils.formatUnits(userTotalStakedWithMultiplier, 18)
-  );
-  const userTotalStakedWithoutMultiplierFormatted = parseFloat(
-    ethers.utils.formatUnits(userTotalStakedWithoutMultiplier, 18)
-  );
+    if (userTotalStakedWithoutMultiplierFormatted === 0) {
+      return "0";
+    }
 
-  if (userTotalStakedWithoutMultiplierFormatted === 0) {
-    return "0";
-  }
+    const avgMultiplier = userTotalStakedWithMultiplierFormatted / userTotalStakedWithoutMultiplierFormatted;
+    return avgMultiplier.toFixed(2);
+  };
 
-  const avgMultiplier = userTotalStakedWithMultiplierFormatted / userTotalStakedWithoutMultiplierFormatted;
-  return avgMultiplier.toFixed(2);
-};
+  const useAvgMultiplier = (account, chainId) => {
+    const contract = useStakeAGXContract(chainId);
+    return useQuery({
+      queryKey: ["avgMultiplier", account, chainId],
+      queryFn: () => fetchAvgMultiplier(contract, account),
+      enabled: !!account && !!chainId,
+    });
+  };
 
-const useAvgMultiplier = (account, chainId) => {
-  const contract = useStakeAGXContract(chainId);
-  return useQuery({
-    queryKey: ["avgMultiplier", account, chainId],
-    queryFn: () => fetchAvgMultiplier(contract, account),
-    enabled: !!account && !!chainId,
-  });
-};
-
-const fetchTotalStakingReward = async (account) => {
-  const query = `
+  const fetchTotalStakingReward = async (account) => {
+    const query = `
     query($account: String!) {
       stakeAGXRewards(where: {owner: $account}) {
         reward
       }
     }
   `;
-  const response = await fetch(STAKER_SUBGRAPH_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      query,
-      variables: { account },
-    }),
-  });
-  const { data } = await response.json();
-  const rewards = data.stakeAGXRewards.map((reward) => parseFloat(ethers.utils.formatUnits(reward.reward, 18)));
-  const totalReward = rewards.reduce((sum, reward) => sum + reward, 0);
-  return totalReward.toString();
-};
+    const response = await fetch(STAKER_SUBGRAPH_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query,
+        variables: { account },
+      }),
+    });
+    const { data } = await response.json();
+    const rewards = data.stakeAGXRewards.map((reward) => parseFloat(ethers.utils.formatUnits(reward.reward, 18)));
+    const totalReward = rewards.reduce((sum, reward) => sum + reward, 0);
+    return totalReward.toString();
+  };
 
-const useTotalStakingReward = (account) => {
-  return useQuery({
-    queryKey: ["totalStakingReward", account],
-    queryFn: () => fetchTotalStakingReward(account),
-    enabled: !!account,
-  });
-};
+  const useTotalStakingReward = (account) => {
+    return useQuery({
+      queryKey: ["totalStakingReward", account],
+      queryFn: () => fetchTotalStakingReward(account),
+      enabled: !!account,
+    });
+  };
 
-const fetchClaimableReward = async (contract, account) => {
-  const reward = await contract.claimable(account);
-  return reward.toString();
-};
+  const fetchClaimableReward = async (contract, account) => {
+    const reward = await contract.claimable(account);
+    return reward.toString();
+  };
 
-const useClaimableReward = (account, chainId) => {
-  const contract = useStakeAGXContract(chainId);
-  return useQuery({
-    queryKey: ["claimableReward", account, chainId],
-    queryFn: () => fetchClaimableReward(contract, account),
-    enabled: !!account && !!chainId,
-    refetchInterval: 10000,
-  });
-};
+  const useClaimableReward = (account, chainId) => {
+    const contract = useStakeAGXContract(chainId);
+    return useQuery({
+      queryKey: ["claimableReward", account, chainId],
+      queryFn: () => fetchClaimableReward(contract, account),
+      enabled: !!account && !!chainId,
+      refetchInterval: 10000,
+    });
+  };
 
- //overview
-   const { data: totalStakedWithoutMultiplier } = useTotalStakedWithoutMultiplier(chainId);
-   const { data: totalClaim } = useTotalClaim(chainId);
-   const { data: maxAPR } = useMaxAPR(chainId);
+  //staking overview
+  const { data: totalStakedWithoutMultiplier } = useTotalStakedWithoutMultiplier(chainId);
+  const { data: totalStakingClaim } = useTotalClaim(chainId);
+  const { data: maxAPR } = useMaxAPR(chainId);
 
+  const { data: userTotalStakedWithoutMultiplier } = useUserTotalStakedWithoutMultiplier(account, chainId);
+  const { data: avgMultiplier } = useAvgMultiplier(account, chainId);
 
-     const { data: userTotalStakedWithoutMultiplier } = useUserTotalStakedWithoutMultiplier(account, chainId);
-     const { data: avgMultiplier } = useAvgMultiplier(account, chainId);
-
-     const { data: balance, isLoading: isLoadingBalance } = useAGXBalance(account, chainId);
-const { data: totalStakingReward } = useTotalStakingReward(account);
+  const { data: balance, isLoading: isLoadingBalance } = useAGXBalance(account, chainId);
+  const { data: totalStakingReward } = useTotalStakingReward(account);
 
   const { data: claimableReward } = useClaimableReward(account, chainId);
-
 
   return (
     <div className="default-container page-layout">
@@ -912,8 +909,15 @@ const { data: totalStakingReward } = useTotalStakingReward(account);
             <div className="StakeV2-totalBox">
               <div className="StakeV2-tit">Total Claimed</div>
               <div>
-                {NFTClaimed &&
-                  Number((Number(totalClaimed) / 10 ** 18 + Number(NFTClaimed) / 10 ** 18).toFixed(2)).toLocaleString()}
+                {NFTClaimed
+                  ? isNaN(Number(totalClaimed) / 10 ** 18 + Number(NFTClaimed) / 10 ** 18 + Number(totalStakingClaim))
+                    ? "0"
+                    : (Number(totalClaimed) / 10 ** 18 + Number(NFTClaimed) / 10 ** 18 + Number(totalStakingClaim))
+                        .toFixed(2)
+                        .toLocaleString()
+                  : isNaN(Number(totalClaimed) / 10 ** 18 + Number(totalStakingClaim))
+                  ? "0"
+                  : (Number(totalClaimed) / 10 ** 18 + Number(totalStakingClaim)).toFixed(2).toLocaleString()}
               </div>
             </div>
             <div className="StakeV2-totalBox">
@@ -1043,7 +1047,7 @@ const { data: totalStakingReward } = useTotalStakingReward(account);
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Total Staking Reward</div>
-                  <div>{Number(Number(totalClaim)?.toFixed(2)).toLocaleString()}</div>
+                  <div>{Number(Number(totalStakingClaim)?.toFixed(2)).toLocaleString()}</div>
                 </div>
               </div>
               <div className={cx("mobileBox", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
@@ -1088,9 +1092,7 @@ const { data: totalStakingReward } = useTotalStakingReward(account);
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Total Reward</div>
-                  <div>
-                    {Number(Number(totalStakingReward)?.toFixed(2)).toLocaleString()}
-                  </div>
+                  <div>{Number(Number(totalStakingReward)?.toFixed(2)).toLocaleString()}</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Claimable Rewards</div>
