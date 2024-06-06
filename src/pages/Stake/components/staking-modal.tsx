@@ -12,7 +12,6 @@ import { getContract } from "config/contracts";
 
 import Button from "components/Button/Button";
 
-import { STAKER_SUBGRAPH_URL } from "config/subgraph";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components/ui/dialog";
 import { X } from "lucide-react";
@@ -20,7 +19,7 @@ import { useChainId } from "lib/chains";
 import { cn } from "utils/classname";
 import useWallet from "lib/wallets/useWallet";
 
-const { AddressZero } = ethers.constants;
+
 
 export const useStakeAGXContract = (chainId) => {
   const { active, signer, account } = useWallet();
@@ -42,39 +41,6 @@ const tags = [
   { duration: "1 month", days: 30, multiplier: "1x" },
 ];
 
-const fetchStakedAGXs = async (account) => {
-  const query = `
-    query($account: String!) {
-      stakeAGXs(where: {owner: $account}) {
-        id
-        owner
-        period
-        startTime
-        amount
-      }
-    }
-  `;
-  const response = await fetch(STAKER_SUBGRAPH_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      query,
-      variables: { account },
-    }),
-  });
-  const { data } = await response.json();
-  return data.stakeAGXs;
-};
-
-const useStakedAGXs = (account) => {
-  return useQuery({
-    queryKey: ["stakedAGXs", account],
-    queryFn: () => fetchStakedAGXs(account),
-    enabled: !!account,
-  });
-};
 export function useAGXBalance(account, chainId) {
   const contract = useAGXContract(chainId);
 
@@ -107,7 +73,7 @@ const useApproveAGX = (account, chainId) => {
   const stakeContract = useStakeAGXContract(chainId);
   const contract = useAGXContract(chainId);
   return useMutation({
-    mutationFn: async (amount) => {
+    mutationFn: async (amount:any) => {
       const tx = await contract.approve(stakeContract.address, ethers.constants.MaxUint256);
       await tx.wait();
     },
@@ -121,7 +87,7 @@ const useStakeAGX = (account, chainId) => {
   const queryClient = useQueryClient();
   const contract = useStakeAGXContract(chainId);
   return useMutation({
-    mutationFn: async ({ amount, period }:any) => {
+    mutationFn: async ({ amount, period }: any) => {
       const formattedAmount = ethers.utils.parseEther(amount);
       const tx = await contract.stake(formattedAmount, period);
       await tx.wait();
@@ -142,8 +108,6 @@ const useUnstakeAGX = (chainId) => {
   });
 };
 
-
-
 const stakeSchema = z.object({
   amount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
     message: "Please enter a valid amount",
@@ -159,7 +123,6 @@ export function StakingModal(props) {
   const { data: balance, isLoading: isLoadingBalance } = useAGXBalance(account, chainId);
   const { data: allowance } = useAGXAllowance(account, chainId);
 
-
   const { isVisible, setIsVisible, data } = props;
   const [selectedTag, setSelectedTag] = useState<any>(tags[0]);
 
@@ -167,6 +130,7 @@ export function StakingModal(props) {
     register,
     handleSubmit,
     formState: { errors, isValid },
+    watch,
   } = useForm({
     resolver: zodResolver(stakeSchema),
     mode: "onChange",
@@ -177,14 +141,18 @@ export function StakingModal(props) {
   };
   const onSubmit = async (data) => {
     const { amount } = data;
-    const amountInWei = ethers.utils.parseEther(amount);
-
-    if (allowance.lt(amountInWei)) {
-      await approveAGX(amount);
-    }
-
     await stakeAGX({ amount, period: selectedTag.days * 86400 });
   };
+
+   const handleApprove = async () => {
+     const amountInWei = ethers.utils.parseEther(amount);
+     await approveAGX(amountInWei);
+   };
+
+   const amount = watch("amount");
+   const amountInWei = amount ? ethers.utils.parseEther(amount) : ethers.constants.Zero;
+   const showApproveButton = !allowance || allowance.lt(amountInWei);
+
   if (!isVisible) return null;
   return (
     <Dialog open={isVisible}>
@@ -269,14 +237,26 @@ export function StakingModal(props) {
                 </div>
               ))}
             </div>
-            <Button
-              type="submit"
-              variant="primary"
-              className="justify-center items-center px-16 py-4 !text-lg leading-6 text-center text-black whitespace-nowrap rounded-md max-md:px-5 max-md:max-w-full font-bold"
-              loading={isPending || isApproving}
-            >
-              Confirm
-            </Button>
+            {showApproveButton ? (
+              <Button
+                type="button"
+                variant="primary"
+                className="justify-center items-center px-16 py-4 !text-lg leading-6 text-center text-black whitespace-nowrap rounded-md max-md:px-5 max-md:max-w-full font-bold"
+                loading={isApproving}
+                onClick={handleApprove}
+              >
+                Approve
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                variant="primary"
+                className="justify-center items-center px-16 py-4 !text-lg leading-6 text-center text-black whitespace-nowrap rounded-md max-md:px-5 max-md:max-w-full font-bold"
+                loading={isPending || isApproving}
+              >
+                Confirm
+              </Button>
+            )}
           </div>
         </form>
       </DialogContent>

@@ -1,7 +1,4 @@
 /* eslint-disable react/hook-use-state */
-import _ from "lodash";
-
-import "./StakeV2.css";
 import axios from "axios";
 
 import { STAKER_SUBGRAPH_URL, SWAP_SUBGRAPH_URL } from "config/subgraph";
