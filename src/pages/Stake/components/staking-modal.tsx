@@ -8,19 +8,13 @@ import StakeAGX from "abis/StakeAGX.json";
 
 import { Contract, ethers } from "ethers";
 
-
 import { getContract } from "config/contracts";
 
 import Button from "components/Button/Button";
 
 import { STAKER_SUBGRAPH_URL } from "config/subgraph";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components/ui/dialog";
 import { X } from "lucide-react";
 import { useChainId } from "lib/chains";
 import { cn } from "utils/classname";
@@ -28,19 +22,17 @@ import useWallet from "lib/wallets/useWallet";
 
 const { AddressZero } = ethers.constants;
 
-
 export const useStakeAGXContract = (chainId) => {
   const { active, signer, account } = useWallet();
   const stakeAGXAddress = getContract(chainId, "StakeAGX");
   return new Contract(stakeAGXAddress, StakeAGX.abi, signer);
 };
 
-export const useAGXContract=(chainId)=>{
+export const useAGXContract = (chainId) => {
   const { active, signer, account } = useWallet();
   const AGXAddress = getContract(chainId, "AGX");
   return new Contract(AGXAddress, Token.abi, signer);
-
-}
+};
 
 const tags = [
   { duration: "12 months", days: 360, multiplier: "5x" },
@@ -83,7 +75,7 @@ const useStakedAGXs = (account) => {
     enabled: !!account,
   });
 };
-function useAGXBalance(account, chainId) {
+export function useAGXBalance(account, chainId) {
   const contract = useAGXContract(chainId);
 
   return useQuery({
@@ -137,7 +129,7 @@ const useStakeAGX = (account, chainId) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["agxBalance", account, chainId] });
-    }
+    },
   });
 };
 
@@ -181,31 +173,35 @@ const stakeSchema = z.object({
     message: "Please enter a valid amount",
   }),
 });
+
 export function StakingModal(props) {
   const { chainId } = useChainId();
   const { active, signer, account } = useWallet();
   const { data: stakedAGXs, isLoading: isLoadingStakedAGXs } = useStakedAGXs(account);
-  const { mutate: approveAGX, isPending:isApproving } = useApproveAGX(account, chainId);
+  const { mutate: approveAGX, isPending: isApproving } = useApproveAGX(account, chainId);
   const { mutate: stakeAGX, isPending } = useStakeAGX(account, chainId);
   const { mutate: unstakeAGX } = useUnstakeAGX(chainId);
   const { data: balance, isLoading: isLoadingBalance } = useAGXBalance(account, chainId);
   const { data: allowance, isLoading: isLoadingAllowance } = useAGXAllowance(account, chainId);
   const { data: claimableReward, isLoading: isLoadingClaimableReward } = useClaimableReward(account, chainId);
   const { mutate: claimReward } = useClaimReward(chainId);
+
+  //view
+
   const { isVisible, setIsVisible, data } = props;
   const [selectedTag, setSelectedTag] = useState<any>(tags[0]);
 
-   const {
-     register,
-     handleSubmit,
-     formState: { errors, isValid },
-   } = useForm({
-     resolver: zodResolver(stakeSchema),
-     mode: "onChange",
-   });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
+    resolver: zodResolver(stakeSchema),
+    mode: "onChange",
+  });
 
   const handleClickTag = (tag) => {
-       setSelectedTag(tag);
+    setSelectedTag(tag);
   };
   const onSubmit = async (data) => {
     const { amount } = data;
@@ -244,7 +240,7 @@ export function StakingModal(props) {
                   {isLoadingBalance ? (
                     <span>Loading...</span>
                   ) : (
-                    <span>{Number(ethers.utils.formatEther(balance)).toFixed(2)} AGX</span>
+                    <span>{Number(ethers.utils.formatEther(balance || 0)).toFixed(2)} AGX</span>
                   )}
                 </div>
               </div>
@@ -312,6 +308,5 @@ export function StakingModal(props) {
     </Dialog>
   );
 }
-
 
 export default StakingModal;
