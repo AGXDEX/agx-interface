@@ -8,7 +8,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import logoImg from "img/logo_GMX.svg";
 import { useQueryClient } from "@tanstack/react-query";
 import useWallet from "lib/wallets/useWallet";
-import { fetchNFTData, fetchPositions, fetchStakeLiquidity } from "pages/Stake/StakeV2";
+import { fetchPositions, fetchNFTData, fetchStakeLiquidity } from "pages/Stake/hooks/services";
 
 type Props = {
   small?: boolean;
