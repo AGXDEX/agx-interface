@@ -51,100 +51,15 @@ import { DepositTooltipContent } from "components/Synthetics/MarketsList/Deposit
 import { ClaimAllModal, ClaimHistoryModal, DepositModal, UnstakeModal } from "./components/modals";
 
 import noNFT from "img/noNFT.svg";
-import { STAKER_SUBGRAPH_URL, SWAP_SUBGRAPH_URL } from "config/subgraph";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { STAKER_SUBGRAPH_URL } from "config/subgraph";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { cn } from "utils/classname";
 import StakingModal, { useAGXBalance, useStakeAGXContract } from "./components/staking-modal";
+import { fetchNFTData, fetchStakeLiquidity, fetchNFTClaimed, fetchTotalReward, fetchPositions, fetchPoolData, fetchStakedAGXs } from "./hooks/services";
 
 const EXTERNAL_LINK_CHAIN_CONFIG = process.env.REACT_APP_ENV === "development" ? "nova_sepolia" : "nova_mainnet";
 
-export const fetchPositions = async ({ queryKey }) => {
-  const [, account] = queryKey;
-  if (!account) return;
 
-  const response = await axios.post(STAKER_SUBGRAPH_URL, {
-    query: `{
-      positions(where: { owner: "${account}" }) {
-        tokenId
-        owner
-        staked
-        liquidity
-      }
-    }`,
-  });
-
-  return response.data.data.positions;
-};
-
-export const fetchNFTData = async (account) => {
-  const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
-    query: `{
-      nfts(where: {owner: "${account}"}) {
-        tokenId
-        owner
-      }
-    }`,
-  });
-
-  return data.data.nfts.map((item) => Number(item.tokenId));
-};
-
-export const fetchStakeLiquidity = async () => {
-  const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
-    query: `{
-      incentives {
-        liquidity
-      }
-    }`,
-  });
-
-  return data.data.incentives[0].liquidity;
-};
-
-export const fetchNFTClaimed = async () => {
-  const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
-    query: `{
-      incentives {
-        id
-        liquidity
-        claimedToken
-      }
-    }`,
-  });
-
-  return data.data.incentives[0].claimedToken;
-};
-
-const fetchTotalReward = async (account) => {
-  const { data } = await axios.post(STAKER_SUBGRAPH_URL, {
-    query: `{
-      totalRewards(where: {owner: "${account}"}) {
-        owner
-        reward
-      }
-    }`,
-  });
-
-  return data.data.totalRewards[0]?.reward;
-};
-
-const fetchPoolData = async (poolAddress) => {
-  if (!poolAddress) return null;
-
-  const { data } = await axios.post(SWAP_SUBGRAPH_URL, {
-    query: `{
-      pool(id: "${poolAddress.toLowerCase()}") {
-        token0 { id }
-        token1 { id }
-        liquidity
-        totalValueLockedToken0
-        totalValueLockedToken1
-      }
-    }`,
-  });
-
-  return data.data.pool;
-};
 
 export default function StakeV2() {
   const queryClient = useQueryClient();
@@ -163,7 +78,7 @@ export default function StakeV2() {
   const [stakingFarmAddress, setStakingFarmAddress] = useState("");
   const [stakeMethodName, setStakeMethodName] = useState("");
 
-  const [selectTab, setselectTab] = useState("Pool2");
+  const [selectTab, setselectTab] = useState("Staking");
   const [isUnstaking, setIsUnstakeLoading] = useState(false);
   const [isStaking, setIsStaking] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
@@ -686,7 +601,7 @@ export default function StakeV2() {
   const useTotalClaim = (chainId) => {
     const contract = useStakeAGXContract(chainId);
     return useQuery({
-      queryKey: ["totalClaim", chainId],
+      queryKey: ["totalStakingClaim", chainId],
       queryFn: () => fetchTotalClaim(contract),
       enabled: !!chainId,
     });
@@ -814,11 +729,58 @@ export default function StakeV2() {
   const { data: userTotalStakedWithoutMultiplier } = useUserTotalStakedWithoutMultiplier(account, chainId);
   const { data: avgMultiplier } = useAvgMultiplier(account, chainId);
 
-  const { data: balance, isLoading: isLoadingBalance } = useAGXBalance(account, chainId);
+  const { data: balance } = useAGXBalance(account, chainId);
   const { data: totalStakingReward } = useTotalStakingReward(account);
 
   const { data: claimableReward } = useClaimableReward(account, chainId);
 
+  const useStakedAGXs = (account) => {
+    return useQuery({
+      queryKey: ["stakedAGXs", account],
+      queryFn: () => fetchStakedAGXs(account),
+      enabled: !!account,
+    });
+  };
+
+  const { data: stakedAGXs } = useStakedAGXs(account);
+
+  const useUnstakeAGX = (chainId) => {
+    const contract = useStakeAGXContract(chainId);
+    return useMutation({
+      mutationFn: async (id) => {
+        const tx = await contract.unStake(id);
+        await tx.wait();
+      },
+    });
+  };
+
+  const UnstakeButton = ({ stake, chainId }) => {
+    const { mutate: unstake, isPending: isLoading } = useUnstakeAGX(chainId);
+
+    const startTime = new Date(Number(stake.startTime) * 1000);
+    const period = Number(stake.period) * 1000;
+    const endTime = new Date(startTime.getTime() + period);
+
+    const isUnstakeAvailable = Date.now() >= endTime.getTime();
+    if (isUnstakeAvailable) return null;
+    return (
+      <button onClick={() => unstake(stake.id)} disabled={!isUnstakeAvailable || isLoading}>
+        {isUnstakeAvailable ? "Unstake" : "Staking"}
+      </button>
+    );
+  };
+
+  const StakeList = () => {
+    return (
+      <ul>
+        {stakedAGXs?.map((stake) => (
+          <li key={stake.id}>
+            <UnstakeButton stake={stake} chainId={chainId} />
+          </li>
+        ))}
+      </ul>
+    );
+  };
   return (
     <div className="default-container page-layout">
       <ClaimHistoryModal
@@ -1036,16 +998,16 @@ export default function StakeV2() {
               <div className="StakeV2-stakeTitle padLeft">Overview</div>
               <div className={cx("mobileBox", { ishide: selectTab !== "Staking", show: selectTab === "Staking" })}>
                 <div className="StakeV2-fomBox">
-                  <div className="StakeV2-tit">Stake APR</div>
+                  <div className="StakeV2-tit">Max APR</div>
                   <div>{maxAPR}</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Staked AGX</div>
-                  <div>{totalStakedWithoutMultiplier}</div>
+                  <div>{Number(Number(totalStakedWithoutMultiplier)?.toFixed(2)).toLocaleString()} AGX</div>
                 </div>
                 <div className="StakeV2-fomBox">
-                  <div className="StakeV2-tit">Total Staking Reward</div>
-                  <div>{Number(Number(totalStakingClaim)?.toFixed(2)).toLocaleString()}</div>
+                  <div className="StakeV2-tit">Total Staking Rewards</div>
+                  <div>{Number(Number(totalStakingClaim)?.toFixed(2)).toLocaleString()} AGX</div>
                 </div>
               </div>
               <div className={cx("mobileBox", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
@@ -1073,28 +1035,24 @@ export default function StakeV2() {
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">AGX</div>
                   <div>
-                    {isLoadingBalance ? (
-                      <span>Loading...</span>
-                    ) : (
-                      <span>{Number(ethers.utils.formatEther(balance || 0)).toFixed(2)} AGX</span>
-                    )}
+                    <span>{Number(ethers.utils.formatEther(balance || 0)).toFixed(2)} AGX</span>
                   </div>
+                </div>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Staked AGX</div>
+                  <div>{userTotalStakedWithoutMultiplier} AGX</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Avg Multiplier</div>
                   <div>{avgMultiplier}</div>
                 </div>
                 <div className="StakeV2-fomBox">
-                  <div className="StakeV2-tit">Staked AGX</div>
-                  <div>{userTotalStakedWithoutMultiplier}</div>
-                </div>
-                <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Total Reward</div>
-                  <div>{Number(Number(totalStakingReward)?.toFixed(2)).toLocaleString()}</div>
+                  <div>{Number(Number(totalStakingReward)?.toFixed(2)).toLocaleString()} AGX</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Claimable Rewards</div>
-                  <div>{Number(ethers.utils.formatEther(claimableReward || 0)).toFixed(2)}</div>
+                  <div>{Number(ethers.utils.formatEther(claimableReward || 0)).toFixed(2)} AGX</div>
                 </div>
               </div>
               <div className={cx("mobileBox", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
@@ -1105,12 +1063,12 @@ export default function StakeV2() {
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Total Reward</div>
                   <div>
-                    {(isNaN(Number(totalReward)) ? 0 : Number(totalReward) / 10 ** 18).toFixed(2).toLocaleString()}
+                    {(isNaN(Number(totalReward)) ? 0 : Number(totalReward) / 10 ** 18).toFixed(2).toLocaleString()} AGX
                   </div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Claimable Rewards</div>
-                  <div>{Pool2Rewards && (Number(Pool2Rewards) / 10 ** 18).toFixed(2).toLocaleString()}</div>
+                  <div>{Pool2Rewards && (Number(Pool2Rewards) / 10 ** 18).toFixed(2).toLocaleString()} AGX</div>
                 </div>
               </div>
             </div>

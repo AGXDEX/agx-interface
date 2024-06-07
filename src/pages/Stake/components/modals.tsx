@@ -102,6 +102,7 @@ function ClaimAllModal(props) {
   const { data: claimableReward, isLoading: isLoadingClaimableReward } = useClaimableReward(account, chainId);
 
   const useClaimReward = (chainId) => {
+    const queryClient = useQueryClient();
     const contract = useStakeAGXContract(chainId);
     return useMutation({
       mutationFn: async () => {
@@ -109,6 +110,8 @@ function ClaimAllModal(props) {
         await tx.wait();
       },
       onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["totalStakingClaim", chainId] });
+        queryClient.invalidateQueries({ queryKey: ["totalStakedWithoutMultiplier", chainId] });
         setIsDeposit(false);
         setIsVisible(false);
       }
@@ -137,15 +140,6 @@ function ClaimAllModal(props) {
     } else if (tokenId === "Staking") {
       setIsDeposit(true);
       claimReward();
-      // callContract(chainId, contract, "claimReward", [AGXAddress, account, Pool2Rewards.toNumber()], {
-      //   sentMsg: t`Claim submitted.`,
-      //   failMsg: t`Claim failed.`,
-      //   successMsg: t`Claim completed!`,
-      //   setPendingTxns,
-      // }).finally(() => {
-      //   setIsDeposit(false);
-      //   setIsVisible(false);
-      // });
     } else {
       setIsDeposit(true);
       const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
