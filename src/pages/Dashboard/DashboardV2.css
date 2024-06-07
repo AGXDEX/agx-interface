@@ -131,7 +131,10 @@
 .token-symbol-text {
   line-height: 1;
 }
-
+.show-title:hover .five-title{
+  display: inline-flex;
+  align-items: center;
+}
 .mobile-token-card > img {
   margin-right: 0.8rem;
 }

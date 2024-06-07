@@ -51,7 +51,7 @@ import { DepositTooltipContent } from "components/Synthetics/MarketsList/Deposit
 import { ClaimAllModal, ClaimHistoryModal, DepositModal } from "./components/modals";
 
 import noNFT from "img/noNFT.svg";
-import { STAKER_SUBGRAPH_URL } from "config/subgraph";
+import { STAKER_SUBGRAPH_URL, lrt_points_URL } from "config/subgraph";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { cn } from "utils/classname";
 import StakingModal, { StakeList, useAGXBalance, useStakeAGXContract } from "./components/staking-modal";
@@ -79,7 +79,9 @@ export default function StakeV2() {
   const [stakingTokenAddress, setStakingTokenAddress] = useState("");
   const [stakingFarmAddress, setStakingFarmAddress] = useState("");
   const [stakeMethodName, setStakeMethodName] = useState("");
-
+  const [pufferPoints, setpufferPoints] = useState(0);
+  const [novaPoints, setnovaPoints] = useState(0);
+  
   const [selectTab, setselectTab] = useState("Staking");
   const [isUnstaking, setIsUnstakeLoading] = useState(false);
   const [isStaking, setIsStaking] = useState(false);
@@ -105,6 +107,33 @@ export default function StakeV2() {
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const wrappedTokenSymbol = getConstant(chainId, "wrappedTokenSymbol");
 
+  const params = {
+    address: account,
+    project: 'agx'
+  };
+    axios.get(lrt_points_URL + '/project', { params })
+    .then(response => {
+      let sum = 0
+      response.data.data.map((item)=>{
+        sum += Number(item.response.data.data)
+      })
+      setnovaPoints(sum)
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
+  const param = {
+    address: account,
+    tokenAddress: AGXAddress
+  };
+    axios.get(lrt_points_URL + '/puffer', { params: param })
+    .then(response => {
+      // console.log(response.data)
+      setpufferPoints(response.data.data)
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
   const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
     fetcher: contractFetcher(signer, GlpManager),
   });
@@ -955,19 +984,36 @@ export default function StakeV2() {
         </div>
 
         <div className="App-card App-card-space-between StakeV2-content">
-          <div className="StakeV2-title">Accumlate Points</div>
+          <div className="StakeV2-title">
+            <TooltipWithPortal
+              renderContent={() => {
+                return <>Points fairly distribute to ALP holders base on "centralized points pool" mode. <a
+                target="_blank"
+                href={`https://docs.agx.xyz/tokenomics/points-system`}
+              >
+                Read more &gt;&gt;
+              </a></>;
+              }}
+            >
+              Accumlate Points
+            </TooltipWithPortal>
+          </div>
           <div className="StakeV2-box">
             <div className="flex w-full items-center">
-              <div className="StakeV2-claimNum">0.0</div>
+              <div className="StakeV2-claimNum">0.00</div>
               <div className="flex h-full pb-5 items-end pl-4">Eigen Layer Points</div>
             </div>
             <div className="flex w-full items-center">
-              <div className="StakeV2-claimNum">0.0</div>
+              <div className="StakeV2-claimNum">{Number(pufferPoints)? Number(Number(pufferPoints).toFixed(2)).toLocaleString(): '0.00'}</div>
               <div className="flex h-full pb-5 items-end pl-4">Puffer Points</div>
             </div>
             <div className="flex w-full items-center">
-              <div className="StakeV2-claimNum">0.0</div>
-              <div className="flex h-full pb-5 items-end pl-4">Zklink Points</div>
+              <div className="StakeV2-claimNum">{Number(novaPoints)? Number(Number(novaPoints).toFixed(2)).toLocaleString(): '0.00'}</div>
+              <div className="flex h-full pb-5 items-end pl-4">Nova Points</div>
+            </div>
+            <div className="flex w-full items-center">
+              <div className="StakeV2-claimNum">0.00</div>
+              <div className="flex h-full pb-5 items-end pl-4">ETH.fi Points</div>
             </div>
           </div>
         </div>

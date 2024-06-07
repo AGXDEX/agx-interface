@@ -11,7 +11,10 @@ export const SWAP_SUBGRAPH_URL =
   process.env.REACT_APP_ENV === "development"
     ? "https://sepolia.graph.zklink.io/subgraphs/name/novasap-subgraph"
     : "https://graph.zklink.io/subgraphs/name/novaswap";
-
+ export const lrt_points_URL =
+  process.env.REACT_APP_ENV === "development"
+    ? "https://app-api.zklink.io/lrt-points/nova/points"
+    : "https://app-api.zklink.io/lrt-points/nova/points";
 
 const SUBGRAPH_URLS = {
   [ARBITRUM]: {

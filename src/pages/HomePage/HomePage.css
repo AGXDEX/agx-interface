@@ -10,9 +10,16 @@
   position: relative;
 }
 .home-container .home-header .hero{
+  width: 50%;
   position: absolute;
   right: 0;
   bottom: 60px;
+}
+.home-container .home-header .heros{
+  width: 65%;
+  position: absolute;
+  right: -13%;
+  bottom: -95px;
 }
 .home-container .home-header .Ellipse{
   width: 50%;
@@ -476,6 +483,10 @@
 }
 .home-container .main .box .protoool{
   width: 100%;
+}
+.home-container .main .box  .maxWidth{
+  width: 120%;
+  max-width: 120%;
 }
 .home-container .main .box .fairBox .startTrade{
   position: relative;
