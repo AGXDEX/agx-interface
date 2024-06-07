@@ -198,6 +198,7 @@ export default function GlpSwap(props) {
 
   const [swapValue, setSwapValue] = useState("");
   const [glpValue, setGlpValue] = useState("");
+  const [isHovered, setIsHovered] = useState(false);
   const [swapTokenAddress, setSwapTokenAddress] = useLocalStorageByChainId(
     chainId,
     `${swapLabel}-swap-token-address`,

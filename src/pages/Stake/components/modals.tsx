@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import { useState } from "react";
-
 import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
 // import NModal as Modal from "components/ui/Modal";
@@ -37,24 +36,37 @@ import { bigNumberify, formatAmount, formatAmountFree, limitDecimals, parseValue
 // import "../Stake.css";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import axios from "axios";
 
 import { approveTokens } from "domain/tokens";
-import { STAKER_SUBGRAPH_URL } from "config/subgraph";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 // import { UiModal } from "components/ui/Modal";
-import { displayAddress, displayTransactionHash, formatTimestamp } from "utils/formatter";
+import { displayTransactionHash, formatTimestamp } from "utils/formatter";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "components/ui/dialog";
 import { X } from "lucide-react";
 import { getExplorerUrl } from "config/chains";
 import { useChainId } from "lib/chains";
+import { useStakeAGXContract } from "./staking-modal";
+
+const fetchClaimableReward = async (contract, account) => {
+  const reward = await contract.claimable(account);
+  return reward.toString();
+};
+
+const useClaimableReward = (account, chainId) => {
+  const contract = useStakeAGXContract(chainId);
+  return useQuery({
+    queryKey: ["claimableReward", account, chainId],
+    queryFn: () => fetchClaimableReward(contract, account),
+    enabled: !!account && !!chainId,
+    refetchInterval: 10000,
+  });
+};
+
 
 const { AddressZero } = ethers.constants;
 function ClaimAllModal(props) {
@@ -87,6 +99,27 @@ function ClaimAllModal(props) {
   const ALPAddress = getContract(chainId, "ALP");
   const AGXAddress = getContract(chainId, "AGX");
 
+  const { data: claimableReward, isLoading: isLoadingClaimableReward } = useClaimableReward(account, chainId);
+
+  const useClaimReward = (chainId) => {
+    const queryClient = useQueryClient();
+    const contract = useStakeAGXContract(chainId);
+    return useMutation({
+      mutationFn: async () => {
+        const tx = await contract.claim();
+        await tx.wait();
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["totalStakingClaim", chainId] });
+        queryClient.invalidateQueries({ queryKey: ["totalStakedWithoutMultiplier", chainId] });
+        setIsDeposit(false);
+        setIsVisible(false);
+      }
+    });
+  };
+
+  const { mutateAsync: claimReward } = useClaimReward(chainId);
+
   const [isDeposit, setIsDeposit] = useState(false);
   const goDeposit = () => {
     if (isDeposit || !tokenId) {
@@ -106,16 +139,7 @@ function ClaimAllModal(props) {
       });
     } else if (tokenId === "Staking") {
       setIsDeposit(true);
-      const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
-      callContract(chainId, contract, "claimReward", [AGXAddress, account, Pool2Rewards.toNumber()], {
-        sentMsg: t`Claim submitted.`,
-        failMsg: t`Claim failed.`,
-        successMsg: t`Claim completed!`,
-        setPendingTxns,
-      }).finally(() => {
-        setIsDeposit(false);
-        setIsVisible(false);
-      });
+      claimReward();
     } else {
       setIsDeposit(true);
       const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
@@ -147,7 +171,12 @@ function ClaimAllModal(props) {
                 </span>
               </Checkbox>
             </div>
-            <div>0 AGX</div>
+            <div>
+              {Number(Number(ethers.utils.formatEther(claimableReward || 0))
+                .toFixed(2))
+                .toLocaleString()}
+              AGX
+            </div>
           </div>
           <div className="tabBox">
             <div>
@@ -255,8 +284,7 @@ function DepositModal(props) {
               const selectedDepBase = baseUriList[0][tokenIndex];
               return [[...prevNFTlist[0], selectedDepBase], updatedList];
             }
-          }
-          else {
+          } else {
             return [prevNFTlist[0], [formattedId]];
           }
           return prevNFTlist;
@@ -565,13 +593,14 @@ function UnstakeModal(props) {
           showMaxButton={false}
         >
           <div className="Stake-modal-icons">
-            <img
+            {/* <img
               className="mr-xs icon"
               height="22"
-              src={icons[unstakingTokenSymbol.toLowerCase()]}
+              src={icons[unstakingTokenSymbol?.toLowerCase()]}
               alt={unstakingTokenSymbol}
-            />
-            {unstakingTokenSymbol}
+            /> */}
+            test
+            {/* {unstakingTokenSymbol} */}
           </div>
         </BuyInputSele>
         {reservedAmount && reservedAmount.gt(0) && (
@@ -1252,6 +1281,19 @@ function ClaimModal(props) {
 export function ClaimHistoryModal(props) {
   const { chainId } = useChainId();
   const { isVisible, setIsVisible, data } = props;
+
+  const renderType=(_type)=>{
+    switch (Number(_type)) {
+      case 1:
+        return "Pool2 mining";
+      case 2:
+        return "Liquidity mining";
+      case 3:
+        return "Staking";
+      default:
+        return "Unknown";
+    }
+  }
   if (!isVisible) return null;
   return (
     <Dialog open={isVisible}>
@@ -1307,7 +1349,7 @@ export function ClaimHistoryModal(props) {
                 {data?.map((item, index) => (
                   <tr key={index}>
                     <td className="px-6 py-4 whitespace-nowrap text-2xl text-white">
-                      {Number(item.type) === 1 ? "Pool2 mining" : "Liquidity mining"}
+                      {renderType(Number(item.type))}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-2xl text-white">
                       {formatAmount(ethers.BigNumber.from(item.amount), 18, 4, true)} AGX
