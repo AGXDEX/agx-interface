@@ -116,7 +116,22 @@ export default function StakeV2() {
     fetcher: contractFetcher(signer, YieldTracker, [account]),
   });
 
-  const emissionData = getEmissionData(Number(startTime?.toString()));
+  function useStakeAGXStartTime(chainId) {
+  const stakeAGXContract = useStakeAGXContract(chainId);
+
+  return useQuery({
+    queryKey: ["stakeAGXStartTime", chainId],
+    queryFn: async () => {
+      const startTime = await stakeAGXContract.startTime();
+      return startTime;
+    },
+    enabled: !!chainId,
+  })
+}
+
+  const { data: stakingAGXStartTime, isLoading, isError } = useStakeAGXStartTime(chainId);
+
+  const emissionData = getEmissionData(Number(startTime?.toString()), Number(stakingAGXStartTime?.toString()));
 
   let hasMultiplierPoints = false;
 
@@ -665,6 +680,7 @@ export default function StakeV2() {
     return avgMultiplier.toFixed(2);
   };
 
+
   const useAvgMultiplier = (account, chainId) => {
     const contract = useStakeAGXContract(chainId);
     return useQuery({
@@ -734,53 +750,9 @@ export default function StakeV2() {
 
   const { data: claimableReward } = useClaimableReward(account, chainId);
 
-  const useStakedAGXs = (account) => {
-    return useQuery({
-      queryKey: ["stakedAGXs", account],
-      queryFn: () => fetchStakedAGXs(account),
-      enabled: !!account,
-    });
-  };
 
-  const { data: stakedAGXs } = useStakedAGXs(account);
 
-  const useUnstakeAGX = (chainId) => {
-    const contract = useStakeAGXContract(chainId);
-    return useMutation({
-      mutationFn: async (id) => {
-        const tx = await contract.unStake(id);
-        await tx.wait();
-      },
-    });
-  };
 
-  const UnstakeButton = ({ stake, chainId }) => {
-    const { mutate: unstake, isPending: isLoading } = useUnstakeAGX(chainId);
-
-    const startTime = new Date(Number(stake.startTime) * 1000);
-    const period = Number(stake.period) * 1000;
-    const endTime = new Date(startTime.getTime() + period);
-
-    const isUnstakeAvailable = Date.now() >= endTime.getTime();
-    if (isUnstakeAvailable) return null;
-    return (
-      <button onClick={() => unstake(stake.id)} disabled={!isUnstakeAvailable || isLoading}>
-        {isUnstakeAvailable ? "Unstake" : "Staking"}
-      </button>
-    );
-  };
-
-  const StakeList = () => {
-    return (
-      <ul>
-        {stakedAGXs?.map((stake) => (
-          <li key={stake.id}>
-            <UnstakeButton stake={stake} chainId={chainId} />
-          </li>
-        ))}
-      </ul>
-    );
-  };
   return (
     <div className="default-container page-layout">
       <ClaimHistoryModal
@@ -788,7 +760,7 @@ export default function StakeV2() {
         setIsVisible={setIsClaimHistoryModalVisible}
         data={claimHistories}
       />
-      <UnstakeModal isVisible={false} />
+      {/* <UnstakeModal isVisible={false} /> */}
       <StakingModal isVisible={isStakingModalVisible} setIsVisible={setIsStakingModalVisible} data={claimHistories} />
       <ClaimAllModal
         isVisible={claimModalVisible}

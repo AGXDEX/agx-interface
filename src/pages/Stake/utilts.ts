@@ -11,29 +11,43 @@ const accumulateData = [
   4583333.333, 5000000, 5416666.667, 5833333.333, 6250000, 6666666.667, 7083333.333, 7500000, 7916666.667, 8333333.333,
   8750000, 9166666.667, 9583333.333, 10000000,
 ];
+const stakingAgxAccumulateData = [
+  200000.0, 398000.0, 594020.0, 788079.8, 980199.0, 1170397.01, 1358693.04, 1545106.11, 1729655.05, 1912358.5,
+  2093234.91, 2272302.57, 2449579.54, 2625083.74, 2798832.91, 2970844.58, 3141136.13, 3309724.77, 3476627.52,
+  3641861.25, 3805442.64, 3967388.21, 4127714.33, 4286437.18,
+];
 
 const currentTimestamp = Math.floor(Date.now() / 1000); // 获取当前时间戳
 const secondsPerWeek = 7 * 24 * 60 * 60; // 一周的秒数
 
-export function getEmissionData(startTimestamp) {
+export function getEmissionData(startTimestamp, stakingAgxStartTimestamp) {
   const currentWeek = Math.max(Math.floor((currentTimestamp - startTimestamp) / secondsPerWeek) + 1, 1);
+  const currentStakingAgxWeek = Math.max(
+    Math.floor((currentTimestamp - stakingAgxStartTimestamp) / secondsPerWeek) + 1,
+    1
+  );
 
   const index = Math.min(currentWeek, alpData.length) - 1;
+  const stakingAgxIndex = Math.min(currentStakingAgxWeek, stakingAgxAccumulateData.length) - 1;
 
   const totalAlpMiningAccumulate = alpData[index] || 0;
   const totalAccumulate = accumulateData[index] || 0;
+  const totalStakingAgxAccumulate = stakingAgxAccumulateData[stakingAgxIndex] || 0;
 
-  const totalEmissions = totalAlpMiningAccumulate + totalAccumulate;
+  const totalEmissions = totalAlpMiningAccumulate + totalAccumulate + totalStakingAgxAccumulate;
   const formattedEmissions = totalEmissions.toFixed(2);
   const localizedEmissions = Number(formattedEmissions).toLocaleString();
 
   return {
     week: currentWeek,
+    stakingAgxWeek: currentStakingAgxWeek,
     alpMiningAccumulate: totalAlpMiningAccumulate,
     accumulate: totalAccumulate,
+    stakingAgxAccumulate: totalStakingAgxAccumulate,
     totalEmissions: localizedEmissions,
   };
 }
+
 
 
 
