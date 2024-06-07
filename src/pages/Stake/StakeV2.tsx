@@ -52,9 +52,9 @@ import { ClaimAllModal, ClaimHistoryModal, DepositModal, UnstakeModal } from "./
 
 import noNFT from "img/noNFT.svg";
 import { STAKER_SUBGRAPH_URL } from "config/subgraph";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { cn } from "utils/classname";
-import StakingModal, { useAGXBalance, useStakeAGXContract } from "./components/staking-modal";
+import StakingModal, { StakeList, useAGXBalance, useStakeAGXContract } from "./components/staking-modal";
 import { fetchNFTData, fetchStakeLiquidity, fetchNFTClaimed, fetchTotalReward, fetchPositions, fetchPoolData, fetchStakedAGXs } from "./hooks/services";
 
 const EXTERNAL_LINK_CHAIN_CONFIG = process.env.REACT_APP_ENV === "development" ? "nova_sepolia" : "nova_mainnet";
@@ -1056,6 +1056,7 @@ export default function StakeV2() {
               <Trans>Stake AGX</Trans>
             </Button>
           </div>
+          {selectTab === "Staking" && <StakeList />}
           <div className="tolong">
             <div
               className={cx(
