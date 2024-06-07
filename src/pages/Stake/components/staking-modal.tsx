@@ -39,6 +39,7 @@ const tags = [
   { duration: "3 months", days: 90, multiplier: "3" },
   { duration: "2 months", days: 60, multiplier: "2" },
   { duration: "1 month", days: 30, multiplier: "1" },
+  // { duration: "1 second", days: 1 / 86400, multiplier: "1" },
 ];
 
 export function useAGXBalance(account, chainId) {
@@ -103,12 +104,20 @@ const useStakeAGX = (account, chainId) => {
   });
 };
 
-const useUnstakeAGX = (chainId) => {
+const useUnstakeAGX = (account, chainId) => {
+  const queryClient = useQueryClient();
   const contract = useStakeAGXContract(chainId);
   return useMutation({
     mutationFn: async (id: any) => {
       const tx = await contract.unStake(id);
       await tx.wait();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["agxBalance", account, chainId] });
+      queryClient.invalidateQueries({ queryKey: ["stakedAGXs", account] });
+    },
+    onError: (error) => {
+      console.error(error);
     },
   });
 };
@@ -159,7 +168,7 @@ const useStakedAGXs = (account) => {
 export function StakingModal(props) {
   const { chainId } = useChainId();
   const { account } = useWallet();
-  const { mutate: approveAGX, isPending: isApproving } = useApproveAGX(account, chainId);
+  const { mutateAsync: approveAGX, isPending: isApproving } = useApproveAGX(account, chainId);
   const { mutateAsync: stakeAGX, isPending } = useStakeAGX(account, chainId);
   const { data: balance, isLoading: isLoadingBalance } = useAGXBalance(account, chainId);
   const { data: allowance } = useAGXAllowance(account, chainId);
@@ -313,7 +322,7 @@ export function StakingModal(props) {
 
 const UnstakeButton = ({ stake, chainId }) => {
   const { account } = useWallet();
-  const { mutate: unstake, isPending: isLoading } = useUnstakeAGX(chainId);
+  const { mutateAsync: unstake, isPending: isLoading } = useUnstakeAGX(account, chainId);
 
   const startTime = new Date(Number(stake.startTime) * 1000);
   const period = Number(stake.period) * 1000;
@@ -321,7 +330,7 @@ const UnstakeButton = ({ stake, chainId }) => {
 
   const isUnstakeAvailable = Date.now() >= endTime.getTime();
 
-  const { data: reward, isLoading: isRewardLoading } = useStakeReward(stake, account, chainId);
+  const { data: reward } = useStakeReward(stake, account, chainId);
 
   return (
     <>
