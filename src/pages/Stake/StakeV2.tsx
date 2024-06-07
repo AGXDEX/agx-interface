@@ -59,7 +59,9 @@ import { fetchNFTData, fetchStakeLiquidity, fetchNFTClaimed, fetchTotalReward, f
 
 const EXTERNAL_LINK_CHAIN_CONFIG = process.env.REACT_APP_ENV === "development" ? "nova_sepolia" : "nova_mainnet";
 
-
+function formatValue(value) {
+  return isNaN(value) ? 0 : value;
+}
 
 export default function StakeV2() {
   const queryClient = useQueryClient();
@@ -647,7 +649,7 @@ export default function StakeV2() {
 
     const maxAPR = (rewardRateFormatted * 31536000) / totalStakedWithMultiplierFormatted / 5;
 
-    return `${(maxAPR * 100).toFixed(2)}%`;
+    return `${((maxAPR||0) * 100).toFixed(2)}%`;
   };
 
   const useMaxAPR = (chainId) => {
@@ -992,11 +994,13 @@ export default function StakeV2() {
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Staked AGX</div>
-                  <div>{Number(Number(totalStakedWithoutMultiplier)?.toFixed(2)).toLocaleString()} AGX</div>
+                  <div>
+                    {Number(formatValue(Number(totalStakedWithoutMultiplier))?.toFixed(2)).toLocaleString()} AGX
+                  </div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Total Staking Rewards</div>
-                  <div>{Number(Number(totalStakingClaim)?.toFixed(2)).toLocaleString()} AGX</div>
+                  <div>{Number(formatValue(Number(totalStakingClaim)?.toFixed(2))).toLocaleString()} AGX</div>
                 </div>
               </div>
               <div className={cx("mobileBox", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
@@ -1029,15 +1033,15 @@ export default function StakeV2() {
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Staked AGX</div>
-                  <div>{userTotalStakedWithoutMultiplier} AGX</div>
+                  <div>{formatValue(Number(userTotalStakedWithoutMultiplier) || 0)} AGX</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Avg Multiplier</div>
-                  <div>{avgMultiplier}x</div>
+                  <div>{formatValue(avgMultiplier)}x</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Total Reward</div>
-                  <div>{Number(Number(totalStakingReward)?.toFixed(2)).toLocaleString()} AGX</div>
+                  <div>{Number(formatValue(Number(totalStakingReward)?.toFixed(2))).toLocaleString()} AGX</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Claimable Rewards</div>
