@@ -160,7 +160,7 @@ export function StakingModal(props) {
   const { chainId } = useChainId();
   const { account } = useWallet();
   const { mutate: approveAGX, isPending: isApproving } = useApproveAGX(account, chainId);
-  const { mutate: stakeAGX, isPending } = useStakeAGX(account, chainId);
+  const { mutateAsync: stakeAGX, isPending } = useStakeAGX(account, chainId);
   const { data: balance, isLoading: isLoadingBalance } = useAGXBalance(account, chainId);
   const { data: allowance } = useAGXAllowance(account, chainId);
 

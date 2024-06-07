@@ -1016,7 +1016,7 @@ export default function StakeV2() {
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Avg Multiplier</div>
-                  <div>{avgMultiplier}</div>
+                  <div>{avgMultiplier}x</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Total Reward</div>
