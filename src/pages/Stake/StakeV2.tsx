@@ -48,7 +48,7 @@ import { getEmissionData, calculateManage } from "./utilts";
 
 import { DepositTooltipContent } from "components/Synthetics/MarketsList/DepositTooltipContent";
 
-import { ClaimAllModal, ClaimHistoryModal, DepositModal, UnstakeModal } from "./components/modals";
+import { ClaimAllModal, ClaimHistoryModal, DepositModal } from "./components/modals";
 
 import noNFT from "img/noNFT.svg";
 import { STAKER_SUBGRAPH_URL } from "config/subgraph";
@@ -59,7 +59,9 @@ import { fetchNFTData, fetchStakeLiquidity, fetchNFTClaimed, fetchTotalReward, f
 
 const EXTERNAL_LINK_CHAIN_CONFIG = process.env.REACT_APP_ENV === "development" ? "nova_sepolia" : "nova_mainnet";
 
-
+function formatValue(value) {
+  return isNaN(value) ? 0 : value;
+}
 
 export default function StakeV2() {
   const queryClient = useQueryClient();
@@ -117,17 +119,31 @@ export default function StakeV2() {
   });
 
   function useStakeAGXStartTime(chainId) {
-  const stakeAGXContract = useStakeAGXContract(chainId);
+    const stakeAGXContract = useStakeAGXContract(chainId);
 
-  return useQuery({
-    queryKey: ["stakeAGXStartTime", chainId],
-    queryFn: async () => {
-      const startTime = await stakeAGXContract.startTime();
-      return startTime;
-    },
-    enabled: !!chainId,
-  })
-}
+    return useQuery({
+      queryKey: ["stakeAGXStartTime", chainId],
+      queryFn: async () => {
+        const startTime = await stakeAGXContract.startTime();
+        return startTime;
+      },
+      enabled: !!chainId,
+    });
+  }
+
+  function useStakeAGXRewardRate(chainId) {
+    const stakeAGXContract = useStakeAGXContract(chainId);
+
+    return useQuery({
+      queryKey: ["stakeAGXRewardRate", chainId],
+      queryFn: async () => {
+        const rewardRate = await stakeAGXContract.rewardRate();
+        return rewardRate;
+      },
+      enabled: !!chainId,
+    });
+  }
+  //rewardRate
 
   const { data: stakingAGXStartTime, isLoading, isError } = useStakeAGXStartTime(chainId);
 
@@ -633,7 +649,7 @@ export default function StakeV2() {
 
     const maxAPR = (rewardRateFormatted * 31536000) / totalStakedWithMultiplierFormatted / 5;
 
-    return `${(maxAPR * 100).toFixed(2)}%`;
+    return `${((maxAPR||0) * 100).toFixed(2)}%`;
   };
 
   const useMaxAPR = (chainId) => {
@@ -679,7 +695,6 @@ export default function StakeV2() {
     const avgMultiplier = userTotalStakedWithMultiplierFormatted / userTotalStakedWithoutMultiplierFormatted;
     return avgMultiplier.toFixed(2);
   };
-
 
   const useAvgMultiplier = (account, chainId) => {
     const contract = useStakeAGXContract(chainId);
@@ -750,8 +765,12 @@ export default function StakeV2() {
 
   const { data: claimableReward } = useClaimableReward(account, chainId);
 
+  const { data: stakeAGXRewardRate } = useStakeAGXRewardRate(chainId);
 
+  const totalStakeAGXRewardRate = (Number(stakeAGXRewardRate) / 10 ** 18) * 86400;
+  const totalRewardRate=rewardRate && Number(((Number(rewardRate) / 10 ** 18) * 86400 + 59523));
 
+  const currentEmisionsSum = totalStakeAGXRewardRate + totalRewardRate;
 
   return (
     <div className="default-container page-layout">
@@ -869,7 +888,7 @@ export default function StakeV2() {
                 </TooltipWithPortal>
               </div>
               <div>
-                {rewardRate && Number(((Number(rewardRate) / 10 ** 18) * 86400 + 59523).toFixed(2)).toLocaleString()}
+                {(Number(currentEmisionsSum) || 0).toFixed(2).toLocaleString()}
                 /day
               </div>
             </div>
@@ -975,11 +994,13 @@ export default function StakeV2() {
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Staked AGX</div>
-                  <div>{Number(Number(totalStakedWithoutMultiplier)?.toFixed(2)).toLocaleString()} AGX</div>
+                  <div>
+                    {Number(formatValue(Number(totalStakedWithoutMultiplier))?.toFixed(2)).toLocaleString()} AGX
+                  </div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Total Staking Rewards</div>
-                  <div>{Number(Number(totalStakingClaim)?.toFixed(2)).toLocaleString()} AGX</div>
+                  <div>{Number(formatValue(Number(totalStakingClaim)?.toFixed(2))).toLocaleString()} AGX</div>
                 </div>
               </div>
               <div className={cx("mobileBox", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
@@ -1012,15 +1033,15 @@ export default function StakeV2() {
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Staked AGX</div>
-                  <div>{userTotalStakedWithoutMultiplier} AGX</div>
+                  <div>{formatValue(Number(userTotalStakedWithoutMultiplier) || 0)} AGX</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Avg Multiplier</div>
-                  <div>{avgMultiplier}x</div>
+                  <div>{formatValue(avgMultiplier)}x</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Total Reward</div>
-                  <div>{Number(Number(totalStakingReward)?.toFixed(2)).toLocaleString()} AGX</div>
+                  <div>{Number(formatValue(Number(totalStakingReward)?.toFixed(2))).toLocaleString()} AGX</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Claimable Rewards</div>
