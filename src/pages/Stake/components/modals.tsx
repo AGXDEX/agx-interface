@@ -118,7 +118,7 @@ function ClaimAllModal(props) {
     });
   };
 
-  const { mutate: claimReward } = useClaimReward(chainId);
+  const { mutateAsync: claimReward } = useClaimReward(chainId);
 
   const [isDeposit, setIsDeposit] = useState(false);
   const goDeposit = () => {
@@ -1281,6 +1281,19 @@ function ClaimModal(props) {
 export function ClaimHistoryModal(props) {
   const { chainId } = useChainId();
   const { isVisible, setIsVisible, data } = props;
+
+  const renderType=(_type)=>{
+    switch (Number(_type)) {
+      case 1:
+        return "Pool2 mining";
+      case 2:
+        return "Liquidity mining";
+      case 3:
+        return "Staking";
+      default:
+        return "Unknown";
+    }
+  }
   if (!isVisible) return null;
   return (
     <Dialog open={isVisible}>
@@ -1336,7 +1349,7 @@ export function ClaimHistoryModal(props) {
                 {data?.map((item, index) => (
                   <tr key={index}>
                     <td className="px-6 py-4 whitespace-nowrap text-2xl text-white">
-                      {Number(item.type) === 1 ? "Pool2 mining" : "Liquidity mining"}
+                      {renderType(Number(item.type))}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-2xl text-white">
                       {formatAmount(ethers.BigNumber.from(item.amount), 18, 4, true)} AGX
