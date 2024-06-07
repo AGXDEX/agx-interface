@@ -8,4 +8,5 @@ export const CANDLESTICK_CHART = {
   //   "https://dexscreener.com/ethereum/0x596192bB6e41802428Ac943D2f1476C1Af25CC0E?embed=1&theme=dark&trades=0&info=0",
   USDT: "https://dexscreener.com/bsc/0xD0e226f674bBf064f54aB47F42473fF80DB98CBA?embed=1&theme=dark&trades=0&info=0",
   USDC: "https://dexscreener.com/bsc/0xD0e226f674bBf064f54aB47F42473fF80DB98CBA?embed=1&theme=dark&trades=0&info=0",
+  weeth: "https://dexscreener.com/arbitrum/0xF4143962Ac5bD97dB16518aC2587d0247A826552?embed=1&theme=dark&trades=0&info=0",
 };

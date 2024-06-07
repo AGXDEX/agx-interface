@@ -238,6 +238,52 @@ const ChainToken: Token[] = [
       },
     ],
   },
+  {
+    name: "Wrapped eETH",
+    symbol: "weeth",
+    assetSymbol: "weeth",
+    decimals: 8,
+    address: "0xbEacb61e11940e38EAdCf41860b9ea31E2a90deC",
+    isShortable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/33033/standard/weETH.png?1701438396",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-eeth",
+    explorerUrl: "https://sepolia.explorer.zklink.io/address/0xE4152b2950Ef652daC9FDfAE61665Af40a13C623",
+    isV1Available: true,
+    l1Addresses: [
+      {
+        key: "ethereum",
+        address: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+      },
+      {
+        key: "primary",
+        address: "0x3aAB2285ddcDdaD8edf438C1bAB47e1a9D05a9b4",
+      },
+      {
+        key: "zksync",
+        address: "0xBBeB516fb02a01611cBBE0453Fe3c580D7281011",
+      },
+      {
+        key: "arbitrum",
+        address: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      },
+      {
+        key: "mantle",
+        address: "0xCAbAE6f6Ea1ecaB08Ad02fE02ce9A44F09aebfA2",
+      },
+      {
+        key: "manta",
+        address: "0x305E88d809c9DC03179554BFbf85Ac05Ce8F18d6",
+      },
+      {
+        key: "optimism",
+        address: "0x68f180fcCe6836688e9084f035309E29Bf0A2095",
+      },
+      {
+        key: "base",
+        address: "0x1ceA84203673764244E05693e42E6Ace62bE9BA5",
+      },
+    ],
+  },
 ];
 
 const novaSepoliaChain = [
@@ -328,6 +374,28 @@ const novaSepoliaChain = [
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
     coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://sepolia.explorer.zklink.io/address/0x0A8714d8fc4bE1b8f2B2AB29b8e4fEe9B271a57D",
+    isV1Available: true,
+  },
+  // {
+  //   name: "Wrapped eETH",
+  //   symbol: "weeth",
+  //   decimals: 18,
+  //   address: "0xE4152b2950Ef652daC9FDfAE61665Af40a13C623",
+  //   isWrapped: true,
+  //   imageUrl: "https://assets.coingecko.com/coins/images/33033/standard/weETH.png?1701438396",
+  //   coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-eeth",
+  //   explorerUrl: "https://sepolia.explorer.zklink.io/address/0xE4152b2950Ef652daC9FDfAE61665Af40a13C623",
+  //   isV1Available: true,
+  // },
+  {
+    name: "Wrapped eETH",
+    symbol: "weeth",
+    decimals: 18,
+    address: "0xE4152b2950Ef652daC9FDfAE61665Af40a13C623",
+    isShortable: true,
+    imageUrl: "https://assets.coingecko.com/coins/images/33033/standard/weETH.png?1701438396",
+    coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-eeth",
+    explorerUrl: "https://sepolia.explorer.zklink.io/address/0xE4152b2950Ef652daC9FDfAE61665Af40a13C623",
     isV1Available: true,
   },
 ];
@@ -421,6 +489,17 @@ const novaChain = [
       explorerUrl: "https://explorer.zklink.io/address/0x1a1A3b2ff016332e866787B311fcB63928464509",
       isV1Available: true,
     },
+    // {
+    //   name: "Wrapped eETH",
+    //   symbol: "weeth",
+    //   decimals: 18,
+    //   address: "0x35D5f1b41319e0ebb5a10e55C3BD23f121072da8",
+    //   isWrapped: true,
+    //   imageUrl: "https://assets.coingecko.com/coins/images/33033/standard/weETH.png?1701438396",
+    //   coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-eeth",
+    //   explorerUrl: "https://explorer.zklink.io/address/0x35D5f1b41319e0ebb5a10e55C3BD23f121072da8",
+    //   isV1Available: true,
+    // },
   ]
 
 //TODO: Different chain token config

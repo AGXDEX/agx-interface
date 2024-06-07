@@ -40,7 +40,7 @@ import XLog from "img/home/XLogo.png";
 import Telegram from "img/home/TelegramLogo.png";
 import Discord from "img/home/DiscordLogo.png";
 import multiMinds from "img/home/multi-minds.svg";
-// import hero from "img/home/hero section globe.gif";
+import hero from "img/home/hero graphic.png";
 import Ellipse from "img/home/Ellipse.png";
 import EllipseLeft from "img/home/EllipseLeft.png";
 import Mask from "img/home/Mask.png";
@@ -55,6 +55,7 @@ import AdvancedSecurityAndMaximizedYields from "img/home/Advanced Security And M
 import mobileSecure from "img/home/mobileSecure.svg";
 import mobileprotoool from "img/home/mobileprotoool.svg";
 import mobileprotoool1 from "img/home/mobileprotoool1.svg";
+import bigBall from "img/home/bigBall.svg";
 
 import { Link } from "react-router-dom";
 import { useState } from "react";
@@ -184,8 +185,9 @@ function HomePage() {
               </a>
             </div>
           </div>
-          <img className="Ellipse" src={Ellipse} />
-          {/* <img className="hero" src={hero} /> */}
+          <img className="Ellipse" src={Ellipse} />hero
+          <img className="hero" src={bigBall} />
+          <img className="heros" src={hero} />
           <img className="EllipseLeft" src={EllipseLeft} />
           <img className="Mask" src={Mask} />
           <img className="MaskTable" src={MaskTable} />
@@ -335,7 +337,7 @@ function HomePage() {
           </div>
           <div className="box">
             <img className="Protocol" src={Protocol} />
-            <img className="protoool" src={protoool} />
+            <img className="protoool maxWidth" src={protoool} />
           </div>
           <div className="box">
             <img className="Protocol" src={ALP} />
