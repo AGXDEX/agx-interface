@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Token from "abis/Token.json";
 import StakeAGX from "abis/StakeAGX.json";
 
-import { Contract, ethers } from "ethers";
+import { Contract, ethers, BigNumber } from "ethers";
 
 import { getContract } from "config/contracts";
 
@@ -18,8 +18,8 @@ import { X } from "lucide-react";
 import { useChainId } from "lib/chains";
 import { cn } from "utils/classname";
 import useWallet from "lib/wallets/useWallet";
-
-
+import { fetchStakedAGXs } from "../hooks/services";
+import { formatAmount } from "lib/numbers";
 
 export const useStakeAGXContract = (chainId) => {
   const { signer } = useWallet();
@@ -34,11 +34,11 @@ export const useAGXContract = (chainId) => {
 };
 
 const tags = [
-  { duration: "12 months", days: 360, multiplier: "5x" },
-  { duration: "6 months", days: 180, multiplier: "4x" },
-  { duration: "3 months", days: 90, multiplier: "3x" },
-  { duration: "2 months", days: 60, multiplier: "2x" },
-  { duration: "1 month", days: 30, multiplier: "1x" },
+  { duration: "12 months", days: 360, multiplier: "5" },
+  { duration: "6 months", days: 180, multiplier: "4" },
+  { duration: "3 months", days: 90, multiplier: "3" },
+  { duration: "2 months", days: 60, multiplier: "2" },
+  { duration: "1 month", days: 30, multiplier: "1" },
 ];
 
 export function useAGXBalance(account, chainId) {
@@ -73,7 +73,7 @@ const useApproveAGX = (account, chainId) => {
   const stakeContract = useStakeAGXContract(chainId);
   const contract = useAGXContract(chainId);
   return useMutation({
-    mutationFn: async (amount:any) => {
+    mutationFn: async (amount: any) => {
       const tx = await contract.approve(stakeContract.address, ethers.constants.MaxUint256);
       await tx.wait();
     },
@@ -94,17 +94,19 @@ const useStakeAGX = (account, chainId) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["agxBalance", account, chainId] });
+      queryClient.invalidateQueries({ queryKey: ["stakedAGXs", account] });
+
     },
     onError: (error) => {
       console.error(error);
-    }
+    },
   });
 };
 
 const useUnstakeAGX = (chainId) => {
   const contract = useStakeAGXContract(chainId);
   return useMutation({
-    mutationFn: async (id) => {
+    mutationFn: async (id: any) => {
       const tx = await contract.unStake(id);
       await tx.wait();
     },
@@ -117,12 +119,48 @@ const stakeSchema = z.object({
   }),
 });
 
+function getMultiplier(stakePeriod) {
+  const days = Number(stakePeriod) / 86400;
+
+  for (const tag of tags) {
+    if (days >= tag.days) {
+      return Number(tag.multiplier);
+    }
+  }
+
+  return 0;
+}
+
+function useStakeReward(stake, user, chainId) {
+  const contract = useStakeAGXContract(chainId);
+
+  return useQuery({
+    queryKey: ["userStakeReward", user, stake.id],
+    queryFn: async () => {
+      const userTotalStakedWithMultiplier = await contract.userTotalStakedWithMultiplier(user);
+      const totalReward = await contract.userTotalStakedWithoutMultiplier(user);
+      const stakeAmountInEther = ethers.utils.formatUnits(stake.amount, 18);
+      const weightedAmount = Number(stakeAmountInEther) * getMultiplier(Number(stake.period));
+      const reward = (weightedAmount / userTotalStakedWithMultiplier) * totalReward;
+
+      return reward;
+    },
+    enabled: !!stake && !!user && !!chainId,
+  });
+}
+
+const useStakedAGXs = (account) => {
+  return useQuery({
+    queryKey: ["stakedAGXs", account],
+    queryFn: () => fetchStakedAGXs(account),
+    enabled: !!account,
+  });
+};
 export function StakingModal(props) {
   const { chainId } = useChainId();
-  const { active, signer, account } = useWallet();
+  const { account } = useWallet();
   const { mutate: approveAGX, isPending: isApproving } = useApproveAGX(account, chainId);
-  const { mutate: stakeAGX, isPending } = useStakeAGX(account, chainId);
-  const { mutate: unstakeAGX } = useUnstakeAGX(chainId);
+  const { mutateAsync: stakeAGX, isPending } = useStakeAGX(account, chainId);
   const { data: balance, isLoading: isLoadingBalance } = useAGXBalance(account, chainId);
   const { data: allowance } = useAGXAllowance(account, chainId);
 
@@ -143,18 +181,24 @@ export function StakingModal(props) {
     setSelectedTag(tag);
   };
   const onSubmit = async (data) => {
-    const { amount } = data;
-    await stakeAGX({ amount, period: selectedTag.days * 86400 });
+    try {
+      const { amount } = data;
+      await stakeAGX({ amount, period: selectedTag.days * 86400 });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setIsVisible(false);
+    }
   };
 
-   const handleApprove = async () => {
-     const amountInWei = ethers.utils.parseEther(amount);
-     await approveAGX(amountInWei);
-   };
+  const handleApprove = async () => {
+    const amountInWei = ethers.utils.parseEther(amount);
+    await approveAGX(amountInWei);
+  };
 
-   const amount = watch("amount");
-   const amountInWei = amount ? ethers.utils.parseEther(amount) : ethers.constants.Zero;
-   const showApproveButton = !allowance || allowance.lt(amountInWei);
+  const amount = watch("amount");
+  const amountInWei = amount ? ethers.utils.parseEther(amount) : ethers.constants.Zero;
+  const showApproveButton = !allowance || allowance.lt(amountInWei);
 
   if (!isVisible) return null;
   return (
@@ -266,5 +310,85 @@ export function StakingModal(props) {
     </Dialog>
   );
 }
+
+const UnstakeButton = ({ stake, chainId }) => {
+  const { account } = useWallet();
+  const { mutate: unstake, isPending: isLoading } = useUnstakeAGX(chainId);
+
+  const startTime = new Date(Number(stake.startTime) * 1000);
+  const period = Number(stake.period) * 1000;
+  const endTime = new Date(startTime.getTime() + period);
+
+  const isUnstakeAvailable = Date.now() >= endTime.getTime();
+
+  const { data: reward, isLoading: isRewardLoading } = useStakeReward(stake, account, chainId);
+
+  return (
+    <>
+      <td className="border-b border-none p-4 pl-8  text-white">
+        {formatAmount(BigNumber.from(stake.amount), 18, 2)} AGX
+      </td>
+      <td className="border-b border-none p-4  text-white text-center">{getMultiplier(Number(stake.period))}x</td>
+      <td className="border-b border-none p-4 pr-8  text-white text-center">{Number(reward).toFixed(2)}</td>
+      <td className="border-b border-none p-4 pr-8  text-white text-center">{Number(stake.period) / 86400} days</td>
+      <td className="border-b border-none p-4 pr-8  text-white text-center">
+        {isUnstakeAvailable ? (
+          <>
+            <Button
+              type="button"
+              variant="primary"
+              className="justify-center items-center px-16 py-4 !text-lg leading-6 text-center text-black whitespace-nowrap rounded-md max-md:px-5 max-md:max-w-full font-bold"
+              loading={isLoading}
+              onClick={() => unstake(parseInt(stake.id))}
+            >
+              Unstake
+            </Button>
+          </>
+        ) : (
+          "Locking"
+        )}
+      </td>
+    </>
+  );
+};
+
+export const StakeList = () => {
+  const { chainId } = useChainId();
+  const { account } = useWallet();
+  const { data: stakedAGXs } = useStakedAGXs(account);
+  if(!stakedAGXs) return null;
+  return (
+    <div className="relative rounded-xl overflow-auto">
+      <div className="shadow-sm overflow-hidden my-8">
+        <table className="border-collapse table-fixed w-full ">
+          <thead>
+            <tr>
+              <th className="border-b border-none font-medium p-4 pl-8 pt-0 pb-3 text-slate-400  text-left ">
+                My staked
+              </th>
+              <th className="border-b border-none font-medium p-4 pt-0 pb-3 text-slate-400  text-center">Multiplier</th>
+              <th className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
+                Claimable Rewards
+              </th>
+              <th className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
+                Unlockable In
+              </th>
+              <th className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
+                Operation
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {stakedAGXs?.map((stake) => (
+              <tr key={stake.id}>
+                <UnstakeButton stake={stake} chainId={chainId} />
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
 
 export default StakingModal;
