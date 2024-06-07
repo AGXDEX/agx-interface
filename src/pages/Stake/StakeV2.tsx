@@ -48,7 +48,7 @@ import { getEmissionData, calculateManage } from "./utilts";
 
 import { DepositTooltipContent } from "components/Synthetics/MarketsList/DepositTooltipContent";
 
-import { ClaimAllModal, ClaimHistoryModal, DepositModal, UnstakeModal } from "./components/modals";
+import { ClaimAllModal, ClaimHistoryModal, DepositModal } from "./components/modals";
 
 import noNFT from "img/noNFT.svg";
 import { STAKER_SUBGRAPH_URL } from "config/subgraph";
@@ -117,17 +117,31 @@ export default function StakeV2() {
   });
 
   function useStakeAGXStartTime(chainId) {
-  const stakeAGXContract = useStakeAGXContract(chainId);
+    const stakeAGXContract = useStakeAGXContract(chainId);
 
-  return useQuery({
-    queryKey: ["stakeAGXStartTime", chainId],
-    queryFn: async () => {
-      const startTime = await stakeAGXContract.startTime();
-      return startTime;
-    },
-    enabled: !!chainId,
-  })
-}
+    return useQuery({
+      queryKey: ["stakeAGXStartTime", chainId],
+      queryFn: async () => {
+        const startTime = await stakeAGXContract.startTime();
+        return startTime;
+      },
+      enabled: !!chainId,
+    });
+  }
+
+  function useStakeAGXRewardRate(chainId) {
+    const stakeAGXContract = useStakeAGXContract(chainId);
+
+    return useQuery({
+      queryKey: ["stakeAGXRewardRate", chainId],
+      queryFn: async () => {
+        const rewardRate = await stakeAGXContract.rewardRate();
+        return rewardRate;
+      },
+      enabled: !!chainId,
+    });
+  }
+  //rewardRate
 
   const { data: stakingAGXStartTime, isLoading, isError } = useStakeAGXStartTime(chainId);
 
@@ -680,7 +694,6 @@ export default function StakeV2() {
     return avgMultiplier.toFixed(2);
   };
 
-
   const useAvgMultiplier = (account, chainId) => {
     const contract = useStakeAGXContract(chainId);
     return useQuery({
@@ -750,8 +763,12 @@ export default function StakeV2() {
 
   const { data: claimableReward } = useClaimableReward(account, chainId);
 
+  const { data: stakeAGXRewardRate } = useStakeAGXRewardRate(chainId);
 
+  const totalStakeAGXRewardRate = (Number(stakeAGXRewardRate) / 10 ** 18) * 86400;
+  const totalRewardRate=rewardRate && Number(((Number(rewardRate) / 10 ** 18) * 86400 + 59523));
 
+  const currentEmisionsSum = totalStakeAGXRewardRate + totalRewardRate;
 
   return (
     <div className="default-container page-layout">
@@ -869,7 +886,7 @@ export default function StakeV2() {
                 </TooltipWithPortal>
               </div>
               <div>
-                {rewardRate && Number(((Number(rewardRate) / 10 ** 18) * 86400 + 59523).toFixed(2)).toLocaleString()}
+                {(Number(currentEmisionsSum) || 0).toFixed(2).toLocaleString()}
                 /day
               </div>
             </div>
