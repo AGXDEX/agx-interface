@@ -96,10 +96,8 @@ function getInfoTokens(
 
     infoTokens[token.address] = token;
   }
-
   for (let i = 0; i < whitelistedTokens.length; i++) {
     const token = JSON.parse(JSON.stringify(whitelistedTokens[i])) as TokenInfo;
-
     if (vaultTokenInfo) {
       token.poolAmount = vaultTokenInfo[i * vaultPropsLength];
       token.reservedAmount = vaultTokenInfo[i * vaultPropsLength + 1];

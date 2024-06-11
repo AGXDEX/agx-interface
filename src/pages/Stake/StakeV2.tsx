@@ -988,7 +988,7 @@ export default function StakeV2() {
             <TooltipWithPortal
               renderContent={() => {
                 return <>Points fairly distribute to ALP holders base on "centralized points pool" mode. <a
-                target="_blank"
+                target="_blank" rel="noreferrer"
                 href={`https://docs.agx.xyz/tokenomics/points-system`}
               >
                 Read more &gt;&gt;

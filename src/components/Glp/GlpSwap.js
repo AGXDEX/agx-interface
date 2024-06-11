@@ -659,7 +659,6 @@ export default function GlpSwap(props) {
       if (maxSellAmount && glpAmount && glpAmount.gt(maxSellAmount)) {
         return [t`Insufficient ALP balance`];
       }
-
       const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
       if (
         swapTokenInfo &&
@@ -1331,7 +1330,7 @@ const alpApr = calculateAlpAPR(glpSupplyUsd, rewardRate, agxPrice);
                   {(
                     <div className="cursor-pointer group relative pl-2 bg-gradient-to-r from-[#e1b84e] via-[#eb537e] via-[#c34de5] via-[#4672e2] to-[#17a2b7] bg-clip-text text-transparent font-bold text-lg leading-normal show-title">
                       +5 POINTS
-                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-5 text-white text-lg px-4 rounded-lg group-hover:opacity-100 transition-opacity duration-300 w-[200px] bg-[#333333] py-5 hidden five-title">
+                      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-5 text-white text-lg px-4 rounded-xl group-hover:opacity-100 transition-opacity duration-300 w-[200px] bg-[#1E1F24] py-5 hidden five-title">
                         <div className="flex-col space-y-1">
                           <div className="rounded-full bg-[#d4d4d4]/20 justify-center px-3 py-2 inline-flex">
                             + EigenLayer Points

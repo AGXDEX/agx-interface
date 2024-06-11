@@ -22,7 +22,10 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
           {SOCIAL_LINKS.map((platform) => {
             return (
               <ExternalLink key={platform.name} className="App-social-link" href={platform.link}>
-                <img src={platform.icon} alt={platform.name} />
+                <img className={cx({ hiddenIcon: platform.name === 'Docs' })} src={platform.icon} alt={platform.name} />
+                <div className={cx('hiddenIcon',{ docs: platform.name === 'Docs' })} >
+                  <img src={platform.icon} alt={platform.name} />
+                </div>
               </ExternalLink>
             );
           })}
