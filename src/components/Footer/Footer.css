@@ -56,11 +56,27 @@
   align-items: center;
   justify-content: center;
 }
+.Footer-social-link-block .App-social-link .hiddenIcon{
+  display: none;
+}
+.Footer-social-link-block .App-social-link .docs{
+  width: 100%;
+  display: inline-block;
+  background-color: #1c1e2a;
+  border-radius: 7px;
+  padding: 5px;
+}
+.Footer-social-link-block .App-social-link .docs img{
+  filter: invert(1);
+}
 .Footer-social-link-block .App-social-link img{
   width: 100%;
 }
 
 .Footer-social-link-block .App-social-link:hover img {
+  filter: invert(1);
+}
+.Footer-social-link-block .App-social-link:hover  .docs {
   filter: invert(1);
 }
 
