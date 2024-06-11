@@ -56,6 +56,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { cn } from "utils/classname";
 import StakingModal, { StakeList, useAGXBalance, useStakeAGXContract } from "./components/staking-modal";
 import { fetchNFTData, fetchStakeLiquidity, fetchNFTClaimed, fetchTotalReward, fetchPositions, fetchPoolData, fetchStakedAGXs } from "./hooks/services";
+import { DataTable } from "components/DataTable";
 
 const EXTERNAL_LINK_CHAIN_CONFIG = process.env.REACT_APP_ENV === "development" ? "nova_sepolia" : "nova_mainnet";
 
@@ -81,7 +82,7 @@ export default function StakeV2() {
   const [stakeMethodName, setStakeMethodName] = useState("");
   const [pufferPoints, setpufferPoints] = useState(0);
   const [novaPoints, setnovaPoints] = useState(0);
-  
+
   const [selectTab, setselectTab] = useState("Staking");
   const [isUnstaking, setIsUnstakeLoading] = useState(false);
   const [isStaking, setIsStaking] = useState(false);
@@ -801,6 +802,8 @@ export default function StakeV2() {
 
   const currentEmisionsSum = totalStakeAGXRewardRate + totalRewardRate;
 
+
+
   return (
     <div className="default-container page-layout">
       <ClaimHistoryModal
@@ -987,12 +990,14 @@ export default function StakeV2() {
           <div className="StakeV2-title">
             <TooltipWithPortal
               renderContent={() => {
-                return <>Points fairly distribute to ALP holders base on "centralized points pool" mode. <a
-                target="_blank"
-                href={`https://docs.agx.xyz/tokenomics/points-system`}
-              >
-                Read more &gt;&gt;
-              </a></>;
+                return (
+                  <>
+                    Points fairly distribute to ALP holders base on "centralized points pool" mode.{" "}
+                    <a target="_blank" href={`https://docs.agx.xyz/tokenomics/points-system`} rel="noreferrer">
+                      Read more &gt;&gt;
+                    </a>
+                  </>
+                );
               }}
             >
               Accumlate Points
@@ -1004,11 +1009,15 @@ export default function StakeV2() {
               <div className="flex h-full pb-5 items-end pl-4">Eigen Layer Points</div>
             </div>
             <div className="flex w-full items-center">
-              <div className="StakeV2-claimNum">{Number(pufferPoints)? Number(Number(pufferPoints).toFixed(2)).toLocaleString(): '0.00'}</div>
+              <div className="StakeV2-claimNum">
+                {Number(pufferPoints) ? Number(Number(pufferPoints).toFixed(2)).toLocaleString() : "0.00"}
+              </div>
               <div className="flex h-full pb-5 items-end pl-4">Puffer Points</div>
             </div>
             <div className="flex w-full items-center">
-              <div className="StakeV2-claimNum">{Number(novaPoints)? Number(Number(novaPoints).toFixed(2)).toLocaleString(): '0.00'}</div>
+              <div className="StakeV2-claimNum">
+                {Number(novaPoints) ? Number(Number(novaPoints).toFixed(2)).toLocaleString() : "0.00"}
+              </div>
               <div className="flex h-full pb-5 items-end pl-4">Nova Points</div>
             </div>
             <div className="flex w-full items-center">
@@ -1232,6 +1241,7 @@ export default function StakeV2() {
               )}
             </div>
           </div>
+
           <div className={cx("liquidity", { ishide: selectTab !== "Liquidity", show: selectTab === "Liquidity" })}>
             <div className="table-tr">
               <div className="leftAlign">Pool</div>
