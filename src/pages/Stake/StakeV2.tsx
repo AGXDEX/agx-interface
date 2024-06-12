@@ -56,7 +56,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { cn } from "utils/classname";
 import StakingModal, { StakeList, useAGXBalance, useStakeAGXContract } from "./components/staking-modal";
 import { fetchNFTData, fetchStakeLiquidity, fetchNFTClaimed, fetchTotalReward, fetchPositions, fetchPoolData, fetchStakedAGXs } from "./hooks/services";
-import { DataTable } from "components/DataTable";
 
 const EXTERNAL_LINK_CHAIN_CONFIG = process.env.REACT_APP_ENV === "development" ? "nova_sepolia" : "nova_mainnet";
 
@@ -108,33 +107,32 @@ export default function StakeV2() {
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const wrappedTokenSymbol = getConstant(chainId, "wrappedTokenSymbol");
 
-  const params = {
-    address: account,
-    project: 'agx'
-  };
-    axios.get(lrt_points_URL + '/project', { params })
-    .then(response => {
-      let sum = 0
-      response.data.data.map((item)=>{
-        sum += Number(item.response.data.data)
-      })
-      setnovaPoints(sum)
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-    });
-  const param = {
-    address: account,
-    tokenAddress: AGXAddress
-  };
-    axios.get(lrt_points_URL + '/puffer', { params: param })
-    .then(response => {
-      // console.log(response.data)
-      setpufferPoints(response.data.data)
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-    });
+  // const params = {
+  //   address: account,
+  //   project: 'agx'
+  // };
+  //   axios.get(lrt_points_URL + '/project', { params })
+  //   .then(response => {
+  //     let sum = 0
+  //     response.data.data.map((item)=>{
+  //       sum += Number(item.response.data.data)
+  //     })
+  //     setnovaPoints(sum)
+  //   })
+  //   .catch(error => {
+  //     console.error('Error fetching data:', error);
+  //   });
+  // const param = {
+  //   address: account,
+  //   tokenAddress: AGXAddress
+  // };
+  //   axios.get(lrt_points_URL + '/puffer', { params: param })
+  //   .then(response => {
+  //     setpufferPoints(response.data.data)
+  //   })
+  //   .catch(error => {
+  //     console.error('Error fetching data:', error);
+  //   });
   const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
     fetcher: contractFetcher(signer, GlpManager),
   });

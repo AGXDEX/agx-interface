@@ -86,32 +86,28 @@ export const usePaginations = ({
 export function DataTablePagination<TData>({ table, paginations }: DataTablePaginationProps<TData>) {
   const pageIndex = table.getState().pagination.pageIndex;
   return (
-    <div className="relative mt-6 flex items-center justify-between">
-      <div className="flex-1 text-sm">
+    <div className="relative mt-6 flex items-center justify-between px-4">
+      <div className="flex-1 text-lg">
         Page {pageIndex + 1} of
         <span className="mx-2">{table.getPageCount()}</span>
       </div>
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
           <div
-            // type="button"
-            // variant="primary"
             className="h-8 w-8 rounded-lg border-[#5C5C5C] p-0 lg:flex"
             onClick={() => table.setPageIndex(0)}
             // disabled={!table.getCanPreviousPage()}
           >
             <span className="sr-only">Go to first page</span>
-            <ChevronsLeft className="h-4 w-4 text-white" />
+            <ChevronsLeft className="h-8 w-8 text-white" />
           </div>
           <div
-            // type="button"
-            // variant="primary"
             className="h-8 w-8 border-[#5C5C5C] p-0 flex"
             onClick={() => table.previousPage()}
             // disabled={!table.getCanPreviousPage()}
           >
             <span className="sr-only">Go to previous page</span>
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-8 w-8" />
           </div>
           {paginations.map((pageNum, i) => {
             if (pageNum === DOTS) {
@@ -122,7 +118,7 @@ export function DataTablePagination<TData>({ table, paginations }: DataTablePagi
                 variant="primary"
                 type="button"
                 className={cn("h-8 w-8 rounded-lg p-0 lg:flex", {
-                  "bg-black text-white dark:bg-[#424242] dark:text-white dark:border-none":
+                  "!bg-white/10 text-white dark:bg-[#424242] dark:text-white dark:border-none":
                     Number(pageNum) - 1 === pageIndex,
                   "bg-transparent  hover:bg-transparent dark:text-[#ADADAD] dark:bg-transparent border-none":
                     Number(pageNum) - 1 !== pageIndex,
@@ -135,24 +131,20 @@ export function DataTablePagination<TData>({ table, paginations }: DataTablePagi
             );
           })}
           <div
-            // type="button"
-            // variant="primary"
             className="h-8 w-8 border-[#5C5C5C] p-0 flex"
             onClick={() => table.nextPage()}
             // disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">Go to next page</span>
-            <ChevronRight className="h-4 w-4 text-white" />
+            <ChevronRight className="h-8 w-8 text-white" />
           </div>
           <div
-            // type="button"
-            // variant="primary"
             className="h-8 w-8 rounded-lg border-[#5C5C5C] p-0 lg:flex"
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             // disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">Go to last page</span>
-            <ChevronsRight className="h-4 w-4 text-white" />
+            <ChevronsRight className="h-8 w-8 text-white" />
           </div>
         </div>
       </div>
@@ -234,49 +226,21 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
             <>
               <TableRow className="mobile:hidden">
                 <TableCell colSpan={columns.length}>
-                  <div className="flex-col items-center justify-center pt-4">
-                    {/* <Image
-                      className='mx-auto my-6 hidden dark:flex'
-                      src='/./svgs/illustrations/no-transaction-dark.svg'
-                      width='200'
-                      height='50'
-                      alt='no-transaction'
-                    />
-                    <Image
-                      className='mx-auto my-6 flex dark:hidden'
-                      src='/./svgs/illustrations/no-transaction.svg'
-                      width='200'
-                      height='50'
-                      alt='no-transaction'
-                    /> */}
+                  <div className="flex-col items-center justify-center pt-5 w-full">
                     <div className="flex flex-col items-center justify-start gap-2 pb-10">
                       <div className="text-center text-[20px] font-bold leading-relaxed ">No transactions found!</div>
                       <div className="text-center text-[16px] font-normal leading-normal text-zinc-600 dark:text-[#838383]">
-                        Connect your wallet & deposit your assets to start
+                        Stake your assets to start
                       </div>
                     </div>
                   </div>
                 </TableCell>
               </TableRow>
-              <div className="hidden flex-col items-center justify-center pt-4 mobile:flex">
-                <img
-                  className="mx-auto my-6 hidden dark:flex"
-                  src="/./svgs/illustrations/no-transaction-dark.svg"
-                  width="200"
-                  height="50"
-                  alt="no-transaction"
-                />
-                <img
-                  className="mx-auto my-6 flex dark:hidden"
-                  src="/./svgs/illustrations/no-transaction.svg"
-                  width="200"
-                  height="50"
-                  alt="no-transaction"
-                />
+              <div className="hidden flex-col items-center justify-center pt-5 mobile:flex w-full">
                 <div className="flex flex-col items-center justify-start gap-2 pb-10">
                   <div className="text-center text-[20px] font-bold leading-relaxed ">No transactions found!</div>
                   <div className="text-center text-[16px] font-normal leading-normal text-zinc-600 dark:text-[#838383]">
-                    Connect your wallet & deposit your assets to start
+                    Stake your assets to start
                   </div>
                 </div>
               </div>
@@ -284,7 +248,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           )}
         </TableBody>
       </Table>
-      <DataTablePagination table={table} paginations={paginations} />
+      {table.getRowModel().rows?.length!==0 && <DataTablePagination table={table} paginations={paginations} />}
     </div>
   );
 }

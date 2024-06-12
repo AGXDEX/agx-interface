@@ -323,7 +323,20 @@ export function StakingModal(props) {
   );
 }
 
-const UnstakeButton = ({ stake, chainId }) => {
+
+const ClaimableRewards = ({ stake, chainId }) => {
+  const { account } = useWallet();
+  const { data: reward } = useStakeReward(stake, account, chainId);
+
+  return (
+    <td className="border-b border-none p-4 pr-8  text-white text-center">{Number(reward).toFixed(2)}</td>
+  );
+};
+
+const UnstakeButton = ({ stake, chainId }:{
+  stake: any;
+  chainId: any;
+}) => {
   const { account } = useWallet();
   const { mutateAsync: unstake, isPending: isLoading } = useUnstakeAGX(account, chainId);
 
@@ -333,34 +346,25 @@ const UnstakeButton = ({ stake, chainId }) => {
 
   const isUnstakeAvailable = Date.now() >= endTime.getTime();
 
-  const { data: reward } = useStakeReward(stake, account, chainId);
 
   return (
-    <>
-      <td className="border-b border-none p-4 pl-8  text-white">
-        {formatAmount(BigNumber.from(stake.amount), 18, 2)} AGX
-      </td>
-      <td className="border-b border-none p-4  text-white text-center">{getMultiplier(Number(stake.period))}x</td>
-      <td className="border-b border-none p-4 pr-8  text-white text-center">{Number(reward).toFixed(2)}</td>
-      <td className="border-b border-none p-4 pr-8  text-white text-center">{Number(stake.period) / 86400} days</td>
-      <td className="border-b border-none p-4 pr-8  text-white text-center">
-        {isUnstakeAvailable ? (
-          <>
-            <Button
-              type="button"
-              variant="primary"
-              className="justify-center items-center px-16 py-4 !text-lg leading-6 text-center text-black whitespace-nowrap rounded-md max-md:px-5 max-md:max-w-full font-bold"
-              loading={isLoading}
-              onClick={() => unstake(parseInt(stake.id))}
-            >
-              Unstake
-            </Button>
-          </>
-        ) : (
-          "Locking"
-        )}
-      </td>
-    </>
+    <div className="border-b border-none p-4 pr-8  text-white text-center">
+      {isUnstakeAvailable ? (
+        <>
+          <Button
+            type="button"
+            variant="primary"
+            className="justify-center items-center px-16 py-4 !text-lg leading-6 text-center text-black whitespace-nowrap rounded-md max-md:px-5 max-md:max-w-full font-bold"
+            loading={isLoading}
+            onClick={() => unstake(parseInt(stake.id))}
+          >
+            Unstake
+          </Button>
+        </>
+      ) : (
+        "Locking"
+      )}
+    </div>
   );
 };
 
@@ -381,34 +385,23 @@ export const StakeList = () => {
   const columns: any[] = [
     {
       accessorKey: "amount",
-      // header: "Multiplier",
       header: ({ column }) => {
         return (
-          <div className="border-b border-none font-medium p-4 pl-8 pt-0 pb-3 text-slate-400  text-left">My staked</div>
+          <div className="border-b border-none font-medium p-4 pl-8 pt-0 pb-3 text-slate-400  text-left">
+            My staked
+          </div>
         );
       },
       cell: ({ row }) => {
-        // console.log(row, "row--->");
-        // const type =
-        //   row.getValue("__typename") === "TransferEvent"
-        //     ? row.original.to === row.original.accountAddress
-        //       ? "Deposit"
-        //       : "Withdraw"
-        //     : renderType(row.getValue("__typename"));
         return (
-          <div className="flex flex-col items-start mobile:space-y-2">
-            <p className="hidden text-[#626262] dark:text-[#ADADAD] mobile:block">Multiplier</p>
-            <p className="text-white">{row.original.amount}</p>
-            {/* <p className="text-white">{row.getValue("amount")}</p> */}
+          <div className="border-b border-none p-4  text-white text-left">
+            {formatAmount(BigNumber.from(row.original.amount), 18, 2)} AGX
           </div>
         );
       },
     },
     {
       accessorKey: "period",
-      // header: ({ column }) => {
-      //   return <>Multiplier</>;
-      // },
       header: ({ column }) => {
         return (
           <div className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
@@ -417,12 +410,6 @@ export const StakeList = () => {
         );
       },
       cell: ({ row }) => {
-        // const eventType: string =
-        //   row.getValue("__typename") === "TransferEvent"
-        //     ? row.original.to === row.original.accountAddress
-        //       ? "Mint"
-        //       : "Redeem"
-        //     : row.getValue("__typename");
         return (
           <div className="border-b border-none p-4  text-white text-center">
             {getMultiplier(Number(row.original.period))}x
@@ -440,8 +427,8 @@ export const StakeList = () => {
         );
       },
       cell: ({ row }) => {
-        const { data: reward } = useStakeReward(row.original, account, chainId);
-        return <div className="border-b border-none p-4 pr-8  text-white text-center">{Number(reward).toFixed(2)}</div>;
+        // const { data: reward } = useStakeReward(row.original, account, chainId);
+        return <ClaimableRewards stake={row.original} chainId={chainId} />;
       },
     },
     {
@@ -476,30 +463,7 @@ export const StakeList = () => {
         );
       },
       cell: ({ row }) => {
-        const startTime = new Date(Number(row.original.startTime) * 1000);
-        const period = Number(row.original.period) * 1000;
-        const endTime = new Date(startTime.getTime() + period);
-
-        const isUnstakeAvailable = Date.now() >= endTime.getTime();
-        return (
-          <div className="border-b border-none p-4 pr-8  text-white text-center">
-            {isUnstakeAvailable ? (
-              <>
-                <Button
-                  type="button"
-                  variant="primary"
-                  className="justify-center items-center px-16 py-4 text-lg leading-6 text-center text-black whitespace-nowrap rounded-md max-md:px-5 max-md:max-w-full font-bold"
-                  loading={isLoading}
-                  onClick={() => unstake(parseInt(row.original.id))}
-                >
-                  Unstake
-                </Button>
-              </>
-            ) : (
-              "Locking"
-            )}
-          </div>
-        );
+        return <UnstakeButton stake={row.original} chainId={chainId} />;
       },
     },
   ];
@@ -507,39 +471,10 @@ export const StakeList = () => {
   if (!stakedAGXs) return null;
   return (
     <>
-      <DataTable columns={columns} data={stakedAGXs} />
-      {/* <div className="relative rounded-xl overflow-auto">
-        <div className="shadow-sm overflow-hidden my-8">
-          <table className="border-collapse table-fixed w-full ">
-            <thead>
-              <tr>
-                <th className="border-b border-none font-medium p-4 pl-8 pt-0 pb-3 text-slate-400  text-left ">
-                  My staked
-                </th>
-                <th className="border-b border-none font-medium p-4 pt-0 pb-3 text-slate-400  text-center">
-                  Multiplier
-                </th>
-                <th className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
-                  Claimable Rewards
-                </th>
-                <th className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
-                  Unlockable In
-                </th>
-                <th className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
-                  Operation
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {stakedAGXs?.map((stake) => (
-                <tr key={stake.id}>
-                  <UnstakeButton stake={stake} chainId={chainId} />
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div> */}
+      <DataTable
+        columns={columns}
+        data={stakedAGXs}
+      />
     </>
   );
 };
