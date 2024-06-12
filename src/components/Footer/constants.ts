@@ -5,6 +5,7 @@ import discordIcon from "img/ic_discord.svg";
 import telegramIcon from "img/ic_telegram.svg";
 import githubIcon from "img/ic_github.svg";
 import substackIcon from "img/ic_substack.svg";
+import doc from "img/home/hugeicons_google-doc.png";
 
 type Link = {
   label: string;
@@ -41,4 +42,5 @@ export const SOCIAL_LINKS: SocialLink[] = [
   { link: "https://github.com/AGXDEX", name: "Github", icon: githubIcon },
   { link: "https://t.me/agx_xyz", name: "Telegram", icon: telegramIcon },
   { link: "https://discord.gg/agxdefi", name: "Discord", icon: discordIcon },
+  { link: "https://docs.agx.xyz/", name: "Docs", icon: doc },
 ];
