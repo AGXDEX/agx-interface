@@ -212,7 +212,7 @@ export function StakingModal(props) {
   if (!isVisible) return null;
   return (
     <Dialog open={isVisible}>
-      <DialogContent className="sm:max-w-[525px] bg-[#292B2F] focus:outline-none">
+      <DialogContent className="sm:max-w-[525px] bg-[#292B2F]">
         <div
           className="absolute cursor-pointer right-6 top-6 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-white/10 p-5 rounded-full"
           onClick={() => {
@@ -250,6 +250,12 @@ export function StakingModal(props) {
               className={cn("input py-6 bg-[#18191E] text-xl rounded-lg mt-0", {
                 "input-error": errors.amount,
               })}
+              onInput={(e:any)=>{
+                let regex = /^\d*\.?\d{0,2}$/;
+                if (!regex.test(e.target.value)) {
+                  e.target.value = e.target.value.slice(0, -1);
+                }
+              }}
             />
             {errors.amount && typeof errors.amount === "string" && (
               <p className="my-2 text-sm text-red-500">{errors.amount}</p>
@@ -257,7 +263,8 @@ export function StakingModal(props) {
 
             <div className="grid grid-cols-3 gap-4">
               {tags.map((tag) => (
-                <div key={tag.days} className="relative flex items-center p-6 bg-[#18191E] rounded-lg cursor-pointer">
+                <div key={tag.days} className="relative flex items-center md:p-6 p-3 pt-10 md:pt-6 bg-[#18191E] rounded-lg cursor-pointer"
+                onClick={() => handleClickTag(tag)}>
                   <div className="absolute left-3 top-3">
                     <label
                       className="relative flex items-center rounded-full cursor-pointer"
@@ -368,8 +375,8 @@ export const StakeList = () => {
   if(!stakedAGXs) return null;
   return (
     <div className="relative rounded-xl overflow-auto">
-      <div className="shadow-sm overflow-hidden my-8">
-        <table className="border-collapse table-fixed w-full ">
+      <div className="shadow-sm md:overflow-hidden my-8 overflow-auto">
+        <table className="border-collapse table-fixed md:w-full w-[140vw]">
           <thead>
             <tr>
               <th className="border-b border-none font-medium p-4 pl-8 pt-0 pb-3 text-slate-400  text-left ">

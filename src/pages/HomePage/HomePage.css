@@ -200,6 +200,7 @@
   flex-direction: column;
   align-items: center;
   margin-bottom: 130px;
+  position: relative;
 }
 .home-container .main .box .title{
   margin-bottom: 95px;
@@ -214,6 +215,12 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 120px;
+}
+.home-container .main .box  .zklinkLogo{
+  width: 5rem;
+  position: absolute;
+  bottom: 9rem;
+  left: 35%;
 }
 .home-container .main .box .choose img{
   position: absolute;
@@ -574,6 +581,96 @@
 .modile{
   display: none;
 }
+.home-container .cain{
+  width: 100px;
+  position: absolute;
+}
+.home-container .home-header .introduce .right-cain{
+  right: -15%;
+  top: -15%;
+}
+.home-container .home-header .introduce .left-cain{
+  bottom: -10%;
+  left: 30%;
+}
+.home-container .home-header .introduce .bottom-cain{
+  left: -15%;
+  top: 30%;
+}
+.cain1{
+  right: -15%;
+  top: 10px;
+}
+.cain2{
+  left: -15%;
+  top: 60%;
+}
+.cain3{
+  right: -10px;
+  top: 20%;
+}
+.cain4{
+  left: -15%;
+  top: 10%;
+}
+.cain5{
+  right: 10%;
+  top: 10%;
+}
+.cain6{
+  left: -15%;
+  top: -10px;
+}
+.cain7{
+  right: -10%;
+  top: 10%;
+}
+.cain8{
+  left: -5%;
+  bottom: 10px;
+}
+.cain9{
+  left: -15%;
+  top: -10%;
+}
+.cain10{
+  right: -10px;
+  top: 10%;
+}
+.cain11{
+  left: -10%;
+  bottom: -20%;
+}
+.cain12{
+  right: -10%;
+  top: -15%;
+}
+@keyframes up-down {
+  0%, 100% {
+      transform: translateY(0);
+  }
+  50% {
+      transform: translateY(-50px);
+  }
+}
+
+.up-down {
+  display: inline-block;
+  animation: up-down 3s infinite;
+}
+@keyframes left-right {
+  0%, 100% {
+      transform: translateX(0);
+  }
+  50% {
+      transform: translateX(-50px);
+  }
+}
+
+.left-right {
+  display: inline-block;
+  animation: left-right 3s infinite;
+}
 @media (max-width: 450px) {
   .home-container{
     height: 100vh;
@@ -913,6 +1010,79 @@
   }
   .home-container .main .box .fair .fairImg{
     width: 100%;
+  }
+  .home-container .main .box  .zklinkLogo{
+    width: 1.8rem;
+    bottom: 7rem;
+    left: 35%;
+  }
+  .home-container .cain{
+    width: 60px;
+    position: absolute;
+  }
+  .home-container .home-header,.home-container .main{
+    overflow: hidden;
+  }
+  .home-container .home-header .introduce .right-cain{
+    right: 10px;
+    top: 5%;
+  }
+  .home-container .home-header .introduce .left-cain{
+    bottom: 0;
+    left: 70%;
+  }
+  .home-container .home-header .introduce .bottom-cain{
+    left: 0;
+    top: 10%;
+  }
+  .cain1{
+    right: 0;
+    top: 10px;
+  }
+  .cain2{
+    left: 10px;
+    top: 50%;
+  }
+  .cain3{
+    right: -10px;
+    top: 12%;
+  }
+  .cain4{
+    left: inherit;
+    right: 15px;
+    top: -1%;
+  }
+  .cain5{
+    right: 5%;
+    top: -5%;
+  }
+  .cain6{
+    left: -5%;
+    top: -10%;
+  }
+  .cain7{
+    right: -5%;
+    top: 10%;
+  }
+  .cain8{
+    left: -5%;
+    bottom: 10px;
+  }
+  .cain9{
+    left: 0;
+    top: -60px;
+  }
+  .cain10{
+    right: -10px;
+    top: 10%;
+  }
+  .cain11{
+    left: -10%;
+    bottom: -10%;
+  }
+  .cain12{
+    right: -5%;
+    top: -8%;
   }
 }
 
