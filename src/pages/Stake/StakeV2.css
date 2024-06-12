@@ -172,7 +172,7 @@
 }
 .between .StakeV2-fomBox{
   width: 100%;
-  height: 30px;
+  height: auto;
   padding: 0 12px;
   display: flex;
   justify-content: space-between;

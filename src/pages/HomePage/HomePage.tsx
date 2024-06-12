@@ -56,9 +56,12 @@ import mobileSecure from "img/home/mobileSecure.svg";
 import mobileprotoool from "img/home/mobileprotoool.svg";
 import mobileprotoool1 from "img/home/mobileprotoool1.svg";
 import bigBall from "img/home/bigBall.svg";
-
+import zklinkLogo from "img/home/zklinkLogo.svg";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import cain from "img/home/cain.svg";
+import cain1 from "img/home/cain1.svg";
+import cain2 from "img/home/cain2.svg";
 
 const scrollTo = (value) => {
   let arr:any = document.getElementsByClassName('main')[0].childNodes
@@ -160,6 +163,9 @@ function HomePage() {
             <img src={support} />
           </div>
           <div className="introduce">
+            <img className="cain up-down right-cain" src={cain} />
+            <img className="cain left-right bottom-cain" src={cain1} />
+            <img className="cain left-right left-cain" src={cain2} />
             <div className="large">
               <img className="marginRight" src={Revolutionizing} />
               <img className="BurstStar" src={BurstStar} />
@@ -185,7 +191,7 @@ function HomePage() {
               </a>
             </div>
           </div>
-          <img className="Ellipse" src={Ellipse} />hero
+          <img className="Ellipse" src={Ellipse} />
           <img className="hero" src={bigBall} />
           <img className="heros" src={hero} />
           <img className="EllipseLeft" src={EllipseLeft} />
@@ -194,10 +200,14 @@ function HomePage() {
         </div>
         <div className="main">
           <div className="box">
+            <img className="cain up-down cain1" src={cain2} />
+            <img className="cain left-right cain2" src={cain1} />
             <img className="title" src={Multi} />
             <img className="charts" src={multiMinds} />
+            <img className="zklinkLogo" src={zklinkLogo} />
           </div>
           <div className="box">
+            <img className="cain left-right cain3" src={cain} />
             <div className="choose">
               <div className="chooseBut">Why Choose AGX?</div>
               <img src={BurstStar} />
@@ -269,6 +279,7 @@ function HomePage() {
             </div>
           </div>
           <div className="box">
+            <img className="cain up-down cain4" src={cain} />
             <div className="AGXAndALP">
               <img className="PC" src={AGXAndALP} />
               <img className="modile purpleStart" src={purpleStart} />
@@ -290,6 +301,7 @@ function HomePage() {
               <img className="fairImg" src={fair} />
             </div>
             <div className="advanced">
+              <img className="cain up-down cain5" src={cain2} />
               <img className="PC" src={advanced} />
               <div className="advancedLearn PC">
                 <a href="https://docs.agx.xyz/" target="block">
@@ -336,6 +348,9 @@ function HomePage() {
             </div>
           </div>
           <div className="box">
+            <img className="cain up-down cain6" src={cain1} />
+            <img className="cain left-right cain7" src={cain} />
+            <img className="cain up-down cain8" src={cain} />
             <img className="Protocol" src={Protocol} />
             <img className="protoool maxWidth" src={protoool} />
           </div>
@@ -344,6 +359,8 @@ function HomePage() {
             <img className="protoool" src={ALPPool} />
           </div>
           <div className="box">
+            <img className="cain left-right cain9" src={cain1} />
+            <img className="cain up-down cain10" src={cain} />
             <img className="Protocol" src={OurJourney} />
             <img className="protoool PC" src={Journey} />
             <img className="modile mobileprotoool1" src={mobileprotoool1} />
@@ -354,6 +371,8 @@ function HomePage() {
             <img className="protoool" src={Journey} />
           </div> */}
           <div className="box">
+            <img className="cain up-down cain11" src={cain1} />
+            <img className="cain left-right cain12" src={cain2} />
             <div className="fairBox other">
               <div className="startTrade">
                 <Link to="/v1">

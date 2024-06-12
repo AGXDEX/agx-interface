@@ -82,7 +82,7 @@ export default function StakeV2() {
   const [pufferPoints, setpufferPoints] = useState(0);
   const [novaPoints, setnovaPoints] = useState(0);
   
-  const [selectTab, setselectTab] = useState("Staking");
+  const [selectTab, setselectTab] = useState("Pool2");
   const [isUnstaking, setIsUnstakeLoading] = useState(false);
   const [isStaking, setIsStaking] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
@@ -217,7 +217,7 @@ export default function StakeV2() {
     const response = await axios.post(STAKER_SUBGRAPH_URL, {
       query: `{
       claimHistories(
-        where: { owner: "${account}" }
+        where: { owner: "${account.toLowerCase()}" }
         orderDirection: desc
         orderBy: blockTimestamp
       ) {
@@ -236,7 +236,6 @@ export default function StakeV2() {
     queryFn: fetchClaimHistories,
     enabled: !!account,
   });
-
   const { data: positionsData } = useQuery({
     queryKey: ["positions", account],
     queryFn: fetchPositions,
@@ -999,10 +998,10 @@ export default function StakeV2() {
             </TooltipWithPortal>
           </div>
           <div className="StakeV2-box">
-            <div className="flex w-full items-center">
+            {/* <div className="flex w-full items-center">
               <div className="StakeV2-claimNum">0.00</div>
               <div className="flex h-full pb-5 items-end pl-4">Eigen Layer Points</div>
-            </div>
+            </div> */}
             <div className="flex w-full items-center">
               <div className="StakeV2-claimNum">{Number(pufferPoints)? Number(Number(pufferPoints).toFixed(2)).toLocaleString(): '0.00'}</div>
               <div className="flex h-full pb-5 items-end pl-4">Puffer Points</div>
@@ -1079,7 +1078,7 @@ export default function StakeV2() {
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Staked AGX</div>
-                  <div>{formatValue(Number(userTotalStakedWithoutMultiplier) || 0)} AGX</div>
+                  <div>{formatValue(Number(userTotalStakedWithoutMultiplier)?.toFixed(2) || 0)} AGX</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Avg Multiplier</div>
@@ -1147,8 +1146,7 @@ export default function StakeV2() {
           </div>
           <div className={cx("addNow", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
             Add liquidity to Novaswap AGX/ETH pool ( <span className="heightLight">full range</span> ) to receive your
-            LP NFT.
-            <a
+            LP NFT.  <a
               target="_blank"
               rel="noreferrer"
               href={`https://novaswap.exchange/?chain=${EXTERNAL_LINK_CHAIN_CONFIG}#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`}
