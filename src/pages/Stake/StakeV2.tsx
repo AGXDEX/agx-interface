@@ -70,7 +70,19 @@ const EXTERNAL_LINK_CHAIN_CONFIG = process.env.REACT_APP_ENV === "development" ?
 function formatValue(value) {
   return isNaN(value) ? 0 : value;
 }
-
+const project = "agx";
+const fetchNovaPoints = async (address, project) => {
+  const response = await axios.get(
+    `https://app-api.zklink.io/lrt-points/nova/points/project?address=${address}&project=${project}`
+  );
+  return response.data;
+};
+const fetchPufferPoints = async (address, AGXAddress) => {
+  const response = await axios.get(
+    `https://app-api.zklink.io/lrt-points/nova/points/puffer?address=${address}&tokenAddress=${AGXAddress}`
+  );
+  return response.data;
+};
 export default function StakeV2() {
   const queryClient = useQueryClient();
   const { active, signer, account } = useWallet();
@@ -87,14 +99,13 @@ export default function StakeV2() {
   const [stakingTokenAddress, setStakingTokenAddress] = useState("");
   const [stakingFarmAddress, setStakingFarmAddress] = useState("");
   const [stakeMethodName, setStakeMethodName] = useState("");
-  const [pufferPoints, setpufferPoints] = useState(0);
-  const [novaPoints, setnovaPoints] = useState(0);
 
   const [selectTab, setselectTab] = useState("Pool2");
   const [isUnstaking, setIsUnstakeLoading] = useState(false);
   const [isStaking, setIsStaking] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
+  const [claimHistorie, setClaimHistorie] = useState([]);
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
   const readerAddress = getContract(chainId, "Reader");
@@ -112,35 +123,59 @@ export default function StakeV2() {
   const AGXAddress = getContract(chainId, "AGX");
   const wethAddress = getContract(chainId, "WethSwap");
 
+  const contract = useStakeAGXContract(chainId);
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const wrappedTokenSymbol = getConstant(chainId, "wrappedTokenSymbol");
-
-  // const params = {
-  //   address: account,
-  //   project: 'agx'
-  // };
-  //   axios.get(lrt_points_URL + '/project', { params })
-  //   .then(response => {
-  //     let sum = 0
-  //     response.data.data.map((item)=>{
-  //       sum += Number(item.response.data.data)
-  //     })
-  //     setnovaPoints(sum)
-  //   })
-  //   .catch(error => {
-  //     console.error('Error fetching data:', error);
-  //   });
-  // const param = {
-  //   address: account,
-  //   tokenAddress: AGXAddress
-  // };
-  //   axios.get(lrt_points_URL + '/puffer', { params: param })
-  //   .then(response => {
-  //     setpufferPoints(response.data.data)
-  //   })
-  //   .catch(error => {
-  //     console.error('Error fetching data:', error);
-  //   });
+  const getNew = ()=> {
+    setTimeout(async ()=>{
+    const response = await axios.post(STAKER_SUBGRAPH_URL, {
+      query: `{
+      claimHistories(
+        where: { owner: "${account?.toLowerCase()}" }
+        orderDirection: desc
+        orderBy: blockTimestamp
+      ) {
+        type
+        transactionHash
+        blockTimestamp
+        amount
+      }
+    }`,
+    });
+    setClaimHistorie(response.data.data.claimHistories)
+    },1000)
+  }
+  const getStake = () => {
+    setTimeout(()=>{
+    queryClient.invalidateQueries({ queryKey: ["maxAPR", contract,chainId] });
+    queryClient.invalidateQueries({ queryKey: ["totalStakedWithoutMultiplier", contract,chainId] });
+    },10000) 
+  }
+  const { data: novaPoints } = useQuery({
+    queryKey: ["novaPoints", account, project],
+    queryFn: () => fetchNovaPoints(account, project),
+    enabled: !!account,
+    select: (data) => {
+      if (data.data && data.data.length > 0) {
+        const totalPoints = data.data.reduce((sum, item) => {
+          return sum + parseFloat(item.points);
+        }, 0);
+        return totalPoints;
+      }
+      return 0;
+    },
+  });
+  const { data: pufferPoints } = useQuery({
+    queryKey: ["pufferPoints", account, AGXAddress],
+    queryFn: () => fetchPufferPoints(account, AGXAddress),
+    enabled: !!account,
+    select: (data) => {
+      if (data.data) {
+        return data.data;
+      }
+      return 0;
+    },
+  });
   const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
     fetcher: contractFetcher(signer, GlpManager),
   });
@@ -218,7 +253,6 @@ export default function StakeV2() {
     queryFn: () => fetchTotalReward(account),
     enabled: !!account,
   });
-
   const fetchClaimHistories = async ({ queryKey }) => {
     const [, account] = queryKey;
     const response = await axios.post(STAKER_SUBGRAPH_URL, {
@@ -791,7 +825,6 @@ export default function StakeV2() {
   const { data: totalStakedWithoutMultiplier } = useTotalStakedWithoutMultiplier(chainId);
   const { data: totalStakingClaim } = useTotalClaim(chainId);
   const { data: maxAPR } = useMaxAPR(chainId);
-
   const { data: userTotalStakedWithoutMultiplier } = useUserTotalStakedWithoutMultiplier(account, chainId);
   const { data: avgMultiplier } = useAvgMultiplier(account, chainId);
 
@@ -812,10 +845,11 @@ export default function StakeV2() {
       <ClaimHistoryModal
         isVisible={isClaimHistoryModalVisible}
         setIsVisible={setIsClaimHistoryModalVisible}
-        data={claimHistories}
+        data={claimHistorie.length>0? claimHistorie:claimHistories}
       />
       {/* <UnstakeModal isVisible={false} /> */}
-      <StakingModal isVisible={isStakingModalVisible} setIsVisible={setIsStakingModalVisible} data={claimHistories} />
+      <StakingModal isVisible={isStakingModalVisible} setIsVisible={setIsStakingModalVisible} data={claimHistories} 
+        getStake={getStake}/>
       <ClaimAllModal
         isVisible={claimModalVisible}
         setIsVisible={setClaimModalVisible}
@@ -840,6 +874,7 @@ export default function StakeV2() {
         URLlist={urlList}
         Pool2Rewards={Pool2Rewards}
         rewards={rewards}
+        getNew={getNew}
       />
       <DepositModal
         isVisible={depositModalVisible}
@@ -1176,7 +1211,7 @@ export default function StakeV2() {
                 mergedDepNFTlists.length > 0 &&
                 mergedDepNFTlists.map((item, index) => {
                   return (
-                    <div key={item.tokenId}>
+                    <div key={item.tokenId+index}>
                       <div className={cx("")}>
                         {depUrlList[index]?.image && !imageLoaded && !isDepBaseListLoading && (
                           <div className="bg-white/10 p-2 sm:p-4 sm:h-[300px] rounded-3xl shadow-lg flex flex-col sm:flex-row gap-5 select-none ">
@@ -1252,7 +1287,7 @@ export default function StakeV2() {
               <div className="rightAlign">Total Liquidity</div>
               <div className="rightAlign"></div>
             </div>
-            {visibleTokens.map((token) => {
+            {visibleTokens.map((token,index) => {
               let tokenFeeBps;
               const obj = getBuyGlpFromAmount(
                 glpAmount,
@@ -1275,7 +1310,7 @@ export default function StakeV2() {
               let manage = 1;
               manage = managedUsd && calculateManage(managedUsd, glpSupplyUsd);
               return (
-                <div className="table-td" key={token.symbol}>
+                <div className="table-td" key={token.symbol+index}>
                   <div className="leftAlign">{token.symbol}/ALP</div>
                   <div className="rightAlign">{formatAmount(manage, 0, 0, true)}</div>
                   <div className="rightAlign">{`${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`}</div>

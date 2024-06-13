@@ -86,65 +86,67 @@ export const usePaginations = ({
 export function DataTablePagination<TData>({ table, paginations }: DataTablePaginationProps<TData>) {
   const pageIndex = table.getState().pagination.pageIndex;
   return (
-    <div className="relative mt-6 flex items-center justify-between px-4">
-      <div className="flex-1 text-lg">
-        Page {pageIndex + 1} of
-        <span className="mx-2">{table.getPageCount()}</span>
-      </div>
-      <div className="flex items-center space-x-6 lg:space-x-8">
-        <div className="flex items-center space-x-2">
-          <div
-            className="h-8 w-8 rounded-lg border-[#5C5C5C] p-0 lg:flex"
-            onClick={() => table.setPageIndex(0)}
-            // disabled={!table.getCanPreviousPage()}
-          >
-            <span className="sr-only">Go to first page</span>
-            <ChevronsLeft className="h-8 w-8 text-white" />
-          </div>
-          <div
-            className="h-8 w-8 border-[#5C5C5C] p-0 flex"
-            onClick={() => table.previousPage()}
-            // disabled={!table.getCanPreviousPage()}
-          >
-            <span className="sr-only">Go to previous page</span>
-            <ChevronLeft className="h-8 w-8" />
-          </div>
-          {paginations.map((pageNum, i) => {
-            if (pageNum === DOTS) {
-              return <span key={i}>...</span>;
-            }
-            return (
-              <Button
-                variant="primary"
-                type="button"
-                className={cn("h-8 w-8 rounded-lg p-0 lg:flex", {
-                  "!bg-white/10 text-white dark:bg-[#424242] dark:text-white dark:border-none":
-                    Number(pageNum) - 1 === pageIndex,
-                  "bg-transparent  hover:bg-transparent dark:text-[#ADADAD] dark:bg-transparent border-none":
-                    Number(pageNum) - 1 !== pageIndex,
-                })}
-                key={i}
-                onClick={() => table.setPageIndex(Number(pageNum) - 1)}
-              >
-                {pageNum}
-              </Button>
-            );
-          })}
-          <div
-            className="h-8 w-8 border-[#5C5C5C] p-0 flex"
-            onClick={() => table.nextPage()}
-            // disabled={!table.getCanNextPage()}
-          >
-            <span className="sr-only">Go to next page</span>
-            <ChevronRight className="h-8 w-8 text-white" />
-          </div>
-          <div
-            className="h-8 w-8 rounded-lg border-[#5C5C5C] p-0 lg:flex"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            // disabled={!table.getCanNextPage()}
-          >
-            <span className="sr-only">Go to last page</span>
-            <ChevronsRight className="h-8 w-8 text-white" />
+    <div className="w-full flex justify-center">
+      <div className="relative mt-6 flex items-center justify-between px-4">
+        <div className="flex-1 text-lg">
+          Page {pageIndex + 1} of
+          <span className="mx-2">{table.getPageCount()}</span>
+        </div>
+        <div className="flex items-center space-x-6 lg:space-x-8">
+          <div className="flex items-center space-x-2">
+            <div
+              className="h-8 w-8 rounded-lg border-[#5C5C5C] p-0 lg:flex"
+              onClick={() => table.setPageIndex(0)}
+              // disabled={!table.getCanPreviousPage()}
+            >
+              <span className="sr-only">Go to first page</span>
+              <ChevronsLeft className="h-8 w-8 text-white" />
+            </div>
+            <div
+              className="h-8 w-8 border-[#5C5C5C] p-0 flex"
+              onClick={() => table.previousPage()}
+              // disabled={!table.getCanPreviousPage()}
+            >
+              <span className="sr-only">Go to previous page</span>
+              <ChevronLeft className="h-8 w-8" />
+            </div>
+            {paginations.map((pageNum, i) => {
+              if (pageNum === DOTS) {
+                return <span key={i}>...</span>;
+              }
+              return (
+                <Button
+                  variant="primary"
+                  type="button"
+                  className={cn("h-8 w-8 rounded-lg p-0 lg:flex", {
+                    "!bg-white/10 text-white dark:bg-[#424242] dark:text-white dark:border-none":
+                      Number(pageNum) - 1 === pageIndex,
+                    "bg-transparent  hover:bg-transparent dark:text-[#ADADAD] dark:bg-transparent border-none":
+                      Number(pageNum) - 1 !== pageIndex,
+                  })}
+                  key={i}
+                  onClick={() => table.setPageIndex(Number(pageNum) - 1)}
+                >
+                  {pageNum}
+                </Button>
+              );
+            })}
+            <div
+              className="h-8 w-8 border-[#5C5C5C] p-0 flex"
+              onClick={() => table.nextPage()}
+              // disabled={!table.getCanNextPage()}
+            >
+              <span className="sr-only">Go to next page</span>
+              <ChevronRight className="h-8 w-8 text-white" />
+            </div>
+            <div
+              className="h-8 w-8 rounded-lg border-[#5C5C5C] p-0 lg:flex"
+              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+              // disabled={!table.getCanNextPage()}
+            >
+              <span className="sr-only">Go to last page</span>
+              <ChevronsRight className="h-8 w-8 text-white" />
+            </div>
           </div>
         </div>
       </div>
@@ -248,7 +250,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
           )}
         </TableBody>
       </Table>
-      {table.getRowModel().rows?.length!==0 && <DataTablePagination table={table} paginations={paginations} />}
+      {data.length>10 && <DataTablePagination table={table} paginations={paginations} />}
     </div>
   );
 }
