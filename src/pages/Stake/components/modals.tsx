@@ -91,6 +91,8 @@ function ClaimAllModal(props) {
     URLlist,
     Pool2Rewards,
     rewards,
+    getNew,
+    getStake
   } = props;
   const [tokenId, setTokenId] = useState("");
   const NFTPositionsManagerAddress = getContract(chainId, "nonfungibleTokenPositionManagerAddress");
@@ -114,6 +116,7 @@ function ClaimAllModal(props) {
         queryClient.invalidateQueries({ queryKey: ["totalStakedWithoutMultiplier", chainId] });
         setIsDeposit(false);
         setIsVisible(false);
+        getNew();
       }
     });
   };
@@ -136,6 +139,7 @@ function ClaimAllModal(props) {
       }).finally(() => {
         setIsDeposit(false);
         setIsVisible(false);
+        getNew();
       });
     } else if (tokenId === "Staking") {
       setIsDeposit(true);
@@ -151,6 +155,7 @@ function ClaimAllModal(props) {
       }).finally(() => {
         setIsDeposit(false);
         setIsVisible(false);
+        getNew();
       });
     }
   };

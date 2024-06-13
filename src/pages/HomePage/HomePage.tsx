@@ -62,6 +62,8 @@ import { useState } from "react";
 import cain from "img/home/cain.svg";
 import cain1 from "img/home/cain1.svg";
 import cain2 from "img/home/cain2.svg";
+import Supported from "img/home/Supported Layers2s.svg";
+import SupportedGif from "img/home/Supported.gif";
 
 const scrollTo = (value) => {
   let arr:any = document.getElementsByClassName('main')[0].childNodes
@@ -356,7 +358,7 @@ function HomePage() {
           </div>
           <div className="box">
             <img className="Protocol" src={ALP} />
-            <img className="protoool" src={ALPPool} />
+            <img className="protoool maxWidth" src={ALPPool} />
           </div>
           <div className="box">
             <img className="cain left-right cain9" src={cain1} />
@@ -366,10 +368,10 @@ function HomePage() {
             <img className="modile mobileprotoool1" src={mobileprotoool1} />
             <img className="modile mobileprotoool" src={mobileprotoool} />
           </div>
-          {/* <div className="box">
+          <div className="box">
             <img className="Protocol" src={Supported} />
-            <img className="protoool" src={Journey} />
-          </div> */}
+            <img className="protoool" src={SupportedGif} />
+          </div>
           <div className="box">
             <img className="cain up-down cain11" src={cain1} />
             <img className="cain left-right cain12" src={cain2} />

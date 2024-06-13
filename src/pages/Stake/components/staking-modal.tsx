@@ -88,7 +88,7 @@ const useApproveAGX = (account, chainId) => {
   });
 };
 
-const useStakeAGX = (account, chainId) => {
+const useStakeAGX = (account, chainId, getStake) => {
   const queryClient = useQueryClient();
   const contract = useStakeAGXContract(chainId);
   return useMutation({
@@ -100,6 +100,7 @@ const useStakeAGX = (account, chainId) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["agxBalance", account, chainId] });
       queryClient.invalidateQueries({ queryKey: ["stakedAGXs", account] });
+      getStake();
     },
     onError: (error) => {
       console.error(error);
@@ -171,12 +172,12 @@ const useStakedAGXs = (account) => {
 export function StakingModal(props) {
   const { chainId } = useChainId();
   const { account } = useWallet();
+  const { isVisible, setIsVisible, data, getStake } = props;
   const { mutateAsync: approveAGX, isPending: isApproving } = useApproveAGX(account, chainId);
-  const { mutateAsync: stakeAGX, isPending } = useStakeAGX(account, chainId);
+  const { mutateAsync: stakeAGX, isPending } = useStakeAGX(account, chainId,getStake);
   const { data: balance, isLoading: isLoadingBalance } = useAGXBalance(account, chainId);
   const { data: allowance } = useAGXAllowance(account, chainId);
 
-  const { isVisible, setIsVisible, data } = props;
   const [selectedTag, setSelectedTag] = useState<any>(tags[0]);
 
   const {
@@ -265,8 +266,8 @@ export function StakingModal(props) {
             )}
 
             <div className="grid grid-cols-3 gap-4">
-              {tags.map((tag) => (
-                <div key={tag.days} className="relative flex items-center md:p-6 p-3 pt-10 md:pt-6 bg-[#18191E] rounded-lg cursor-pointer"
+              {tags.map((tag,index) => (
+                <div key={tag.days+index} className="relative flex items-center md:p-6 p-3 pt-10 md:pt-6 bg-[#18191E] rounded-lg cursor-pointer"
                 onClick={() => handleClickTag(tag)}>
                   <div className="absolute left-3 top-3">
                     <label
@@ -404,14 +405,14 @@ export const StakeList = () => {
       accessorKey: "period",
       header: ({ column }) => {
         return (
-          <div className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
+          <div className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-left">
             Multiplier
           </div>
         );
       },
       cell: ({ row }) => {
         return (
-          <div className="border-b border-none p-4  text-white text-center">
+          <div className="border-b border-none p-4  text-white text-left">
             {getMultiplier(Number(row.original.period))}x
           </div>
         );
@@ -421,7 +422,7 @@ export const StakeList = () => {
       accessorKey: "reward",
       header: ({ column }) => {
         return (
-          <div className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
+          <div className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-left">
             Claimable Rewards
           </div>
         );
@@ -432,7 +433,7 @@ export const StakeList = () => {
       },
     },
     {
-      accessorKey: "period",
+      accessorKey: "period1",
       sortingFn: (rowA, rowB) => {
         const numA = rowA.original.blockTime;
         const numB = rowB.original.blockTime;
@@ -440,21 +441,21 @@ export const StakeList = () => {
       },
       header: ({ column }) => {
         return (
-          <div className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
+          <div className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400 text-left">
             Unlockable In
           </div>
         );
       },
       cell: ({ row }) => {
         return (
-          <div className="border-b border-none p-4 pr-8  text-white text-center">
+          <div className="border-b border-none p-4 pr-8  text-white text-left">
             {Number(row.original.period) / 86400} days
           </div>
         );
       },
     },
     {
-      accessorKey: "period",
+      accessorKey: "period2",
       header: ({ column }) => {
         return (
           <div className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
