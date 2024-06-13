@@ -313,7 +313,7 @@ const novaSepoliaChain = [
     name: "Wrapped Ethereum",
     symbol: "wETH",
     decimals: 18,
-    address: "0x6e42d10eB474a17b14f3cfeAC2590bfa604313C7",
+    address: "0x13208D4923b9358cF4ccC450bB79ad98bA108D63",
     isWrapped: true,
     baseSymbol: "ETH",
     imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",

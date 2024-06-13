@@ -55,7 +55,15 @@ import { STAKER_SUBGRAPH_URL, lrt_points_URL } from "config/subgraph";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { cn } from "utils/classname";
 import StakingModal, { StakeList, useAGXBalance, useStakeAGXContract } from "./components/staking-modal";
-import { fetchNFTData, fetchStakeLiquidity, fetchNFTClaimed, fetchTotalReward, fetchPositions, fetchPoolData, fetchStakedAGXs } from "./hooks/services";
+import {
+  fetchNFTData,
+  fetchStakeLiquidity,
+  fetchNFTClaimed,
+  fetchTotalReward,
+  fetchPositions,
+  fetchPoolData,
+  fetchStakedAGXs,
+} from "./hooks/services";
 
 const EXTERNAL_LINK_CHAIN_CONFIG = process.env.REACT_APP_ENV === "development" ? "nova_sepolia" : "nova_mainnet";
 
@@ -81,7 +89,7 @@ export default function StakeV2() {
   const [stakeMethodName, setStakeMethodName] = useState("");
   const [pufferPoints, setpufferPoints] = useState(0);
   const [novaPoints, setnovaPoints] = useState(0);
-  
+
   const [selectTab, setselectTab] = useState("Pool2");
   const [isUnstaking, setIsUnstakeLoading] = useState(false);
   const [isStaking, setIsStaking] = useState(false);
@@ -107,33 +115,32 @@ export default function StakeV2() {
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const wrappedTokenSymbol = getConstant(chainId, "wrappedTokenSymbol");
 
-  const params = {
-    address: account,
-    project: 'agx'
-  };
-    axios.get(lrt_points_URL + '/project', { params })
-    .then(response => {
-      let sum = 0
-      response.data.data.map((item)=>{
-        sum += Number(item.response.data.data)
-      })
-      setnovaPoints(sum)
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-    });
-  const param = {
-    address: account,
-    tokenAddress: AGXAddress
-  };
-    axios.get(lrt_points_URL + '/puffer', { params: param })
-    .then(response => {
-      // console.log(response.data)
-      setpufferPoints(response.data.data)
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-    });
+  // const params = {
+  //   address: account,
+  //   project: 'agx'
+  // };
+  //   axios.get(lrt_points_URL + '/project', { params })
+  //   .then(response => {
+  //     let sum = 0
+  //     response.data.data.map((item)=>{
+  //       sum += Number(item.response.data.data)
+  //     })
+  //     setnovaPoints(sum)
+  //   })
+  //   .catch(error => {
+  //     console.error('Error fetching data:', error);
+  //   });
+  // const param = {
+  //   address: account,
+  //   tokenAddress: AGXAddress
+  // };
+  //   axios.get(lrt_points_URL + '/puffer', { params: param })
+  //   .then(response => {
+  //     setpufferPoints(response.data.data)
+  //   })
+  //   .catch(error => {
+  //     console.error('Error fetching data:', error);
+  //   });
   const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
     fetcher: contractFetcher(signer, GlpManager),
   });
@@ -631,11 +638,11 @@ export default function StakeV2() {
   });
   const { poolValue, AGXVFTValue, stakeAPRValue } = poolData || {};
   const stakedAGXAmount = (
-    (Number(totalUserStakedLiquidity) * Number(AGXVFTValue?.replace(/,/g, "") ?? "0")) /
+    (Number(totalUserStakedLiquidity || 0) * Number(AGXVFTValue?.replace(/,/g, "") ?? "0")) /
     Number(stakeliquidity)
   ).toFixed(2);
 
-  const userStakedAGXAmount = stakedAGXAmount === "NaN" ? "0.00" : stakedAGXAmount;
+  const userStakedAGXAmount = Number.isNaN(Number(stakedAGXAmount)) ? "0.00" : stakedAGXAmount;
   const formattedPoolValue = isNaN(poolValue || 0) ? 0 : poolValue;
 
   const fetchTotalStakedWithoutMultiplier = async (contract) => {
@@ -677,7 +684,7 @@ export default function StakeV2() {
 
     const maxAPR = (rewardRateFormatted * 31536000) / totalStakedWithMultiplierFormatted / 5;
 
-    return `${((maxAPR||0) * 100).toFixed(2)}%`;
+    return `${((maxAPR || 0) * 100).toFixed(2)}%`;
   };
 
   const useMaxAPR = (chainId) => {
@@ -796,7 +803,7 @@ export default function StakeV2() {
   const { data: stakeAGXRewardRate } = useStakeAGXRewardRate(chainId);
 
   const totalStakeAGXRewardRate = (Number(stakeAGXRewardRate) / 10 ** 18) * 86400;
-  const totalRewardRate=rewardRate && Number(((Number(rewardRate) / 10 ** 18) * 86400 + 59523));
+  const totalRewardRate = rewardRate && Number((Number(rewardRate) / 10 ** 18) * 86400 + 59523);
 
   const currentEmisionsSum = totalStakeAGXRewardRate + totalRewardRate;
 
@@ -986,12 +993,14 @@ export default function StakeV2() {
           <div className="StakeV2-title">
             <TooltipWithPortal
               renderContent={() => {
-                return <>Points fairly distribute to ALP holders base on "centralized points pool" mode. <a
-                target="_blank" rel="noreferrer"
-                href={`https://docs.agx.xyz/tokenomics/points-system`}
-              >
-                Read more &gt;&gt;
-              </a></>;
+                return (
+                  <>
+                    Points fairly distribute to ALP holders base on "centralized points pool" mode.{" "}
+                    <a target="_blank" rel="noreferrer" href={`https://docs.agx.xyz/tokenomics/points-system`}>
+                      Read more &gt;&gt;
+                    </a>
+                  </>
+                );
               }}
             >
               Accumlate Points
@@ -1003,11 +1012,15 @@ export default function StakeV2() {
               <div className="flex h-full pb-5 items-end pl-4">Eigen Layer Points</div>
             </div> */}
             <div className="flex w-full items-center">
-              <div className="StakeV2-claimNum">{Number(pufferPoints)? Number(Number(pufferPoints).toFixed(2)).toLocaleString(): '0.00'}</div>
+              <div className="StakeV2-claimNum">
+                {Number(pufferPoints) ? Number(Number(pufferPoints).toFixed(2)).toLocaleString() : "0.00"}
+              </div>
               <div className="flex h-full pb-5 items-end pl-4">Puffer Points</div>
             </div>
             <div className="flex w-full items-center">
-              <div className="StakeV2-claimNum">{Number(novaPoints)? Number(Number(novaPoints).toFixed(2)).toLocaleString(): '0.00'}</div>
+              <div className="StakeV2-claimNum">
+                {Number(novaPoints) ? Number(Number(novaPoints).toFixed(2)).toLocaleString() : "0.00"}
+              </div>
               <div className="flex h-full pb-5 items-end pl-4">Nova Points</div>
             </div>
             <div className="flex w-full items-center">
@@ -1146,7 +1159,8 @@ export default function StakeV2() {
           </div>
           <div className={cx("addNow", { ishide: selectTab !== "Pool2", show: selectTab === "Pool2" })}>
             Add liquidity to Novaswap AGX/ETH pool ( <span className="heightLight">full range</span> ) to receive your
-            LP NFT.  <a
+            LP NFT.{" "}
+            <a
               target="_blank"
               rel="noreferrer"
               href={`https://novaswap.exchange/?chain=${EXTERNAL_LINK_CHAIN_CONFIG}#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`}
@@ -1230,6 +1244,7 @@ export default function StakeV2() {
               )}
             </div>
           </div>
+
           <div className={cx("liquidity", { ishide: selectTab !== "Liquidity", show: selectTab === "Liquidity" })}>
             <div className="table-tr">
               <div className="leftAlign">Pool</div>

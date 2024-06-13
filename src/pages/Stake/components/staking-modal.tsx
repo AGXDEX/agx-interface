@@ -1,3 +1,5 @@
+/* eslint-disable react-perf/jsx-no-new-array-as-prop */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
@@ -20,6 +22,8 @@ import { cn } from "utils/classname";
 import useWallet from "lib/wallets/useWallet";
 import { fetchStakedAGXs } from "../hooks/services";
 import { formatAmount } from "lib/numbers";
+import { DataTable } from "components/DataTable";
+import { head } from "lodash";
 
 export const useStakeAGXContract = (chainId) => {
   const { signer } = useWallet();
@@ -96,7 +100,6 @@ const useStakeAGX = (account, chainId) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["agxBalance", account, chainId] });
       queryClient.invalidateQueries({ queryKey: ["stakedAGXs", account] });
-
     },
     onError: (error) => {
       console.error(error);
@@ -327,7 +330,20 @@ export function StakingModal(props) {
   );
 }
 
-const UnstakeButton = ({ stake, chainId }) => {
+
+const ClaimableRewards = ({ stake, chainId }) => {
+  const { account } = useWallet();
+  const { data: reward } = useStakeReward(stake, account, chainId);
+
+  return (
+    <td className="border-b border-none p-4 pr-8  text-white text-center">{Number(reward).toFixed(2)}</td>
+  );
+};
+
+const UnstakeButton = ({ stake, chainId }:{
+  stake: any;
+  chainId: any;
+}) => {
   const { account } = useWallet();
   const { mutateAsync: unstake, isPending: isLoading } = useUnstakeAGX(account, chainId);
 
@@ -337,34 +353,25 @@ const UnstakeButton = ({ stake, chainId }) => {
 
   const isUnstakeAvailable = Date.now() >= endTime.getTime();
 
-  const { data: reward } = useStakeReward(stake, account, chainId);
 
   return (
-    <>
-      <td className="border-b border-none p-4 pl-8  text-white">
-        {formatAmount(BigNumber.from(stake.amount), 18, 2)} AGX
-      </td>
-      <td className="border-b border-none p-4  text-white text-center">{getMultiplier(Number(stake.period))}x</td>
-      <td className="border-b border-none p-4 pr-8  text-white text-center">{Number(reward).toFixed(2)}</td>
-      <td className="border-b border-none p-4 pr-8  text-white text-center">{Number(stake.period) / 86400} days</td>
-      <td className="border-b border-none p-4 pr-8  text-white text-center">
-        {isUnstakeAvailable ? (
-          <>
-            <Button
-              type="button"
-              variant="primary"
-              className="justify-center items-center px-16 py-4 !text-lg leading-6 text-center text-black whitespace-nowrap rounded-md max-md:px-5 max-md:max-w-full font-bold"
-              loading={isLoading}
-              onClick={() => unstake(parseInt(stake.id))}
-            >
-              Unstake
-            </Button>
-          </>
-        ) : (
-          "Locking"
-        )}
-      </td>
-    </>
+    <div className="border-b border-none p-4 pr-8  text-white text-center">
+      {isUnstakeAvailable ? (
+        <>
+          <Button
+            type="button"
+            variant="primary"
+            className="justify-center items-center px-16 py-4 !text-lg leading-6 text-center text-black whitespace-nowrap rounded-md max-md:px-5 max-md:max-w-full font-bold"
+            loading={isLoading}
+            onClick={() => unstake(parseInt(stake.id))}
+          >
+            Unstake
+          </Button>
+        </>
+      ) : (
+        "Locking"
+      )}
+    </div>
   );
 };
 
@@ -372,38 +379,103 @@ export const StakeList = () => {
   const { chainId } = useChainId();
   const { account } = useWallet();
   const { data: stakedAGXs } = useStakedAGXs(account);
-  if(!stakedAGXs) return null;
+  const { mutateAsync: unstake, isPending: isLoading } = useUnstakeAGX(account, chainId);
+
+
+  const columns: any[] = [
+    {
+      accessorKey: "amount",
+      header: ({ column }) => {
+        return (
+          <div className="border-b border-none font-medium p-4 pl-8 pt-0 pb-3 text-slate-400  text-left">
+            My staked
+          </div>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div className="border-b border-none p-4  text-white text-left">
+            {formatAmount(BigNumber.from(row.original.amount), 18, 2)} AGX
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "period",
+      header: ({ column }) => {
+        return (
+          <div className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
+            Multiplier
+          </div>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div className="border-b border-none p-4  text-white text-center">
+            {getMultiplier(Number(row.original.period))}x
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "reward",
+      header: ({ column }) => {
+        return (
+          <div className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
+            Claimable Rewards
+          </div>
+        );
+      },
+      cell: ({ row }) => {
+        // const { data: reward } = useStakeReward(row.original, account, chainId);
+        return <ClaimableRewards stake={row.original} chainId={chainId} />;
+      },
+    },
+    {
+      accessorKey: "period",
+      sortingFn: (rowA, rowB) => {
+        const numA = rowA.original.blockTime;
+        const numB = rowB.original.blockTime;
+        return numA < numB ? 1 : numA > numB ? -1 : 0;
+      },
+      header: ({ column }) => {
+        return (
+          <div className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
+            Unlockable In
+          </div>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div className="border-b border-none p-4 pr-8  text-white text-center">
+            {Number(row.original.period) / 86400} days
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "period",
+      header: ({ column }) => {
+        return (
+          <div className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
+            Operation
+          </div>
+        );
+      },
+      cell: ({ row }) => {
+        return <UnstakeButton stake={row.original} chainId={chainId} />;
+      },
+    },
+  ];
+
+  if (!stakedAGXs) return null;
   return (
-    <div className="relative rounded-xl overflow-auto">
-      <div className="shadow-sm md:overflow-hidden my-8 overflow-auto">
-        <table className="border-collapse table-fixed md:w-full w-[140vw]">
-          <thead>
-            <tr>
-              <th className="border-b border-none font-medium p-4 pl-8 pt-0 pb-3 text-slate-400  text-left ">
-                My staked
-              </th>
-              <th className="border-b border-none font-medium p-4 pt-0 pb-3 text-slate-400  text-center">Multiplier</th>
-              <th className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
-                Claimable Rewards
-              </th>
-              <th className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
-                Unlockable In
-              </th>
-              <th className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">
-                Operation
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {stakedAGXs?.map((stake) => (
-              <tr key={stake.id}>
-                <UnstakeButton stake={stake} chainId={chainId} />
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <>
+      <DataTable
+        columns={columns}
+        data={stakedAGXs}
+      />
+    </>
   );
 };
 
