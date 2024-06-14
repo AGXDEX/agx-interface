@@ -145,11 +145,11 @@ export default function StakeV2() {
     setClaimHistorie(response.data.data.claimHistories)
     },1000)
   }
-  const getStake = () => {
-    setTimeout(()=>{
-    queryClient.invalidateQueries({ queryKey: ["maxAPR", contract,chainId] });
-    queryClient.invalidateQueries({ queryKey: ["totalStakedWithoutMultiplier", contract,chainId] });
-    },10000) 
+  const getStake = async() => {
+    await fetchMaxAPR(contract).then((res)=>{
+    console.log(res)
+
+    })
   }
   const { data: novaPoints } = useQuery({
     queryKey: ["novaPoints", account, project],
@@ -945,7 +945,7 @@ export default function StakeV2() {
                         <div
                           className="underline cursor-pointer"
                           onClick={() => {
-                            window.open("https://docs.agx.xyz/");
+                            window.open("https://docs.agx.xyz/tokenomics/usdagx");
                           }}
                         >
                           Read more
