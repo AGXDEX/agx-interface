@@ -6,6 +6,7 @@ import {
   injectedWallet,
   metaMaskWallet,
   okxWallet,
+  bitgetWallet,
   rabbyWallet,
   safeWallet,
   trustWallet,
@@ -98,11 +99,11 @@ const popularWalletList: WalletList = [
     ],
   },
 ];
-
+//coinbaseWallet, trustWallet, coreWallet, 
 const othersWalletList: WalletList = [
   {
     groupName: "Others",
-    wallets: [...(isInBinance() ? [binanceWallet] : []), coinbaseWallet, trustWallet, coreWallet, okxWallet],
+    wallets: [...(isInBinance() ? [binanceWallet] : []), bitgetWallet,okxWallet],
   },
 ];
 
