@@ -11129,6 +11129,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fancy-canvas@npm:2.1.0":
+  version: 2.1.0
+  resolution: "fancy-canvas@npm:2.1.0"
+  checksum: 2463ca8a9254fb4cc69bbe33a2996b2a0ba8f725721d51464d9e87b4f3c3e8759e2289b0d592f56265501d5cff0b363bb7c72bb9c38212c19114dbd006ec8959
+  languageName: node
+  linkType: hard
+
 "fast-deep-equal@npm:^2.0.1":
   version: 2.0.1
   resolution: "fast-deep-equal@npm:2.0.1"
@@ -11751,6 +11758,7 @@ __metadata:
     hex-to-rgba: 2.0.1
     html-to-image: ^1.10.8
     husky: 7.0.4
+    lightweight-charts: 4.1.5
     lint-staged: 12.3.4
     lodash: 4.17.21
     lucide-react: 0.381.0
@@ -11775,6 +11783,7 @@ __metadata:
     react-select: 5.2.1
     react-tabs: 3.2.3
     react-toastify: 6.0.9
+    react-tradingview-widget: 1.3.2
     react-use: 17.3.1
     recharts: 2.1.8
     reselect: 5.1.0
@@ -11789,6 +11798,7 @@ __metadata:
     wagmi: 2.5.7
     web-vitals: 1.1.2
     zod: 3.23.8
+    zustand: 4.5.2
   languageName: unknown
   linkType: soft
 
@@ -14411,6 +14421,15 @@ __metadata:
     prelude-ls: ^1.2.1
     type-check: ~0.4.0
   checksum: 12c5021c859bd0f5248561bf139121f0358285ec545ebf48bb3d346820d5c61a4309535c7f387ed7d84361cf821e124ce346c6b7cef8ee09a67c1473b46d0fc4
+  languageName: node
+  linkType: hard
+
+"lightweight-charts@npm:4.1.5":
+  version: 4.1.5
+  resolution: "lightweight-charts@npm:4.1.5"
+  dependencies:
+    fancy-canvas: 2.1.0
+  checksum: 15063fa46c22d79e86afef4c901fae1307efe3e81daecfbb4a1df2b5a50dfeca61b54c33f19d42bd29a52e0edee3d19aa9d5cb72013a1631af47e7e1c9f3258e
   languageName: node
   linkType: hard
 
@@ -18094,6 +18113,17 @@ __metadata:
   peerDependencies:
     react: ">=16"
   checksum: f5efca148f79cb68b58f486b7b87d3fa91c379480097b42501db8ef9d6463e5506264f5fd0873cccc854bd436d4b8e2d0bdd11bca20baa1c39e9424b8d6a80e5
+  languageName: node
+  linkType: hard
+
+"react-tradingview-widget@npm:1.3.2":
+  version: 1.3.2
+  resolution: "react-tradingview-widget@npm:1.3.2"
+  peerDependencies:
+    prop-types: ^15.6.0
+    react: ^16.0.0
+    react-dom: ^16.0.0
+  checksum: 83027cd827569945e4f39ac609087f3430322d7ac57cc06ae5d069769b93384e0c061841e6cf1e314c6c8fb59ccab0a47500922584f2cb2064db920d618d09dd
   languageName: node
   linkType: hard
 
@@ -22138,5 +22168,25 @@ __metadata:
     react:
       optional: true
   checksum: 80acd0fbf633782996642802c8692bbb80ae5c80a8dff4c501b88250acd5ccd468fbc6398bdce198475a25e3839c91385b81da921274f33ffb5c2d08c3eab400
+  languageName: node
+  linkType: hard
+
+"zustand@npm:4.5.2":
+  version: 4.5.2
+  resolution: "zustand@npm:4.5.2"
+  dependencies:
+    use-sync-external-store: 1.2.0
+  peerDependencies:
+    "@types/react": ">=16.8"
+    immer: ">=9.0.6"
+    react: ">=16.8"
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    immer:
+      optional: true
+    react:
+      optional: true
+  checksum: 160052a7faaefbaad1071e890a06e5d7a04f6ff6985def30a7b4471f4ddbdd1d30bb05b3688a2777cd0b717d1f0d98dad24883a5caa3deeb3afb4d83b6dabc55
   languageName: node
   linkType: hard
