@@ -1,3 +1,5 @@
+/* eslint-disable react-perf/jsx-no-new-array-as-prop */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Trans, t } from "@lingui/macro";
 import { useState } from "react";
 import Checkbox from "components/Checkbox/Checkbox";
@@ -41,16 +43,12 @@ import { approveTokens } from "domain/tokens";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 // import { UiModal } from "components/ui/Modal";
 import { displayTransactionHash, formatTimestamp } from "utils/formatter";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "components/ui/dialog";
 import { X } from "lucide-react";
 import { getExplorerUrl } from "config/chains";
 import { useChainId } from "lib/chains";
 import { useStakeAGXContract } from "./staking-modal";
+import { DataTable } from "components/DataTable";
 
 const fetchClaimableReward = async (contract, account) => {
   const reward = await contract.claimable(account);
@@ -66,7 +64,6 @@ const useClaimableReward = (account, chainId) => {
     refetchInterval: 10000,
   });
 };
-
 
 const { AddressZero } = ethers.constants;
 function ClaimAllModal(props) {
@@ -92,7 +89,7 @@ function ClaimAllModal(props) {
     Pool2Rewards,
     rewards,
     getNew,
-    getStake
+    getStake,
   } = props;
   const [tokenId, setTokenId] = useState("");
   const NFTPositionsManagerAddress = getContract(chainId, "nonfungibleTokenPositionManagerAddress");
@@ -117,7 +114,7 @@ function ClaimAllModal(props) {
         setIsDeposit(false);
         setIsVisible(false);
         getNew();
-      }
+      },
     });
   };
 
@@ -177,9 +174,7 @@ function ClaimAllModal(props) {
               </Checkbox>
             </div>
             <div>
-              {Number(Number(ethers.utils.formatEther(claimableReward || 0))
-                .toFixed(2))
-                .toLocaleString()}
+              {Number(Number(ethers.utils.formatEther(claimableReward || 0)).toFixed(2)).toLocaleString()}
               AGX
             </div>
           </div>
@@ -1287,7 +1282,7 @@ export function ClaimHistoryModal(props) {
   const { chainId } = useChainId();
   const { isVisible, setIsVisible, data } = props;
 
-  const renderType=(_type)=>{
+  const renderType = (_type) => {
     switch (Number(_type)) {
       case 1:
         return "Pool2 mining";
@@ -1298,7 +1293,78 @@ export function ClaimHistoryModal(props) {
       default:
         return "Unknown";
     }
-  }
+  };
+  const columns: any[] = [
+    {
+      accessorKey: "type",
+      header: ({ column }) => {
+        return (
+          <div className="border-b border-none font-medium p-4 pl-8 pt-0 pb-3 text-slate-400  text-left">Type</div>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div className="border-b border-none p-4  text-white text-left">{renderType(Number(row.original.type))}</div>
+        );
+      },
+    },
+    {
+      accessorKey: "period",
+      header: ({ column }) => {
+        return (
+          <div className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-left">
+            AGX Amount
+          </div>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div className="border-b border-none p-4  text-white text-left">
+            {formatAmount(ethers.BigNumber.from(row.original.amount), 18, 4, true)} AGX
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "blockTimestamp",
+      sortingFn: (rowA, rowB) => {
+        const numA = rowA.original.blockTime;
+        const numB = rowB.original.blockTime;
+        return numA < numB ? 1 : numA > numB ? -1 : 0;
+      },
+      header: ({ column }) => {
+        return <div className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400 text-left">Time</div>;
+      },
+      cell: ({ row }) => {
+        return (
+          <div className="border-b border-none p-4 pr-8  text-white text-left">
+            {formatTimestamp(row.original.blockTimestamp)}
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "transactionHash",
+      header: ({ column }) => {
+        return (
+          <div className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-center">Tx Hash</div>
+        );
+      },
+      cell: ({ row }) => {
+        return (
+          <div
+            className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-center  text-white underline cursor-pointer"
+            onClick={() => {
+              const txUrl = getExplorerUrl(chainId) + "tx/" + row.original.transactionHash;
+              window.open(txUrl, "_blank");
+            }}
+          >
+            {displayTransactionHash(row.original.transactionHash)}
+          </div>
+        );
+      },
+    },
+  ];
   if (!isVisible) return null;
   return (
     <Dialog open={isVisible}>
@@ -1321,60 +1387,7 @@ export function ClaimHistoryModal(props) {
           </div>
         ) : (
           <>
-            <table className="w-full mt-8">
-              <thead>
-                <tr>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-2xl font-medium text-[#88898F] uppercase tracking-wider"
-                  >
-                    Type
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-2xl font-medium text-[#88898F] uppercase tracking-wider"
-                  >
-                    AGX Amount
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-2xl font-medium text-[#88898F] uppercase tracking-wider"
-                  >
-                    Time
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-2xl font-medium text-[#88898F] uppercase tracking-wider"
-                  >
-                    Tx Hash
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="text-2xl">
-                {data?.map((item, index) => (
-                  <tr key={index}>
-                    <td className="px-6 py-4 whitespace-nowrap text-2xl text-white">
-                      {renderType(Number(item.type))}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-2xl text-white">
-                      {formatAmount(ethers.BigNumber.from(item.amount), 18, 4, true)} AGX
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-2xl text-white">
-                      {formatTimestamp(item.blockTimestamp)}
-                    </td>
-                    <td
-                      className="px-6 py-4 whitespace-nowrap text-2xl text-white underline cursor-pointer"
-                      onClick={() => {
-                        const txUrl = getExplorerUrl(chainId) + "tx/" + item.transactionHash;
-                        window.open(txUrl, "_blank");
-                      }}
-                    >
-                      {displayTransactionHash(item.transactionHash)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <DataTable columns={columns} data={data} />
           </>
         )}
       </DialogContent>
