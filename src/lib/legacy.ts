@@ -960,6 +960,15 @@ export function isMobileDevice(navigator) {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
+export const API_CHART_PERIODS = {
+  "1m": 1,
+  "5m": 5,
+  "15m": 15,
+  "1h": 60,
+  "4h": 60 * 4,
+  "1d": '1D',
+};
+
 export const CHART_PERIODS = {
   "1m": 60,
   "5m": 60 * 5,

@@ -24,7 +24,7 @@ export class SyntheticsTVDataProvider extends TVDataProvider {
         // eslint-disable-next-line no-console
         console.warn(ex, "Switching to graph chainlink data");
         return Promise.race([
-          getChainlinkChartPricesFromGraph(ticker, period) as Promise<Bar[]>,
+          getChainlinkChartPricesFromGraph(ticker, period, {}) as Promise<Bar[]>,
           sleep(this.candlesTimeout).then(() => Promise.reject(`Chainlink candles timeout`)),
         ]);
       })

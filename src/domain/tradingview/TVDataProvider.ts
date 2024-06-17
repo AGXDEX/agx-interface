@@ -63,8 +63,8 @@ export class TVDataProvider {
     return this.getLimitBars(chainId, ticker, period, limit);
   }
 
-  async getTokenChartPrice(chainId: number, ticker: string, period: string): Promise<Bar[]> {
-    return getTokenChartPrice(chainId, ticker, period);
+  async getTokenChartPrice(chainId: number, ticker: string, period: string, periodParams:any): Promise<Bar[]> {
+    return getTokenChartPrice(chainId, ticker, period, periodParams);
   }
 
   async getTokenHistoryBars(
@@ -76,8 +76,10 @@ export class TVDataProvider {
     const barsInfo = this.barsInfo;
     if (this.shouldResetCache || !barsInfo.data.length || barsInfo.ticker !== ticker || barsInfo.period !== period) {
       try {
-        const bars = await this.getTokenChartPrice(chainId, ticker, period);
-        const filledBars = fillBarGaps(bars, CHART_PERIODS[period]);
+        const bars = await this.getTokenChartPrice(chainId, ticker, period, periodParams);
+        //TODO: Check fillBarGaps function call concept
+        const filledBars = bars;
+        //fillBarGaps(bars, CHART_PERIODS[period]);
         const currentCandleTime = getCurrentCandleTime(period);
         const lastBar = bars[bars.length - 1];
         if (lastBar.time === currentCandleTime) {
@@ -123,7 +125,6 @@ export class TVDataProvider {
       const bars = isStable
         ? getStableCoinPrice(period, from, to)
         : await this.getTokenHistoryBars(chainId, ticker, period, periodParams);
-
       return bars.map(formatTimeInBarToMs);
     } catch {
       throw new Error("Failed to get history bars");
@@ -165,7 +166,9 @@ export class TVDataProvider {
       this.lastBar?.period !== period ||
       this.chartTokenInfo.ticker !== this.barsInfo.ticker
     ) {
-      const prices = await this.getTokenLastBars(chainId, ticker, period, 1);
+      const prices:any[] = [];
+      // await this.getTokenLastBars(chainId, ticker, period, 1);
+      console.log("getTokenLastBars--->", prices, period);
       const currentPrice = this.chartTokenInfo.ticker === this.barsInfo.ticker && this.chartTokenInfo.price;
 
       if (prices?.length && currentPrice) {
