@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { useChartPrices } from "domain/legacy";
+import { convertedBars, useChartPrices } from "domain/legacy";
 import { CHART_PERIODS, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
 
 import { t } from "@lingui/macro";
@@ -321,7 +321,6 @@ export default function ExchangeTVChart(props) {
   };
 
   const priceDecimal = getPriceDecimals(chainId, chartToken?.symbol);
-
   return (
     <div className="ExchangeChart tv" ref={ref}>
       <div className="ExchangeChart-header">
@@ -373,9 +372,8 @@ export default function ExchangeTVChart(props) {
       </div>
 
       <div className="ExchangeChart-bottom App-box App-box-border">
-        <CandlestickChart url={currentCandleUrl} />
-
-        {/* {availableNetworksForChart.includes(chainId) && chartToken.symbol && chainId ? (
+        {/* <CandlestickChart url={currentCandleUrl} /> */}
+        {availableNetworksForChart.includes(chainId) && chartToken.symbol && chainId ? (
           <TVChartContainer
             chartLines={chartLines}
             savedShouldShowPositionLines={savedShouldShowPositionLines}
@@ -390,8 +388,11 @@ export default function ExchangeTVChart(props) {
           />
         ) : (
           <p className="ExchangeChart-error">Sorry, chart is not supported on this network yet.</p>
-        )} */}
+        )}
       </div>
     </div>
   );
 }
+
+
+

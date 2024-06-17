@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useMemo } from "react";
 import { gql } from "@apollo/client";
 import useSWR from "swr";
@@ -9,6 +10,8 @@ import { chainlinkClient } from "lib/subgraph/clients";
 import { sleep } from "lib/sleep";
 import { formatAmount } from "lib/numbers";
 import { getNativeToken, getNormalizedTokenSymbol, isChartAvailabeForToken } from "config/tokens";
+import { usePeriodParam } from "./tradingview/useTVDatafeed";
+import { getCurrentCandleTime } from "./tradingview/utils";
 
 const BigNumber = ethers.BigNumber;
 
@@ -70,20 +73,38 @@ export function fillGaps(prices, periodSeconds) {
 
 export async function getLimitChartPricesFromStats(chainId, symbol, period, limit = 1) {
   symbol = getNormalizedTokenSymbol(symbol);
+  const marketName = `Crypto.${symbol}/USD`;
+  //const currentCandleTime = getCurrentCandleTime(period);
+  const periodSeconds = CHART_PERIODS[period];
+  const currentCandleTime = Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + timezoneOffset;
+  const lastCandleTime = currentCandleTime - CHART_PERIODS[period];
 
   if (!isChartAvailabeForToken(chainId, symbol)) {
     symbol = getNativeToken(chainId).symbol;
   }
 
-  const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&limit=${limit}`;
-
   try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    const response = await axios.get("https://benchmarks.pyth.network/v1/shims/tradingview/history", {
+      params: {
+        symbol: marketName,
+        resolution: API_CHART_PERIODS[period],
+        from: lastCandleTime,
+        to: currentCandleTime,
+      },
+    });
+    const data: any = response.data;
+    if (data.s === "ok") {
+      const bars = data.t.map((time, index) => ({
+        time: time, // 将时间戳转换为毫秒
+        open: data.o[index],
+        high: data.h[index],
+        low: data.l[index],
+        close: data.c[index],
+        volume: data.v[index],
+      }));
+      const prices = bars;
+      return prices;
     }
-    const prices = await response.json().then(({ prices }) => prices);
-    return prices.map(formatBarInfo);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(`Error fetching data: ${error}`);
@@ -184,78 +205,72 @@ function getCandlesFromPrices(prices, period) {
   }));
 }
 
-export function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
+export const API_CHART_PERIODS = {
+  "1m": 1,
+  "5m": 5,
+  "15m": 15,
+  "1h": 60,
+  "4h": 60 * 4,
+  "1d": "1D",
+};
+
+// ['1', '2', '5', '15', '30', '60', '120', '240', '360', '720', 'D', '1D', 'W', '1W', 'M', '1M']
+
+export async function getChainlinkChartPricesFromGraph(tokenSymbol, period, periodParams) {
+  console.log(periodParams, "periodParams---->");
   tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
-  const marketName = tokenSymbol + "_USD";
-  const feedId = FEED_ID_MAP[marketName];
-  if (!feedId) {
+  console.log(tokenSymbol, "tokenSymbol---->");
+  const marketName = `Crypto.${tokenSymbol}/USD`;
+  //tokenSymbol + "_USD";
+  // const feedId = FEED_ID_MAP[marketName];
+  // if (!feedId) {
+  //   throw new Error(`undefined marketName ${marketName}`);
+  // }
+  if (!periodParams) {
     throw new Error(`undefined marketName ${marketName}`);
   }
-
-  const PER_CHUNK = 1000;
-  const CHUNKS_TOTAL = 6;
-  const requests: any[] = [];
-  for (let i = 0; i < CHUNKS_TOTAL; i++) {
-    const query = gql(`{
-      rounds(
-        first: ${PER_CHUNK},
-        skip: ${i * PER_CHUNK},
-        orderBy: unixTimestamp,
-        orderDirection: desc,
-        where: {feed: "${feedId}"}
-      ) {
-        unixTimestamp,
-        value
-      }
-    }`);
-    requests.push(chainlinkClient.query({ query }));
-  }
-
-  return Promise.all(requests)
-    .then((chunks) => {
-      let prices: any[] = [];
-      const uniqTs = new Set();
-      chunks.forEach((chunk) => {
-        chunk.data.rounds.forEach((item) => {
-          if (uniqTs.has(item.unixTimestamp)) {
-            return;
-          }
-
-          uniqTs.add(item.unixTimestamp);
-          prices.push([item.unixTimestamp, Number(item.value) / 1e8]);
-        });
-      });
-
-      prices.sort(([timeA], [timeB]) => timeA - timeB);
-      prices = getCandlesFromPrices(prices, period);
-      return prices;
-    })
-    .catch((err) => {
-      // eslint-disable-next-line no-console
-      console.error(err);
+  try {
+    console.log("periodParams---->", API_CHART_PERIODS[period], period);
+    const response = await axios.get("https://benchmarks.pyth.network/v1/shims/tradingview/history", {
+      params: {
+        symbol: marketName,
+        resolution: API_CHART_PERIODS[period],
+        from: periodParams.from,
+        to: periodParams.to,
+      },
     });
+    const data = response.data;
+    if (data.s === "ok") {
+      const bars = data.t.map((time, index) => ({
+        time: time, // 将时间戳转换为毫秒
+        open: data.o[index],
+        high: data.h[index],
+        low: data.l[index],
+        close: data.c[index],
+        volume: data.v[index],
+      }));
+      return bars;
+    }
+  } catch (error) {
+    console.error("Error fetching bars:", error);
+  }
 }
 
 export function useChartPrices(chainId, symbol, isStable, period, currentAveragePrice) {
+  //TODO: : Rewrite this use chart prices function
+  const { periodParams } = usePeriodParam();
+  console.log(periodParams, "periodParams---->")
   const swrKey = !isStable && symbol ? ["getChartCandles", chainId, symbol, period] : null;
   let { data: prices, mutate: updatePrices } = useSWR(swrKey, {
     fetcher: async () => {
       try {
-        return await getChartPricesFromStats(chainId, symbol, period);
-      } catch (ex) {
+        // return await getChainlinkChartPricesFromGraph(symbol, period, periodParams);
+      } catch (ex2) {
         // eslint-disable-next-line no-console
-        console.warn(ex);
+        console.warn("getChainlinkChartPricesFromGraph failed");
         // eslint-disable-next-line no-console
-        console.warn("Switching to graph chainlink data");
-        try {
-          return await getChainlinkChartPricesFromGraph(symbol, period);
-        } catch (ex2) {
-          // eslint-disable-next-line no-console
-          console.warn("getChainlinkChartPricesFromGraph failed");
-          // eslint-disable-next-line no-console
-          console.warn(ex2);
-          return [];
-        }
+        console.warn(ex2);
+        return [];
       }
     },
     dedupingInterval: 60000,

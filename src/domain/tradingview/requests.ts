@@ -8,20 +8,15 @@ function getCurrentBarTimestamp(periodSeconds) {
   return Math.floor(Date.now() / (periodSeconds * 1000)) * (periodSeconds * 1000);
 }
 
-export const getTokenChartPrice = async (chainId: number, symbol: string, period: string) => {
+export const getTokenChartPrice = async (chainId: number, symbol: string, period: string, periodParams:any) => {
   let prices;
   try {
-    prices = await getChartPricesFromStats(chainId, symbol, period);
-  } catch (ex) {
+    console.log("getTokenChartPrice--->", symbol, period, periodParams)
+    prices = await getChainlinkChartPricesFromGraph(symbol, period, periodParams);
+  } catch (ex2) {
     // eslint-disable-next-line no-console
-    console.warn(ex, "Switching to graph chainlink data");
-    try {
-      prices = await getChainlinkChartPricesFromGraph(symbol, period);
-    } catch (ex2) {
-      // eslint-disable-next-line no-console
-      console.warn("getChainlinkChartPricesFromGraph failed", ex2);
-      prices = [];
-    }
+    console.warn("getChainlinkChartPricesFromGraph failed", ex2);
+    prices = [];
   }
   return prices;
 };
