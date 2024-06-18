@@ -85,7 +85,7 @@ export default function PositionDropdown({
               </div>
             </Menu.Item>
           )}
-          {handleShare && (
+          {/* {handleShare && (
             <Menu.Item>
               <div className="menu-item" onClick={handleShare}>
                 <RiShareBoxFill fontSize={16} />
@@ -94,7 +94,7 @@ export default function PositionDropdown({
                 </p>
               </div>
             </Menu.Item>
-          )}
+          )} */}
         </Menu.Items>
       </div>
     </Menu>

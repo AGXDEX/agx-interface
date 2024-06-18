@@ -7,6 +7,7 @@ import {
   metaMaskWallet,
   okxWallet,
   bitgetWallet,
+  foxWallet,
   rabbyWallet,
   safeWallet,
   trustWallet,
@@ -16,6 +17,7 @@ import { isDevelopment } from "config/env";
 import { http, defineChain } from "viem";
 import { arbitrumGoerli, avalanche, avalancheFuji } from "viem/chains";
 
+import { gateWallet } from "./wallet/gateWallet";
 import binanceWallet from "./connecters/binanceW3W/binanceWallet";
 export const sepolia = /*#__PURE__*/ defineChain({
   id: 810181,
@@ -80,7 +82,20 @@ export const nova = /*#__PURE__*/ defineChain({
   },
 });
 const arbitrum = process.env.REACT_APP_ENV === "development" ? sepolia : nova;
-
+const projectId = process.env.VITE_PROJECT_ID || '7ec53b38ab47f5f4d1943e88d6c04b6e';
+const metadata = {
+  name: "zkLink Nova App",
+  description:
+    "zkLink Nova App - Aggregated Layer 3 zkEVM network Aggregation Parade",
+  url: "https://app.zklink.io",
+  icons: ["../../img/nova-logo.png"],
+};
+gateWallet({
+  projectId,
+  walletConnectParameters: {
+    metadata,
+  },
+});
 const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
 const APP_NAME = "AGX";
 
@@ -89,13 +104,13 @@ const popularWalletList: WalletList = [
     // Group name with standard name is localized by rainbow kit
     groupName: "Popular",
     wallets: [
-      rabbyWallet,
-      metaMaskWallet,
+      // rabbyWallet,
       walletConnectWallet,
+      metaMaskWallet,
       // This wallet will automatically hide itself from the list when the fallback is not necessary or if there is no injected wallet available.
       injectedWallet,
       // The Safe option will only appear in the Safe Wallet browser environment.
-      safeWallet,
+      // safeWallet,
     ],
   },
 ];
@@ -103,7 +118,7 @@ const popularWalletList: WalletList = [
 const othersWalletList: WalletList = [
   {
     groupName: "Others",
-    wallets: [...(isInBinance() ? [binanceWallet] : []), bitgetWallet,okxWallet],
+    wallets: [binanceWallet,okxWallet,gateWallet,foxWallet, safeWallet],
   },
 ];
 

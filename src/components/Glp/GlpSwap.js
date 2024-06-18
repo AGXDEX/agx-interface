@@ -175,7 +175,7 @@ const dataList = [
   { name: "ETH", value: 0.15 },
   { name: "wBTC", value: 0.15 },
   { name: "pufETH", value: 0.1 },
-  { name: "eETH", value: 0.1 },
+  { name: "weeTH", value: 0.1 },
 ];
 export default function GlpSwap(props) {
   const { isBuying, setIsBuying } = props;
@@ -1272,6 +1272,12 @@ const alpApr = calculateAlpAPR(glpSupplyUsd, rewardRate, agxPrice);
               tokenFeeBps = feeBps;
             }
             const tokenInfo = getTokenInfo(infoTokens, token.address);
+            let target = 0.1
+            dataList.map((item)=>{
+              if (item.name === tokenInfo.symbol) {
+                target = item.value
+              }
+            })
             let managedUsd;
             if (tokenInfo && tokenInfo.managedUsd) {
               managedUsd = tokenInfo.managedUsd;
@@ -1321,7 +1327,6 @@ const alpApr = calculateAlpAPR(glpSupplyUsd, rewardRate, agxPrice);
                   return "";
               }
             }
-
             return (
               <div className="App-card" key={token.symbol}>
                 <div className="mobile-token-card">
@@ -1388,9 +1393,9 @@ const alpApr = calculateAlpAPR(glpSupplyUsd, rewardRate, agxPrice);
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         /> */}
-                        <span>{`$${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`} </span>
+                        <span>{(Number(managedUsd)/Number(glpSupplyUsd)*100).toFixed(2)}% </span>
                         <span className="value-gap">/ </span>
-                        <span>{formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)} </span>
+                        <span>{Number(target)*100}% </span>
                       </div>
                     </div>
                   )}
@@ -1424,9 +1429,9 @@ const alpApr = calculateAlpAPR(glpSupplyUsd, rewardRate, agxPrice);
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         /> */}
-                        <span>{`$${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`} </span>
+                        <span>{(Number(managedUsd)/Number(glpSupplyUsd)*100).toFixed(2)}% </span>
                         <span className="value-gap">/ </span>
-                        <span> {formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}</span>
+                        <span>{Number(target)*100}% </span>
                       </div>
                     </div>
                   )}
