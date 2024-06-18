@@ -510,7 +510,7 @@ export const Exchange = forwardRef(
       fetcher: contractFetcher(signer, Reader, [tokenAddresses]),
     });
     const { data: positionData, error: positionDataError } = useSWR(
-      active && [active, chainId, readerAddress, "getPositions", vaultAddress, '0x9ff88A1f4f8b06C63e52724d1055e44acEFDa45a'],
+      active && [active, chainId, readerAddress, "getPositions", vaultAddress, account],
       {
         fetcher: contractFetcher(signer, Reader, [
           positionQuery.collateralTokens,
