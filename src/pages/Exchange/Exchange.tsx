@@ -21,6 +21,9 @@ import {
   useAccountOrders,
 } from "lib/legacy";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
+import axios from "axios";
+import { STAKER_SUBGRAPH_URL, lrt_points_URL } from "config/subgraph";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { getContract } from "config/contracts";
 
@@ -152,7 +155,7 @@ export function getPositions(
   const propsLength = getConstant(chainId, "positionReaderPropsLength");
   const positions: any[] = [];
   const positionsMap = {};
-  if (!positionData) {
+  if (!positionData || positionData.length === 0) {
     return { positions, positionsMap };
   }
   const { collateralTokens, indexTokens, isLong } = positionQuery;
@@ -164,7 +167,6 @@ export function getPositions(
     if (account) {
       contractKey = getPositionContractKey(account, collateralTokens[i], indexTokens[i], isLong[i]);
     }
-
     const position: any = {
       key,
       contractKey,
@@ -498,6 +500,8 @@ export const Exchange = forwardRef(
 
     const [isConfirming, setIsConfirming] = useState(false);
     const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
+    // const [positionData, setPositionData] = useState([]);
+    // const [getData, setgetData] = useState(false);
 
     const tokens = getV1Tokens(chainId);
 
@@ -505,9 +509,8 @@ export const Exchange = forwardRef(
     const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
       fetcher: contractFetcher(signer, Reader, [tokenAddresses]),
     });
-
     const { data: positionData, error: positionDataError } = useSWR(
-      active && [active, chainId, readerAddress, "getPositions", vaultAddress, account],
+      active && [active, chainId, readerAddress, "getPositions", vaultAddress, '0x9ff88A1f4f8b06C63e52724d1055e44acEFDa45a'],
       {
         fetcher: contractFetcher(signer, Reader, [
           positionQuery.collateralTokens,
@@ -516,7 +519,6 @@ export const Exchange = forwardRef(
         ]),
       }
     );
-
     const positionsDataIsLoading = active && !positionData && !positionDataError;
 
     const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
@@ -611,6 +613,36 @@ export const Exchange = forwardRef(
       document.title = title;
     }, [tokenSelection, swapOption, infoTokens, chainId, fromTokenAddress, toTokenAddress]);
 
+    // const getPosition = async () => {
+    //   try {
+    //     const response = await axios.post('http://13.115.181.197:8000/subgraphs/name/liquidate-stats', {
+    //       query: `{
+    //         activePositions(
+    //           where: {positionInfo_: {account: "${account?.toLowerCase()}"}}
+    //         ) {
+    //           averagePrice
+    //           collateral
+    //           entryFundingRate
+    //           id
+    //           leverage
+    //           positionInfo {
+    //             account
+    //             indexToken
+    //             isLong
+    //           }
+    //           size
+    //         }
+    //       }`,
+    //     });
+    //     setPositionData(response.data.data.activePositions);
+    //     setgetData(true);
+    //   } catch (error) {
+    //     console.error("Error fetching positions:", error);
+    //     setPositionData([]);
+    //     setgetData(false);
+    //   }
+    // };
+    // !getData && getPosition();
     const { positions, positionsMap } = getPositions(
       chainId,
       positionQuery,
@@ -1015,7 +1047,6 @@ export const Exchange = forwardRef(
         />
       );
     };
-
     return (
       <div className="Exchange page-layout">
         {showBanner && <ExchangeBanner hideBanner={hideBanner} />}

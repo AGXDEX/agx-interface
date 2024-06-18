@@ -1967,7 +1967,7 @@ export default function SwapBox(props) {
               option={swapOption}
               onChange={onSwapOptionChange}
               className="Exchange-swap-option-tabs"
-              disabledOptions={[]}
+              // disabledOptions={[LONG, SHORT]}
             />
             {flagOrdersEnabled && (
               <Tab
