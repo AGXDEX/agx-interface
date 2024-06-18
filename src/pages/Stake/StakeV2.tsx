@@ -99,6 +99,11 @@ export default function StakeV2() {
   const [stakingTokenAddress, setStakingTokenAddress] = useState("");
   const [stakingFarmAddress, setStakingFarmAddress] = useState("");
   const [stakeMethodName, setStakeMethodName] = useState("");
+  const [maxAPRs, setmaxAPRs] = useState("");
+  const [totalStakedWithoutMultipliers, settotalStakedWithoutMultipliers] = useState("");
+  const [userTotalStakedWithoutMultipliers, setuserTotalStakedWithoutMultipliers] = useState("");
+  const [avgMultipliers, setavgMultipliers] = useState("");
+
 
   const [selectTab, setselectTab] = useState("Pool2");
   const [isUnstaking, setIsUnstakeLoading] = useState(false);
@@ -147,8 +152,16 @@ export default function StakeV2() {
   }
   const getStake = async() => {
     await fetchMaxAPR(contract).then((res)=>{
-    console.log(res)
-
+      setmaxAPRs(res)
+    })
+    await fetchTotalStakedWithoutMultiplier(contract).then((res)=>{
+      settotalStakedWithoutMultipliers(res)
+    })
+    await fetchUserTotalStakedWithoutMultiplier(contract, account).then((res)=>{
+      setuserTotalStakedWithoutMultipliers(res)
+    })
+    await fetchAvgMultiplier(contract, account).then((res)=>{
+      setavgMultipliers(res)
     })
   }
   const { data: novaPoints } = useQuery({
@@ -1083,12 +1096,12 @@ export default function StakeV2() {
               <div className={cx("mobileBox", { ishide: selectTab !== "Staking", show: selectTab === "Staking" })}>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Max APR</div>
-                  <div>{maxAPR}</div>
+                  <div>{maxAPRs || maxAPR}</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Staked AGX</div>
                   <div>
-                    {Number(formatValue(Number(totalStakedWithoutMultiplier))?.toFixed(2)).toLocaleString()} AGX
+                    {Number(formatValue(Number(totalStakedWithoutMultipliers || totalStakedWithoutMultiplier))?.toFixed(2)).toLocaleString()} AGX
                   </div>
                 </div>
                 <div className="StakeV2-fomBox">
@@ -1126,11 +1139,11 @@ export default function StakeV2() {
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Staked AGX</div>
-                  <div>{formatValue(Number(userTotalStakedWithoutMultiplier)?.toFixed(2) || 0)} AGX</div>
+                  <div>{formatValue(Number(userTotalStakedWithoutMultipliers || userTotalStakedWithoutMultiplier)?.toFixed(2) || 0)} AGX</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Avg Multiplier</div>
-                  <div>{formatValue(avgMultiplier)}x</div>
+                  <div>{formatValue(avgMultipliers || avgMultiplier)}x</div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Total Reward</div>
