@@ -216,16 +216,49 @@ export const API_CHART_PERIODS = {
 
 // ['1', '2', '5', '15', '30', '60', '120', '240', '360', '720', 'D', '1D', 'W', '1W', 'M', '1M']
 
+export async function getCurrentChartPricesFromGraph(tokenSymbol, period) {
+  console.log("periodParams---->");
+  tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
+  console.log(tokenSymbol, "tokenSymbol---->");
+  const marketName = `Crypto.${tokenSymbol}/USD`;
+
+  try {
+    console.log("periodParams---->", API_CHART_PERIODS[period], period);
+
+    // 計算當前時間和一小時前的時間戳
+    const now = Math.floor(Date.now() / 1000);
+    const oneHourAgo = now - 3600;
+
+    const response = await axios.get("https://benchmarks.pyth.network/v1/shims/tradingview/history", {
+      params: {
+        symbol: marketName,
+        resolution: API_CHART_PERIODS[period],
+        from: oneHourAgo,
+        to: now,
+      },
+    });
+    const data = response.data;
+    if (data.s === "ok") {
+      const bars = data.t.map((time, index) => ({
+        time: time, // 將時間戳轉換為毫秒
+        open: data.o[index],
+        high: data.h[index],
+        low: data.l[index],
+        close: data.c[index],
+        volume: data.v[index],
+      }));
+      return bars;
+    }
+  } catch (error) {
+    console.error("Error fetching bars:", error);
+  }
+}
+
 export async function getChainlinkChartPricesFromGraph(tokenSymbol, period, periodParams) {
   console.log(periodParams, "periodParams---->");
   tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
   console.log(tokenSymbol, "tokenSymbol---->");
   const marketName = `Crypto.${tokenSymbol}/USD`;
-  //tokenSymbol + "_USD";
-  // const feedId = FEED_ID_MAP[marketName];
-  // if (!feedId) {
-  //   throw new Error(`undefined marketName ${marketName}`);
-  // }
   if (!periodParams) {
     throw new Error(`undefined marketName ${marketName}`);
   }
@@ -264,7 +297,7 @@ export function useChartPrices(chainId, symbol, isStable, period, currentAverage
   let { data: prices, mutate: updatePrices } = useSWR(swrKey, {
     fetcher: async () => {
       try {
-        // return await getChainlinkChartPricesFromGraph(symbol, period, periodParams);
+        return await getCurrentChartPricesFromGraph(symbol, period);
       } catch (ex2) {
         // eslint-disable-next-line no-console
         console.warn("getChainlinkChartPricesFromGraph failed");
