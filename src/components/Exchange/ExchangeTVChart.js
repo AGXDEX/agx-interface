@@ -343,14 +343,14 @@ export default function ExchangeTVChart(props) {
                 ${chartToken.minPrice && formatAmount(chartToken.minPrice, USD_DECIMALS, priceDecimal, true)}
               </div>
             </div>
-            {/* <div className="Chart-24h-change">
+            <div className="Chart-24h-change">
               <div className="ExchangeChart-info-label">24h Change</div>
               <div className={cx({ positive: deltaPercentage > 0, negative: deltaPercentage < 0 })}>
                 {!deltaPercentageStr && "-"}
                 {deltaPercentageStr && deltaPercentageStr}
               </div>
-            </div> */}
-            {/* <div className="ExchangeChart-additional-info">
+            </div>
+            <div className="ExchangeChart-additional-info">
               <div className="ExchangeChart-info-label">24h High</div>
               <div>
                 {!high && "-"}
@@ -363,7 +363,7 @@ export default function ExchangeTVChart(props) {
                 {!low && "-"}
                 {low && numberWithCommas(low.toFixed(priceDecimal))}
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
         {/* <div className="ExchangeChart-info VersionSwitch-wrapper">
