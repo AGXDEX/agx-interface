@@ -217,13 +217,13 @@ export const API_CHART_PERIODS = {
 // ['1', '2', '5', '15', '30', '60', '120', '240', '360', '720', 'D', '1D', 'W', '1W', 'M', '1M']
 
 export async function getCurrentChartPricesFromGraph(tokenSymbol, period) {
-  console.log("periodParams---->");
+  // console.log("periodParams---->");
   tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
-  console.log(tokenSymbol, "tokenSymbol---->");
+  // console.log(tokenSymbol, "tokenSymbol---->");
   const marketName = `Crypto.${tokenSymbol}/USD`;
 
   try {
-    console.log("periodParams---->", API_CHART_PERIODS[period], period);
+    // console.log("periodParams---->", API_CHART_PERIODS[period], period);
 
     // 計算當前時間和一小時前的時間戳
     const now = Math.floor(Date.now() / 1000);
@@ -255,9 +255,9 @@ export async function getCurrentChartPricesFromGraph(tokenSymbol, period) {
 }
 
 export async function getChainlinkChartPricesFromGraph(tokenSymbol, period, periodParams) {
-  console.log(periodParams, "periodParams---->");
+  // console.log(periodParams, "periodParams---->");
   tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
-  console.log(tokenSymbol, "tokenSymbol---->");
+  // console.log(tokenSymbol, "tokenSymbol---->");
   const marketName = `Crypto.${tokenSymbol}/USD`;
   if (!periodParams) {
     throw new Error(`undefined marketName ${marketName}`);
@@ -292,7 +292,7 @@ export async function getChainlinkChartPricesFromGraph(tokenSymbol, period, peri
 export function useChartPrices(chainId, symbol, isStable, period, currentAveragePrice) {
   //TODO: : Rewrite this use chart prices function
   const { periodParams } = usePeriodParam();
-  console.log(periodParams, "periodParams---->")
+  // console.log(periodParams, "periodParams---->")
   const swrKey = !isStable && symbol ? ["getChartCandles", chainId, symbol, period] : null;
   let { data: prices, mutate: updatePrices } = useSWR(swrKey, {
     fetcher: async () => {
