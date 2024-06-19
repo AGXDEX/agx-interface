@@ -171,14 +171,16 @@ export default function useTVDatafeed({ dataProvider }: Props) {
         },
         subscribeBars: (symbolInfo, resolution, onRealtimeCallback, subscriberUID, onResetCacheNeededCallback) => {
           console.log("Subscribing to real-time bars for", symbolInfo.name, resolution);
+          const symbol = getNormalizedTokenSymbol(symbolInfo.name);
           const { ticker, isStable } = symbolInfo;
+          const marketName = `Crypto.${symbol}/USD`;
           intervalRef.current && clearInterval(intervalRef.current);
           const fetchRealTimeData = async () => {
             try {
               const currentTimestamp = Math.floor(Date.now() / 1000);
               const response = await axios.get("https://benchmarks.pyth.network/v1/shims/tradingview/history", {
                 params: {
-                  symbol: symbolInfo.name,
+                  symbol: marketName,
                   resolution: 1,
                   from: currentTimestamp - 60,
                   to: currentTimestamp,
