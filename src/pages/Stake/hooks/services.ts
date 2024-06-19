@@ -26,6 +26,7 @@ export const fetchStakedAGXs = async (account) => {
     }),
   });
   const { data } = await response.json();
+  data.stakeAGXs.reverse()
   return data.stakeAGXs;
 };
 

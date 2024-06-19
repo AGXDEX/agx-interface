@@ -1084,7 +1084,7 @@ export default function StakeV2() {
               Pool2 Mining
             </div>
             <div className={cx("tab", { active: selectTab === "Liquidity" })} onClick={() => setselectTab("Liquidity")}>
-              Liquidity Mining
+              ALP Liquidity Mining
             </div>
             <div className={cx("tab", { active: selectTab === "Staking" })} onClick={() => setselectTab("Staking")}>
               Staking
@@ -1295,9 +1295,11 @@ export default function StakeV2() {
 
           <div className={cx("liquidity", { ishide: selectTab !== "Liquidity", show: selectTab === "Liquidity" })}>
             <div className="table-tr">
-              <div className="leftAlign">Pool</div>
+              <div className="leftAlign">ALP Pool Asset</div>
               <div className="rightAlign">Daily Emission</div>
-              <div className="rightAlign">Total Liquidity</div>
+              <div className="rightAlign">Current Value in ALP Pool</div>
+              <div className="rightAlign">Current / Target Percentage</div>
+              {/* <div className="rightAlign">Total Liquidity</div> */}
               <div className="rightAlign"></div>
             </div>
             {visibleTokens.map((token,index) => {
@@ -1320,13 +1322,35 @@ export default function StakeV2() {
               } else {
                 managedUsd = ethers.BigNumber.from(0);
               }
+              let target = 0.1
+
+              const dataList = [
+                { name: "USDT", value: 0.25 },
+                { name: "USDC", value: 0.25 },
+                { name: "ETH", value: 0.15 },
+                { name: "wBTC", value: 0.15 },
+                { name: "pufETH", value: 0.1 },
+                { name: "weeTH", value: 0.1 },
+              ];
+              dataList.map((item)=>{
+                if (item.name === tokenInfo.symbol) {
+                  target = item.value
+                }
+              })
               let manage = 1;
               manage = managedUsd && calculateManage(managedUsd, glpSupplyUsd);
+              // console.log(token)
               return (
                 <div className="table-td" key={token.symbol+index}>
-                  <div className="leftAlign">{token.symbol}/ALP</div>
+                  <div className="leftAlign">{token.symbol}</div>
                   <div className="rightAlign">{formatAmount(manage, 0, 0, true)}</div>
-                  <div className="rightAlign">{`${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`}</div>
+                  <div className="rightAlign">${`${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`}</div>
+                  <div className="rightAlign">
+                    <span>{(Number(managedUsd)/Number(glpSupplyUsd)*100).toFixed(2)}% </span>
+                    <span className="value-gap">/ </span>
+                    <span>{Number(target)*100}% </span>  
+                  </div>
+                  {/* <div className="rightAlign">{`${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`}</div> */}
                   <div className="rightAlign">
                     <Button variant="secondary" onClick={() => selectToken(token)}>
                       <Trans>Add</Trans>

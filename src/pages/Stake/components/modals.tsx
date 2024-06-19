@@ -13,6 +13,8 @@ import Vester from "abis/Vester.json";
 import GLP from "abis/GLP.json";
 import NFTPositionsManager from "abis/NFTPositionsManager.json";
 import UniV3Staker from "abis/UniV3Staker.json";
+import YieldEmission from "abis/YieldEmission.json";
+import StakeAGX from "abis/StakeAGX.json";
 
 import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
@@ -97,7 +99,7 @@ function ClaimAllModal(props) {
   const uniV3StakerAddress = getContract(chainId, "v3StakerAddress");
   const ALPAddress = getContract(chainId, "ALP");
   const AGXAddress = getContract(chainId, "AGX");
-
+  const yieldTrackerAddress = getContract(chainId, "YieldTracker");
   const { data: claimableReward, isLoading: isLoadingClaimableReward } = useClaimableReward(account, chainId);
 
   const useClaimReward = (chainId) => {
@@ -121,14 +123,22 @@ function ClaimAllModal(props) {
   const { mutateAsync: claimReward } = useClaimReward(chainId);
 
   const [isDeposit, setIsDeposit] = useState(false);
+
+  const tags = [
+    { duration: "360 days", days: 360, multiplier: "5" },
+    { duration: "180 days", days: 180, multiplier: "4" },
+    { duration: "90 days", days: 90, multiplier: "3" },
+    { duration: "No Lock", days: 0, multiplier: "2" },
+  ];
+  const [selectedTag, setSelectedTag] = useState<any>(tags[0]);
   const goDeposit = () => {
     if (isDeposit || !tokenId) {
       return;
     }
     if (tokenId === "Liquidity") {
       setIsDeposit(true);
-      const contract = new ethers.Contract(ALPAddress, GLP.abi, signer);
-      callContract(chainId, contract, "claim", [account], {
+      const contract = new ethers.Contract(yieldTrackerAddress, YieldEmission.abi, signer);
+      callContract(chainId, contract, "claimWithPeriod", [(selectedTag.days * 86400)], {
         sentMsg: t`Claim submitted.`,
         failMsg: t`Claim failed.`,
         successMsg: t`Claim completed!`,
@@ -140,7 +150,21 @@ function ClaimAllModal(props) {
       });
     } else if (tokenId === "Staking") {
       setIsDeposit(true);
-      claimReward();
+      // const queryClient = useQueryClient();
+      const stakeAGXAddress = getContract(chainId, "StakeAGX");
+      const contract = new ethers.Contract(stakeAGXAddress, StakeAGX.abi, signer);
+      callContract(chainId, contract, "claim", [(selectedTag.days * 86400)], {
+        sentMsg: t`Claim submitted.`,
+        failMsg: t`Claim failed.`,
+        successMsg: t`Claim completed!`,
+        setPendingTxns,
+      }).finally(() => {
+        // queryClient.invalidateQueries({ queryKey: ["totalStakingClaim", chainId] });
+        // queryClient.invalidateQueries({ queryKey: ["totalStakedWithoutMultiplier", chainId] });
+        setIsDeposit(false);
+        setIsVisible(false);
+        getNew();
+      });
     } else {
       setIsDeposit(true);
       const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
@@ -155,6 +179,10 @@ function ClaimAllModal(props) {
         getNew();
       });
     }
+  };
+
+  const handleClickTag = (tag) => {
+    setSelectedTag(tag);
   };
   return (
     <div className="StakeModal largeModal">
@@ -202,12 +230,50 @@ function ClaimAllModal(props) {
                 }}
               >
                 <span className="muted">
-                  <Trans>Liquidity Mining</Trans>
+                  <Trans>ALP Liquidity Mining</Trans>
                 </span>
               </Checkbox>
             </div>
             <div>{rewards && Number((Number(rewards) / 10 ** 18).toFixed(2)).toLocaleString()} AGX</div>
           </div>
+        </div>
+        <div className="grid grid-cols-4 gap-4 mb-4">
+          {tags.map((tag,index) => (
+            <div key={tag.days+index} className="relative flex items-center md:p-6 p-3 pt-10 md:pt-6 bg-[#18191E] rounded-lg cursor-pointer"
+            onClick={() => handleClickTag(tag)}>
+              <div className="absolute left-3 top-3">
+                <label
+                  className="relative flex items-center rounded-full cursor-pointer"
+                  htmlFor={`duration-${tag.days}`}
+                >
+                  <input
+                    type="radio"
+                    className="p-3 before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-full border border-blue-gray-200 text-[#5D00FB] transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-[#5D00FB] checked:before:bg-[#5D00FB] hover:before:opacity-10"
+                    name="duration"
+                    value={tag.days}
+                    checked={selectedTag?.days === tag?.days}
+                    onChange={() => handleClickTag(tag)}
+                    id={`duration-${tag.days}`}
+                    aria-label={`${tag.days} days`}
+                  />
+                  <span className="absolute text-[#5D00FB] transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="!h-4 !w-4"
+                      viewBox="0 0 16 16"
+                      fill="currentColor"
+                    >
+                      <circle data-name="ellipse" cx="8" cy="8" r="8"></circle>
+                    </svg>
+                  </span>
+                </label>
+              </div>
+
+              <div className="flex-col items-center justify-center w-full text-lg">
+                <span className="text-white flex">{tag.duration}</span>
+              </div>
+            </div>
+          ))}
         </div>
         <div>You will receive</div>
         <div className="Exchange-swap-button-container">
@@ -1287,7 +1353,7 @@ export function ClaimHistoryModal(props) {
       case 1:
         return "Pool2 mining";
       case 2:
-        return "Liquidity mining";
+        return "ALP Liquidity Mining";
       case 3:
         return "Staking";
       default:
