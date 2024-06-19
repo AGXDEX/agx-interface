@@ -74,10 +74,10 @@ export function fillGaps(prices, periodSeconds) {
 export async function getLimitChartPricesFromStats(chainId, symbol, period, limit = 1) {
   symbol = getNormalizedTokenSymbol(symbol);
   const marketName = `Crypto.${symbol}/USD`;
-  //const currentCandleTime = getCurrentCandleTime(period);
   const periodSeconds = CHART_PERIODS[period];
-  const currentCandleTime = Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + timezoneOffset;
-  const lastCandleTime = currentCandleTime - CHART_PERIODS[period];
+  const currentTime = Math.floor(Date.now() / 1000); // 獲取當前時間的時間戳（秒）
+  const fromTime = currentTime - periodSeconds; // 計算 from 時間戳，即當前時間往前推一個時間段
+  const toTime = currentTime; // to 時間戳就是當前時間
 
   if (!isChartAvailabeForToken(chainId, symbol)) {
     symbol = getNativeToken(chainId).symbol;
@@ -88,14 +88,14 @@ export async function getLimitChartPricesFromStats(chainId, symbol, period, limi
       params: {
         symbol: marketName,
         resolution: API_CHART_PERIODS[period],
-        from: lastCandleTime,
-        to: currentCandleTime,
+        from: fromTime,
+        to: toTime,
       },
     });
     const data: any = response.data;
     if (data.s === "ok") {
       const bars = data.t.map((time, index) => ({
-        time: time, // 将时间戳转换为毫秒
+        time: time,
         open: data.o[index],
         high: data.h[index],
         low: data.l[index],
@@ -106,7 +106,6 @@ export async function getLimitChartPricesFromStats(chainId, symbol, period, limi
       return prices;
     }
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error(`Error fetching data: ${error}`);
     return [];
   }
@@ -221,20 +220,20 @@ export async function getCurrentChartPricesFromGraph(tokenSymbol, period) {
   tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
   // console.log(tokenSymbol, "tokenSymbol---->");
   const marketName = `Crypto.${tokenSymbol}/USD`;
+  const periodSeconds = CHART_PERIODS[period];
+  const currentTime = Math.floor(Date.now() / 1000); // 獲取當前時間的時間戳（秒）
+  const fromTime = currentTime - periodSeconds; // 計算 from 時間戳，即當前時間往前推一個時間段
+  const toTime = currentTime; // to 時間戳就是當前時間
 
   try {
     // console.log("periodParams---->", API_CHART_PERIODS[period], period);
-
-    // 計算當前時間和一小時前的時間戳
-    const now = Math.floor(Date.now() / 1000);
-    const oneHourAgo = now - 3600;
 
     const response = await axios.get("https://benchmarks.pyth.network/v1/shims/tradingview/history", {
       params: {
         symbol: marketName,
         resolution: API_CHART_PERIODS[period],
-        from: oneHourAgo,
-        to: now,
+        from: fromTime,
+        to: toTime,
       },
     });
     const data = response.data;

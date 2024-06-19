@@ -820,6 +820,7 @@ export const Exchange = forwardRef(
     }));
 
     const flagOrdersEnabled = true;
+    //TODO: Limit order
     // const [orders] = useAccountOrders(flagOrdersEnabled);
     const orders = [];
 
@@ -924,7 +925,7 @@ export const Exchange = forwardRef(
           className="muted font-base cancel-order-btn"
           disabled={isCancelMultipleOrderProcessing}
           type="button"
-          // onClick={onMultipleCancelClick}
+          onClick={onMultipleCancelClick}
         >
           <Plural value={cancelOrderIdList.length} one="Cancel order" other="Cancel # orders" />
         </button>
