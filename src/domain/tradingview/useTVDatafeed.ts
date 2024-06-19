@@ -65,9 +65,11 @@ export default function useTVDatafeed({ dataProvider }: Props) {
         missingBarsInfo.current.isFetching = true;
         const ticker = tvDataProvider.current?.currentTicker;
         const period = tvDataProvider.current?.currentPeriod;
+        console.log(ticker, period, lastBarTime.current, "ticker, period, lastBarTime--->")
         if (ticker && period && lastBarTime.current && !stableTokens.includes(ticker)) {
           let data;
           try {
+            console.log(lastBarTime.current,'lastBarTime--->')
             data = await tvDataProvider.current?.getMissingBars(chainId, ticker, period, lastBarTime.current);
           } catch (e) {
             data = [];
@@ -99,8 +101,8 @@ export default function useTVDatafeed({ dataProvider }: Props) {
     return {
       datafeed: {
         onReady: (callback) => {
-           console.log("Data feed ready");
-            setTimeout(() => callback(getConfigurationData(supportedResolutions)));
+          console.log("Data feed ready");
+          setTimeout(() => callback(getConfigurationData(supportedResolutions)));
         },
         resolveSymbol(symbolName, onSymbolResolvedCallback) {
           console.log("Resolving symbol:", symbolName);
@@ -138,109 +140,86 @@ export default function useTVDatafeed({ dataProvider }: Props) {
         ) {
           setPeriodParams(periodParams);
           const tokenSymbol = getNormalizedTokenSymbol(symbolInfo.name);
-          console.log(tokenSymbol, "tokenSymbol---->");
           const marketName = `Crypto.${tokenSymbol}/USD`;
 
-             try {
-               const response = await axios.get("https://benchmarks.pyth.network/v1/shims/tradingview/history", {
-                 params: {
-                   symbol: marketName,
-                   resolution,
-                   from: periodParams.from,
-                   to: periodParams.to,
-                 },
-               });
-               console.log("Bars response:", response.data);
-               const data = response.data;
+          try {
+            const response = await axios.get("https://benchmarks.pyth.network/v1/shims/tradingview/history", {
+              params: {
+                symbol: marketName,
+                resolution,
+                from: periodParams.from,
+                to: periodParams.to,
+              },
+            });
+            const data = response.data;
 
-
-               if (data.s === "ok") {
-                 const bars = data.t.map((time, index) => ({
-                   time: time * 1000, // 将时间戳转换为毫秒
-                   open: data.o[index],
-                   high: data.h[index],
-                   low: data.l[index],
-                   close: data.c[index],
-                   volume: data.v[index],
-                 }));
-                 console.log("Bars:", bars);
-                 onHistoryCallback(bars, { noData: bars.length === 0 });
-               }
-             } catch (error) {
-               console.error("Error fetching bars:", error);
-               onHistoryCallback([], { noData: true }); // 处理错误情况
-             }
-
-          // console.log(supportedResolutions, resolution,"supportedResolutions---->");
-          // if (!supportedResolutions[resolution]) {
-          //   return onErrorCallback("[getBars] Invalid resolution");
-          // }
-          // const { ticker, isStable } = symbolInfo;
-          // console.log(ticker, "ticker---->");
-          // try {
-          //   if (!ticker) {
-          //     onErrorCallback("Invalid ticker!");
-          //     return;
-          //   }
-          //   //TODO: Set period params
-          //   setPeriodParams(periodParams);
-          //   const bars = await tvDataProvider.current?.getBars(chainId, ticker, resolution, isStable, periodParams);
-
-          //   console.log("getBars:", bars);
-          //   const noData = !bars || bars.length === 0;
-          //   onHistoryCallback(bars, { noData });
-          // } catch {
-          //   onErrorCallback("Unable to load historical data!");
-          // }
+            if (data.s === "ok") {
+              const bars = data.t.map((time, index) => ({
+                time: time * 1000, // 将时间戳转换为毫秒
+                open: data.o[index],
+                high: data.h[index],
+                low: data.l[index],
+                close: data.c[index],
+                volume: data.v[index],
+              }));
+              onHistoryCallback(bars, { noData: bars.length === 0 });
+            }
+          } catch (error) {
+            console.error("Error fetching bars:", error);
+            onHistoryCallback([], { noData: true }); // 处理错误情况
+          }
         },
-        // async subscribeBars(
-        //   symbolInfo: SymbolInfo,
-        //   resolution: ResolutionString,
-        //   onRealtimeCallback: SubscribeBarsCallback
-        // ) {
-        //   const period = supportedResolutions[resolution];
-        //   const { ticker, isStable } = symbolInfo;
-        //   if (!ticker) {
-        //     return;
-        //   }
+        subscribeBars: (symbolInfo, resolution, onRealtimeCallback, subscriberUID, onResetCacheNeededCallback) => {
+          console.log("Subscribing to real-time bars for", symbolInfo.name, resolution);
+          const { ticker, isStable } = symbolInfo;
+          intervalRef.current && clearInterval(intervalRef.current);
+          const fetchRealTimeData = async () => {
+            try {
+              const currentTimestamp = Math.floor(Date.now() / 1000);
+              const response = await axios.get("https://benchmarks.pyth.network/v1/shims/tradingview/history", {
+                params: {
+                  symbol: symbolInfo.name,
+                  resolution: 1,
+                  from: currentTimestamp - 60,
+                  to: currentTimestamp,
+                },
+              });
 
-        //   intervalRef.current && clearInterval(intervalRef.current);
+              const data = response.data;
+              if (data.s === "ok" && data.t.length > 0) {
+                const lastBar = {
+                  time: data.t[data.t.length - 1] * 1000,
+                  open: data.o[data.o.length - 1],
+                  high: data.h[data.h.length - 1],
+                  low: data.l[data.l.length - 1],
+                  close: data.c[data.c.length - 1],
+                  volume: data.v[data.v.length - 1],
+                };
+                onRealtimeCallback(lastBar);
+              }
+            } catch (error) {
+              console.error("Error fetching real-time data:", error);
+            }
+          };
 
-        //   const handleInterval = () => {
-        //     if (missingBarsInfo.current.isFetching || !feedData.current) return;
-        //     if (missingBarsInfo.current.bars?.length > 0) {
-        //       missingBarsInfo.current.bars.forEach((bar: any) => {
-        //         onRealtimeCallback(formatTimeInBarToMs(bar));
-        //         missingBarsInfo.current.bars = missingBarsInfo.current.bars.filter((b: Bar) => b.time !== bar.time);
-        //       });
-        //     } else {
-        //       tvDataProvider.current?.getLiveBar(chainId, ticker, period).then((bar) => {
-        //         if (
-        //           bar &&
-        //           bar.ticker === tvDataProvider.current?.currentTicker &&
-        //           bar.period === tvDataProvider.current?.currentPeriod
-        //         ) {
-        //           lastBarTime.current = bar.time;
-        //           onRealtimeCallback(formatTimeInBarToMs(bar));
-        //         }
-        //       });
-        //     }
-        //   };
+          // 定时调用 fetchRealTimeData 函数,例如每秒钟调用一次
+          // const intervalId = setInterval(fetchRealTimeData, 5000);
 
-        //   if (!isStable) {
-        //     intervalRef.current = setInterval(handleInterval, 500);
-        //   }
-        // },
-        // unsubscribeBars: (id) => {
-        //   console.log("unsubscribeBars", id)
-        //   // id is in the format ETH_#_USD_#_5
-        //   const ticker = id.split("_")[0];
-        //   const isStable = stableTokens.includes(ticker);
-        //   if (!isStable && intervalRef.current) {
-        //     clearInterval(intervalRef.current);
-        //   }
-        // },
+          // 保存订阅信息
+          if (!isStable) {
+            intervalRef.current = setInterval(fetchRealTimeData, 5000);
+          }
+        },
+        unsubscribeBars: (id) => {
+          // id is in the format ETH_#_USD_#_5
+          const ticker = id.split("_")[0];
+          console.log("unsubscribeBars", id, ticker);
+          const isStable = stableTokens.includes(ticker);
+          if (!isStable && intervalRef.current) {
+            clearInterval(intervalRef.current);
+          }
+        },
       },
     };
-  }, [chainId, stableTokens, supportedResolutions]);
+  }, [chainId, stableTokens, supportedResolutions, tvDataProvider, dataProvider]);
 }
