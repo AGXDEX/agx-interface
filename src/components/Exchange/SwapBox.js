@@ -1969,7 +1969,7 @@ export default function SwapBox(props) {
               className="Exchange-swap-option-tabs"
               // disabledOptions={[LONG, SHORT]}
             />
-            {flagOrdersEnabled && (
+            {/* {flagOrdersEnabled && (
               <Tab
                 options={orderOptions}
                 optionLabels={ORDER_OPTION_LABELS}
@@ -1978,7 +1978,7 @@ export default function SwapBox(props) {
                 option={orderOption}
                 onChange={onOrderOptionChange}
               />
-            )}
+            )} */}
           </div>
           {showFromAndToSection && (
             <>
