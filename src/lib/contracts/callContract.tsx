@@ -49,9 +49,9 @@ export async function callContract(
       });
     }
 
-    txnOpts.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value);
+    // txnOpts.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value);
 
-    await setGasPrice(txnOpts, contract.provider, chainId);
+    // await setGasPrice(txnOpts, contract.provider, chainId);
 
     const res = await contract[method](...params, txnOpts);
 
