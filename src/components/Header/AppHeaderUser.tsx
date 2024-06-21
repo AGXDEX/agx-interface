@@ -2,6 +2,7 @@ import connectWalletImg from "img/ic_wallet_24.svg";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
 
+import { useState, useMemo } from "react";
 import axios from "axios";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
@@ -96,25 +97,31 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
   const selectorLabel = getChainName(chainId);
   const icon = getIcon(chainId, "network");
   const selectChain = "ethereum";
-
+  const [isShow, setisShow] = useState(true);
+  window.ethereum.request({
+    method: "eth_chainId",
+  }).then((res)=>{
+    if (res === "0x" + ARBITRUM.toString(16)) {
+      setisShow(false)
+    }
+  })
   if (!active || !account) {
     return (
       <div className="App-header-user">
         {/* <div className="network-img-box">
           <img className="network-dropdown-icon network-img" src={icon} alt={selectorLabel} />
         </div> */}
-
-      <div className="moreButton">
+      {isShow && <div className="moreButton">
         <div
           className="addNova"
           onClick={()=>addNovaChain()}
         >
           Add Nova Network to Wallet
         </div>
-      </div>
+      </div>}
         <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
         <div className={cx("App-header-trade-link")}>
-          <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
+          <HeaderLink className="default-btn hasBg" to={tradeLink!} showRedirectModal={showRedirectModal}>
             {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
           </HeaderLink>
         </div>
@@ -193,14 +200,14 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
   return (
     <div className="App-header-user">
       <div className="moreButton">
-        <div className="addNova" onClick={() => addNovaChain()}>
+        {isShow && <div className="addNova" onClick={() => addNovaChain()}>
           Add Nova Network to Wallet
-        </div>
+        </div>}
         <div className="novaPoints">Nova Points: {(novaPointsData || 0)?.toFixed(2)}</div>
       </div>
       <ChainDropdown networkOptions={chainList} selectorLabel={selectChain} />
       <div className={cx("App-header-trade-link")}>
-        <HeaderLink className="default-btn" to={tradeLink!} showRedirectModal={showRedirectModal}>
+        <HeaderLink className="default-btn hasBg" to={tradeLink!} showRedirectModal={showRedirectModal}>
           {isHomeSite() ? <Trans>Launch App</Trans> : <Trans>Trade</Trans>}
         </HeaderLink>
       </div>

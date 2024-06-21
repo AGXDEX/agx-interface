@@ -28,7 +28,7 @@ import { getTokenBySymbol } from "config/tokens";
 import { callContract, contractFetcher } from "lib/contracts";
 import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getProvider } from "lib/rpc";
-import { getGmxGraphClient, nissohGraphClient, endpointGraphClient } from "lib/subgraph/clients";
+import { getGmxGraphClient, nissohGraphClient, endpointGraphClient,endpointsGraphClient } from "lib/subgraph/clients";
 import { groupBy } from "lodash";
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
@@ -235,7 +235,7 @@ export function useHistoryTradeData(chainId, account, pageSize, startDate, endDa
       }
       `);
       const { data } = await endpointGraphClient.query({ query, fetchPolicy: "no-cache" });
-      // console.log("data.swapInfos", data.swapInfos);
+      console.log(data);
       return data.swapInfos;
     },
   });

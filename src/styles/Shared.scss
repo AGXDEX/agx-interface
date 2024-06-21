@@ -249,7 +249,9 @@ a.plain {
   border: none;
   appearance: none;
 }
-
+.hasBg{
+  background: var(--primary-btn-hover);
+}
 .default-btn:hover {
   background: var(--primary-btn-hover);
 }
