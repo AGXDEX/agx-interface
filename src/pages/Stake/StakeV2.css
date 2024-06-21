@@ -363,6 +363,7 @@
   justify-content: space-between;
   padding: 0 12px;
   margin-bottom: 10px;
+  gap: 10px;
 }
 .table-tr{
   margin-bottom: 15px;
@@ -373,10 +374,16 @@
   color: #fff;
 }
 .table-tr div,.table-td div{
-  min-width: 150px;
+  width: 21%;
+}
+.table-tr .small,.table-td .small{
+  width: 12%;
 }
 .table-tr .leftAlign,.table-td .leftAlign{
+  display: flex;
   text-align: left;
+  align-items: center;
+  gap: 5px;
 }
 .table-tr .rightAlign,.table-td .rightAlign{
   text-align: right;

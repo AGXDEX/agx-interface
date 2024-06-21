@@ -39,9 +39,9 @@ import ExchangeWalletTokens from "components/Exchange/ExchangeWalletTokens";
 import OrdersList from "components/Exchange/OrdersList";
 import PositionsList from "components/Exchange/PositionsList";
 import SwapBox from "components/Exchange/SwapBox";
-// import TradeHistory from "components/Exchange/TradeHistory";
+import TradeHistory from "components/Exchange/TradeHistory";
 
-import TradeHistorys from "components/Exchange/TradeHistorys";
+// import TradeHistorys from "components/Exchange/TradeHistorys";
 import Footer from "components/Footer/Footer";
 import Tab from "components/Tab/Tab";
 
@@ -1015,7 +1015,7 @@ export const Exchange = forwardRef(
             />
           )}
           {listSection === TRADES && (
-            <TradeHistorys
+            <TradeHistory
               account={account}
               infoTokens={infoTokens}
               getTokenInfo={getTokenInfo}

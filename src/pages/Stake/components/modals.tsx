@@ -168,7 +168,7 @@ function ClaimAllModal(props) {
     } else {
       setIsDeposit(true);
       const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
-      callContract(chainId, contract, "claimReward", [AGXAddress, account, Pool2Rewards], {
+      callContract(chainId, contract, "claimReward", [AGXAddress, account, (selectedTag.days * 86400)], {
         sentMsg: t`Claim submitted.`,
         failMsg: t`Claim failed.`,
         successMsg: t`Claim completed!`,
@@ -237,6 +237,7 @@ function ClaimAllModal(props) {
             <div>{rewards && Number((Number(rewards) / 10 ** 18).toFixed(2)).toLocaleString()} AGX</div>
           </div>
         </div>
+        <div className="mb-2">AGX Lock Duration</div>
         <div className="grid grid-cols-4 gap-4 mb-4">
           {tags.map((tag,index) => (
             <div key={tag.days+index} className="relative flex items-center md:p-6 p-3 pt-10 md:pt-6 bg-[#18191E] rounded-lg cursor-pointer"

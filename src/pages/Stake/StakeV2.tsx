@@ -4,10 +4,13 @@ import { useState, useMemo } from "react";
 import _ from "lodash";
 
 import { toByteArray } from "base64-js";
+import { Link } from "react-router-dom";
 
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import cx from "classnames";
 import { useHistory } from "react-router-dom";
 
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import GlpManager from "abis/GlpManager.json";
 import ReaderV2 from "abis/ReaderV2.json";
 import Vault from "abis/Vault.json";
@@ -26,12 +29,11 @@ import { GLP_DECIMALS, PLACEHOLDER_ACCOUNT, USD_DECIMALS } from "lib/legacy";
 import useSWR from "swr";
 
 import { getContract } from "config/contracts";
-
 import Button from "components/Button/Button";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
-import { bigNumberify, expandDecimals, formatAmount, parseValue } from "lib/numbers";
+import { bigNumberify, expandDecimals, formatAmount, parseValue,formatKeyAmount } from "lib/numbers";
 import "./StakeV2.css";
 import useWallet from "lib/wallets/useWallet";
 import PageTitle from "components/PageTitle/PageTitle";
@@ -1211,7 +1213,7 @@ export default function StakeV2() {
             <a
               target="_blank"
               rel="noreferrer"
-              href={`https://novaswap.exchange/?chain=${EXTERNAL_LINK_CHAIN_CONFIG}#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029543&maxPrice=338490000000000000000000000000000000000`}
+              href={`https://dev.novaswap.fi/#/add/ETH/${AGXAddress}/10000?minPrice=0.0000000000000000000000000000000000000029602&maxPrice=337820000000000000000000000000000000000`}
               className=""
             >
               Add now &gt;&gt;
@@ -1295,12 +1297,13 @@ export default function StakeV2() {
 
           <div className={cx("liquidity", { ishide: selectTab !== "Liquidity", show: selectTab === "Liquidity" })}>
             <div className="table-tr">
-              <div className="leftAlign">ALP Pool Asset</div>
-              <div className="rightAlign">Daily Emission</div>
+              <div className="leftAlign small">ALP Pool Asset</div>
+              <div className="rightAlign small">Price</div>
+              <div className="rightAlign small">Daily Emission</div>
               <div className="rightAlign">Current Value in ALP Pool</div>
               <div className="rightAlign">Current / Target Percentage</div>
-              {/* <div className="rightAlign">Total Liquidity</div> */}
-              <div className="rightAlign"></div>
+              <div className="rightAlign small">UTILIZATION</div>
+              <div className="rightAlign small"></div>
             </div>
             {visibleTokens.map((token,index) => {
               let tokenFeeBps;
@@ -1316,6 +1319,16 @@ export default function StakeV2() {
                 tokenFeeBps = obj.feeBasisPoints;
               }
               const tokenInfo = getTokenInfo(infoTokens, token.address);
+              // console.log(tokenInfo)
+              let utilization = bigNumberify(0);
+              if (
+                tokenInfo &&
+                tokenInfo.reservedAmount &&
+                tokenInfo.poolAmount &&
+                tokenInfo.poolAmount.gt(0)
+              ) {
+                utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
+              }
               let managedUsd;
               if (tokenInfo && tokenInfo.managedUsd) {
                 managedUsd = tokenInfo.managedUsd;
@@ -1339,19 +1352,55 @@ export default function StakeV2() {
               })
               let manage = 1;
               manage = managedUsd && calculateManage(managedUsd, glpSupplyUsd);
-              // console.log(token)
               return (
                 <div className="table-td" key={token.symbol+index}>
-                  <div className="leftAlign">{token.symbol}</div>
-                  <div className="rightAlign">{formatAmount(manage, 0, 0, true)}</div>
-                  <div className="rightAlign">${`${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`}</div>
+                  <div className="leftAlign small">
+                    <TokenIcon symbol={token.symbol} displaySize={24} importSize={24} />{token.symbol}
+                  </div>
+                  <div className="rightAlign small">${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</div>
+                  <div className="rightAlign small">{formatAmount(manage, 0, 0, true)}</div>
                   <div className="rightAlign">
+                    <TooltipWithPortal
+                      renderContent={() => {
+                        return (
+                          <>
+                            <div className="w-full flex justify-between"><span>Pool Amount:</span><span>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</span></div>
+                            <div className="w-full flex justify-between"><span>Max ETH Capacity:</span><span>$ {formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}</span></div>
+                          </>
+                        );
+                      }}
+                    >
+                      ${`${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`}
+                    </TooltipWithPortal>
+                  </div>
+                  <div className="rightAlign">
+                  <TooltipWithPortal
+                    renderContent={() => {
+                      return (
+                        <>
+                          <div className="w-full flex justify-between"><span>Current Weight:</span><span>{(Number(managedUsd)/Number(glpSupplyUsd)*100).toFixed(2)}%</span></div>
+                          <div className="w-full flex justify-between"><span>Target Weight:</span><span>{Number(target)*100}%</span></div>
+                          ETH is below its target weight. <br />
+                          Get lower fees to <Link className="App-header-link-main" to="/buy">
+                            buy ALP
+                          </Link> with ETH, and to  <Link className="App-header-link-main" to="/v1">
+                            swap
+                          </Link> ETH for other tokens.<br />
+                          <a target="_blank" rel="noreferrer" href={`https://docs.agx.xyz/tokenomics/points-system`}>
+                            Read more &gt;&gt;
+                          </a>
+                        </>
+                      );
+                    }}
+                  >
                     <span>{(Number(managedUsd)/Number(glpSupplyUsd)*100).toFixed(2)}% </span>
                     <span className="value-gap">/ </span>
-                    <span>{Number(target)*100}% </span>  
+                    <span>{Number(target)*100}% </span>
+                  </TooltipWithPortal>
                   </div>
+                  <div className="rightAlign small">{formatAmount(utilization, 2, 2, false)}%</div>
                   {/* <div className="rightAlign">{`${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`}</div> */}
-                  <div className="rightAlign">
+                  <div className="rightAlign small">
                     <Button variant="secondary" onClick={() => selectToken(token)}>
                       <Trans>Add</Trans>
                     </Button>
