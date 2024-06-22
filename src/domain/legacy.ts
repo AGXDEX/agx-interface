@@ -5,6 +5,7 @@ import { BigNumber, ethers } from "ethers";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 
+import axios from "axios";
 import OrderBook from "abis/OrderBook.json";
 import PositionManager from "abis/PositionManager.json";
 import PositionRouter from "abis/PositionRouter.json";
@@ -28,7 +29,7 @@ import { getTokenBySymbol } from "config/tokens";
 import { callContract, contractFetcher } from "lib/contracts";
 import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getProvider } from "lib/rpc";
-import { getGmxGraphClient, nissohGraphClient, endpointGraphClient,endpointsGraphClient } from "lib/subgraph/clients";
+import { getGmxGraphClient, nissohGraphClient, endpointGraphClient } from "lib/subgraph/clients";
 import { groupBy } from "lodash";
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
@@ -216,27 +217,137 @@ export function useHistoryTradeData(chainId, account, pageSize, startDate, endDa
     error,
     size: pageIndex,
     setSize: setPageIndex,
-  } = useSWRInfinite<[]>(getKey, {
+  } = useSWRInfinite<any>(getKey, {
     fetcher: async (key) => {
       const pageIndex = key[3];
       const skip = pageIndex * pageSize;
       const first = pageSize;
-      const query = gql(`query MyQuery {
-        swapInfos(where: {blockTimestamp_gt: "${startDate||new Date('1990.1.1').getTime()/1000}", blockTimestamp_lt: "${endDate || new Date('2200.1.1').getTime()/1000}",owner: "${account.toLowerCase()}"}, orderBy: blockTimestamp, orderDirection: desc,skip: ${skip},
-        first: ${first},) {
-          owner
-          tokenIn
-          tokenOut
-          transactionHash
-          amountIn
-          amountOut
-          blockTimestamp
-        }
-      }
-      `);
-      const { data } = await endpointGraphClient.query({ query, fetchPolicy: "no-cache" });
-      console.log(data);
-      return data.swapInfos;
+      const response = await axios.post("http://13.115.181.197:8000/subgraphs/name/raw", {
+          query: `{
+            liquidatePositions(
+              where: {account: "${account?.toLowerCase()}"}
+              first: 50
+              orderBy: transaction__timestamp
+              orderDirection: desc
+            ) {
+              markPrice
+              size
+              transaction {
+                id
+                timestamp
+              }
+              isLong
+              indexToken
+            }
+            swaps(
+              where: {account: "${account?.toLowerCase()}"}
+              first: 50
+              orderDirection: desc
+              orderBy: transaction__timestamp
+            ) {
+              tokenIn
+              tokenOut
+              transaction {
+                id
+                timestamp
+              }
+              amountIn
+              amountOut
+              account
+            }
+            createDecreasePositions(
+              where: {account: "${account?.toLowerCase()}"}
+              first: 50
+              orderBy: transaction__timestamp
+              orderDirection: desc
+            ) {
+              acceptablePrice
+              account
+              indexToken
+              isLong
+              transaction {
+                id
+                timestamp
+              }
+            }
+            createIncreasePositions(
+              first: 50
+              where: {account: "${account?.toLowerCase()}"}
+              orderBy: transaction__timestamp
+              orderDirection: desc
+            ) {
+              indexToken
+              isLong
+              transaction {
+                timestamp
+                id
+              }
+              acceptablePrice
+              account
+              sizeDelta
+            }
+            decreasePositions(
+              where: {account: "${account?.toLowerCase()}"}
+              first: 50
+              orderBy: transaction__timestamp
+              orderDirection: desc
+            ) {
+              indexToken
+              sizeDelta
+              price
+              transaction {
+                timestamp
+                id
+              }
+              account
+              isLong
+            }
+            increasePositions(
+              first: 50
+              where: {account: "${account?.toLowerCase()}"}
+              orderBy: transaction__timestamp
+              orderDirection: desc
+            ) {
+              account
+              indexToken
+              isLong
+              price
+              transaction {
+                timestamp
+                id
+              }
+              sizeDelta
+            }      
+        }`,
+      });
+      response.data.data.swaps.map((item)=>{
+        item.action = 'Swap'
+      })
+      response.data.data.liquidatePositions.map((item)=>{
+        item.action = 'LiquidatePosition'
+      })
+      response.data.data.createDecreasePositions.map((item)=>{
+        item.action = 'CreateDecreasePosition'
+      })
+      response.data.data.createIncreasePositions.map((item)=>{
+        item.action = 'CreateIncreasePosition'
+      })
+      response.data.data.decreasePositions.map((item)=>{
+        item.action = 'DecreasePosition'
+      })
+      response.data.data.increasePositions.map((item)=>{
+        item.action = 'IncreasePosition'
+      })
+      const mergedArray = [
+        ...response.data.data.liquidatePositions,
+        ...response.data.data.swaps,
+        ...response.data.data.createDecreasePositions,
+        ...response.data.data.createIncreasePositions,
+        ...response.data.data.decreasePositions,
+        ...response.data.data.increasePositions
+      ];
+      mergedArray.sort((a, b) => b.transaction.timestamp - a.transaction.timestamp);
+      return mergedArray;
     },
   });
   const trades = data ? data.flat() : [];
