@@ -15,4 +15,6 @@
 .TradeHistory{
   background: var(--dark-blue-bg);
   border-radius: 0.4rem;
+  max-height: 700px;
+  overflow: auto;
 }

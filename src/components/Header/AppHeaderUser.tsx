@@ -98,13 +98,13 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
   const icon = getIcon(chainId, "network");
   const selectChain = "ethereum";
   const [isShow, setisShow] = useState(true);
-  // window.ethereum.request({
-  //   method: "eth_chainId",
-  // }).then((res)=>{
-  //   if (res === "0x" + ARBITRUM.toString(16)) {
-  //     setisShow(false)
-  //   }
-  // })
+  window.ethereum && window.ethereum.request({
+    method: "eth_chainId",
+  }).then((res)=>{
+    if (res === "0x" + ARBITRUM.toString(16)) {
+      setisShow(false)
+    }
+  })
   if (!active || !account) {
     return (
       <div className="App-header-user">
