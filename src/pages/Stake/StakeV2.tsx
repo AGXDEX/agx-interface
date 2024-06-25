@@ -1091,6 +1091,9 @@ export default function StakeV2() {
             <div className={cx("tab", { active: selectTab === "Staking" })} onClick={() => setselectTab("Staking")}>
               Staking
             </div>
+            {/* <div className={cx("tab", { active: selectTab === "Trade" })} onClick={() => setselectTab("Trade")}>
+              Trade Mining
+            </div> */}
           </div>
           <div className={cx("StakeV2-box between", { ishide: selectTab === "Liquidity" })}>
             <div className="halfBox">
@@ -1129,6 +1132,24 @@ export default function StakeV2() {
                   <div>${Number(formattedPoolValue?.toFixed(2)).toLocaleString()}</div>
                 </div>
               </div>
+              {/* <div className={cx("mobileBox", { ishide: selectTab !== "Trade", show: selectTab === "Trade" })}>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Daily emission</div>
+                  <div>
+                    {stakeAPRValue === "NaN" || !isFinite(Number(stakeAPRValue))
+                      ? "0.00%"
+                      : `${Number(stakeAPRValue).toLocaleString()}%`}
+                  </div>
+                </div>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">24h Trading Volume in AGX</div>
+                  <div>{Number(AGXVFTValue).toLocaleString()}</div>
+                </div>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Total Trading Volume in AGX</div>
+                  <div>${Number(formattedPoolValue?.toFixed(2)).toLocaleString()}</div>
+                </div>
+              </div> */}
             </div>
             <div className="halfBox">
               <div className="StakeV2-stakeTitle padLeft">My Data</div>
@@ -1172,6 +1193,26 @@ export default function StakeV2() {
                   <div>{Pool2Rewards && (Number(Pool2Rewards) / 10 ** 18).toFixed(2).toLocaleString()} AGX</div>
                 </div>
               </div>
+              {/* <div className={cx("mobileBox", { ishide: selectTab !== "Trade", show: selectTab === "Trade" })}>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Your 24h Trading Volume</div>
+                  <div>{userStakedAGXAmount}</div>
+                </div>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Your Trading Volume in AGX</div>
+                  <div>
+                    {(isNaN(Number(totalReward)) ? 0 : Number(totalReward) / 10 ** 18).toFixed(2).toLocaleString()} AGX
+                  </div>
+                </div>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Total Reward</div>
+                  <div>{Pool2Rewards && (Number(Pool2Rewards) / 10 ** 18).toFixed(2).toLocaleString()} AGX</div>
+                </div>
+                <div className="StakeV2-fomBox">
+                  <div className="StakeV2-tit">Claimable Rewards</div>
+                  <div>{Pool2Rewards && (Number(Pool2Rewards) / 10 ** 18).toFixed(2).toLocaleString()} AGX</div>
+                </div>
+              </div> */}
             </div>
           </div>
           <div
@@ -1185,6 +1226,17 @@ export default function StakeV2() {
               <Trans>Stake AGX</Trans>
             </Button>
           </div>
+          {/* <div
+            className={cx("StakeV2-box marBottom", {
+              ishide: selectTab !== "Trade",
+              isShow: selectTab === "Trade",
+            })}
+          >
+            <div className="StakeV2-stakeTitle padLeft"></div>
+            <Button variant="secondary" className="StakeV2-stakeButton"  to="/v1">
+              <Trans>Trade on AGX</Trans>
+            </Button>
+          </div> */}
           {selectTab === "Staking" && <StakeList />}
           <div className="tolong">
             <div

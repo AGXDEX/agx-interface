@@ -94,7 +94,7 @@ const useStakeAGX = (account, chainId, getStake) => {
   return useMutation({
     mutationFn: async ({ amount, period }: any) => {
       const formattedAmount = ethers.utils.parseEther(amount);
-      const tx = await contract.stake(formattedAmount, period);
+      const tx = await contract.stake(account,formattedAmount, period);
       await tx.wait();
     },
     onSuccess: () => {
