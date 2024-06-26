@@ -7,6 +7,11 @@ export const STAKER_SUBGRAPH_URL =
     ? "https://sepolia.graph.zklink.io/subgraphs/name/staker"
     : "https://graph.zklink.io/subgraphs/name/agx-staker";
 
+export const TRADE_HISTORY_URL =
+process.env.REACT_APP_ENV === "development"
+  ? "https://sepolia.graph.zklink.io/subgraphs/name/raw"
+  : "https://graph.zklink.io/subgraphs/name/raw";
+  
 export const SWAP_SUBGRAPH_URL =
   process.env.REACT_APP_ENV === "development"
     ? "https://sepolia.graph.zklink.io/subgraphs/name/novasap-subgraph"
@@ -24,7 +29,6 @@ const SUBGRAPH_URLS = {
     syntheticsStats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api",
     leaderboard: "https://squid.subsquid.io/gmx-synthetics-arbitrum/graphql",
     endpoint: "https://graph.zklink.io/subgraphs/name/agx-staker",
-    endpoints: "http://13.115.181.197:8000/subgraphs/name/raw",
   },
 
   [ARBITRUM_GOERLI]: {

@@ -20,7 +20,7 @@ import Vault from "abis/Vault.json";
 import { ARBITRUM, ARBITRUM_GOERLI, AVALANCHE, getChainName, getConstant, getHighExecutionFee } from "config/chains";
 import { getContract } from "config/contracts";
 import { DECREASE, INCREASE, SWAP, USD_DECIMALS, getOrderKey } from "lib/legacy";
-
+import { TRADE_HISTORY_URL } from "config/subgraph";
 import { t } from "@lingui/macro";
 import { getServerBaseUrl, getServerUrl } from "config/backend";
 import { UI_VERSION, isDevelopment } from "config/env";
@@ -222,7 +222,7 @@ export function useHistoryTradeData(chainId, account, pageSize, startDate, endDa
       const pageIndex = key[3];
       const skip = pageIndex * pageSize;
       const first = pageSize;
-      const response = await axios.post("http://13.115.181.197:8000/subgraphs/name/raw", {
+      const response = await axios.post(TRADE_HISTORY_URL, {
           query: `{
             liquidatePositions(
               where: {account: "${account?.toLowerCase()}"}

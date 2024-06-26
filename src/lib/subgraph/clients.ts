@@ -8,7 +8,6 @@ export const arbitrumReferralsGraphClient = createClient(ARBITRUM, "referrals");
 export const arbitrumGoerliReferralsGraphClient = createClient(ARBITRUM_GOERLI, "referrals");
 export const nissohGraphClient = createClient(ARBITRUM, "nissohVault");
 export const endpointGraphClient = createClient(ARBITRUM, "endpoint");
-export const endpointsGraphClient = createClient(ARBITRUM, "endpoints");
 
 export const avalancheGraphClient = createClient(AVALANCHE, "stats");
 export const avalancheReferralsGraphClient = createClient(AVALANCHE, "referrals");
