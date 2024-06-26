@@ -269,6 +269,7 @@ export function useHistoryTradeData(chainId, account, pageSize, startDate, endDa
                 id
                 timestamp
               }
+              sizeDelta
             }
             createIncreasePositions(
               first: 50
