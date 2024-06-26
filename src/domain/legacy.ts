@@ -238,6 +238,7 @@ export function useHistoryTradeData(chainId, account, pageSize, startDate, endDa
               }
               isLong
               indexToken
+              key
             }
             swaps(
               where: {account: "${account?.toLowerCase()}"}
@@ -302,6 +303,8 @@ export function useHistoryTradeData(chainId, account, pageSize, startDate, endDa
               }
               account
               isLong
+              key
+              collateralDelta
             }
             increasePositions(
               first: 50
@@ -318,6 +321,7 @@ export function useHistoryTradeData(chainId, account, pageSize, startDate, endDa
                 id
               }
               sizeDelta
+              collateralDelta
             }      
         }`,
       });
