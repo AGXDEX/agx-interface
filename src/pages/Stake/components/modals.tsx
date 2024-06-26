@@ -1357,6 +1357,10 @@ export function ClaimHistoryModal(props) {
         return "ALP Liquidity Mining";
       case 3:
         return "Staking";
+      case 4:
+        return "Stake Reward";
+      case 5:
+        return "ALP Reward";
       default:
         return "Unknown";
     }
@@ -1380,7 +1384,7 @@ export function ClaimHistoryModal(props) {
       header: ({ column }) => {
         return (
           <div className="border-b border-none font-medium p-4 pr-8 pt-0 pb-3 text-slate-400  text-left">
-            AGX Amount
+           Amount
           </div>
         );
       },
