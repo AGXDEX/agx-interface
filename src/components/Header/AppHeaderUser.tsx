@@ -2,7 +2,7 @@ import connectWalletImg from "img/ic_wallet_24.svg";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
 import ConnectWalletButton from "../Common/ConnectWalletButton";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
@@ -98,13 +98,16 @@ export function AppHeaderUser({ openSettings, small, disconnectAccountAndCloseSe
   const icon = getIcon(chainId, "network");
   const selectChain = "ethereum";
   const [isShow, setisShow] = useState(true);
-  window.ethereum && window.ethereum.request({
-    method: "eth_chainId",
-  }).then((res)=>{
-    if (res === "0x" + ARBITRUM.toString(16)) {
-      setisShow(false)
-    }
-  })
+
+  useEffect(() => {
+    window.ethereum && window.ethereum.request({
+      method: "eth_chainId",
+    }).then((res)=>{
+      if (res === "0x" + ARBITRUM.toString(16)) {
+        setisShow(false)
+      }
+    })
+  }, [window]);
   if (!active || !account) {
     return (
       <div className="App-header-user">
