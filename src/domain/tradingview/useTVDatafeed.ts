@@ -65,11 +65,9 @@ export default function useTVDatafeed({ dataProvider }: Props) {
         missingBarsInfo.current.isFetching = true;
         const ticker = tvDataProvider.current?.currentTicker;
         const period = tvDataProvider.current?.currentPeriod;
-        console.log(ticker, period, lastBarTime.current, "ticker, period, lastBarTime--->")
         if (ticker && period && lastBarTime.current && !stableTokens.includes(ticker)) {
           let data;
           try {
-            console.log(lastBarTime.current,'lastBarTime--->')
             data = await tvDataProvider.current?.getMissingBars(chainId, ticker, period, lastBarTime.current);
           } catch (e) {
             data = [];
@@ -101,11 +99,9 @@ export default function useTVDatafeed({ dataProvider }: Props) {
     return {
       datafeed: {
         onReady: (callback) => {
-          console.log("Data feed ready");
           setTimeout(() => callback(getConfigurationData(supportedResolutions)));
         },
         resolveSymbol(symbolName, onSymbolResolvedCallback) {
-          console.log("Resolving symbol:", symbolName);
           if (!isChartAvailabeForToken(chainId, symbolName)) {
             symbolName = getNativeToken(chainId).symbol;
           }
@@ -130,7 +126,6 @@ export default function useTVDatafeed({ dataProvider }: Props) {
           };
           setTimeout(() => onSymbolResolvedCallback(symbolInfo));
         },
-
         async getBars(
           symbolInfo: SymbolInfo,
           resolution: ResolutionString,
@@ -155,7 +150,7 @@ export default function useTVDatafeed({ dataProvider }: Props) {
 
             if (data.s === "ok") {
               const bars = data.t.map((time, index) => ({
-                time: time * 1000, // 将时间戳转换为毫秒
+                time: time * 1000,
                 open: data.o[index],
                 high: data.h[index],
                 low: data.l[index],
@@ -166,11 +161,10 @@ export default function useTVDatafeed({ dataProvider }: Props) {
             }
           } catch (error) {
             console.error("Error fetching bars:", error);
-            onHistoryCallback([], { noData: true }); // 处理错误情况
+            onHistoryCallback([], { noData: true });
           }
         },
         subscribeBars: (symbolInfo, resolution, onRealtimeCallback, subscriberUID, onResetCacheNeededCallback) => {
-          console.log("Subscribing to real-time bars for", symbolInfo.name, resolution);
           const symbol = getNormalizedTokenSymbol(symbolInfo.name);
           const { ticker, isStable } = symbolInfo;
           const marketName = `Crypto.${symbol}/USD`;
@@ -203,11 +197,6 @@ export default function useTVDatafeed({ dataProvider }: Props) {
               console.error("Error fetching real-time data:", error);
             }
           };
-
-          // 定时调用 fetchRealTimeData 函数,例如每秒钟调用一次
-          // const intervalId = setInterval(fetchRealTimeData, 5000);
-
-          // 保存订阅信息
           if (!isStable) {
             intervalRef.current = setInterval(fetchRealTimeData, 5000);
           }
@@ -215,7 +204,6 @@ export default function useTVDatafeed({ dataProvider }: Props) {
         unsubscribeBars: (id) => {
           // id is in the format ETH_#_USD_#_5
           const ticker = id.split("_")[0];
-          console.log("unsubscribeBars", id, ticker);
           const isStable = stableTokens.includes(ticker);
           if (!isStable && intervalRef.current) {
             clearInterval(intervalRef.current);
@@ -223,5 +211,5 @@ export default function useTVDatafeed({ dataProvider }: Props) {
         },
       },
     };
-  }, [chainId, stableTokens, supportedResolutions, tvDataProvider, dataProvider]);
+  }, [supportedResolutions, chainId, stableTokens, setPeriodParams]);
 }

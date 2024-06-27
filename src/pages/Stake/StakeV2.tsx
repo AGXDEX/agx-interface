@@ -483,6 +483,7 @@ export default function StakeV2() {
         successMsg: t`Stake completed!`,
         setPendingTxns,
       });
+      queryClient.invalidateQueries({ queryKey: ["poolData", Pooladdress, chainId] });
       queryClient.setQueryData(["positions", account], (prevPositionsData: any) => {
         const updatedPositions = prevPositionsData.map((position) => {
           if (Number(position.tokenId) === tokenId) {
@@ -514,6 +515,7 @@ export default function StakeV2() {
         successMsg: t`Withdraw completed!`,
         setPendingTxns,
       });
+      queryClient.invalidateQueries({ queryKey: ["poolData", Pooladdress, chainId] });
       queryClient.setQueryData(
         [`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress],
         (prevNFTlist: any) => {
@@ -578,6 +580,7 @@ export default function StakeV2() {
         successMsg: t`Unstake completed!`,
         setPendingTxns,
       });
+      queryClient.invalidateQueries({ queryKey: ["poolData", Pooladdress, chainId] });
       queryClient.setQueryData(["positions", account], (prevPositionsData: any) => {
         const updatedPositions = prevPositionsData.map((position) => {
           if (Number(position.tokenId) === tokenId) {
@@ -679,7 +682,7 @@ export default function StakeV2() {
   };
 
   const { data: poolData } = useQuery({
-    queryKey: ["poolData", Pooladdress],
+    queryKey: ["poolData", Pooladdress, chainId],
     queryFn: () => fetchPoolData(Pooladdress),
     enabled: !!Pooladdress,
     refetchInterval: 60000,
@@ -702,7 +705,7 @@ export default function StakeV2() {
   const useTotalStakedWithoutMultiplier = (chainId) => {
     const contract = useStakeAGXContract(chainId);
     return useQuery({
-      queryKey: ["totalStakedWithoutMultiplier", chainId],
+      queryKey: ["totalStakedWithoutMultiplier", chainId, account],
       queryFn: () => fetchTotalStakedWithoutMultiplier(contract),
       enabled: !!chainId,
     });
@@ -863,7 +866,7 @@ export default function StakeV2() {
         data={claimHistorie.length>0? claimHistorie:claimHistories}
       />
       {/* <UnstakeModal isVisible={false} /> */}
-      <StakingModal isVisible={isStakingModalVisible} setIsVisible={setIsStakingModalVisible} data={claimHistories} 
+      <StakingModal isVisible={isStakingModalVisible} setIsVisible={setIsStakingModalVisible} data={claimHistories}
         getStake={getStake}/>
       <ClaimAllModal
         isVisible={claimModalVisible}
