@@ -352,13 +352,11 @@ export default function TradeHistory(props) {
       )}
       {tradesWithMessages.length > 0 &&
         tradesWithMessages.map((trade, index) => {
-          const txUrl = getExplorerUrl(chainId) + "tx/" + trade.transaction.id;
-
+          const txUrl = getExplorerUrl(chainId) + "tx/" + trade.transaction.id.split(':')[0]
           let msg = getMsg(trade);
           if (!msg) {
             return null;
           }
-
           return (
             <div className="TradeHistory-row App-box App-box-border" key={index}>
               <div>
