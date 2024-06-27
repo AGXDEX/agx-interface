@@ -276,7 +276,33 @@ function ClaimAllModal(props) {
             </div>
           ))}
         </div>
-        <div>You will receive</div>
+
+        <div className="w-full flex justify-between mb-4">
+          <div>
+            Stake Amount ({selectedTag.days === 360? '100%':selectedTag.days === 180? '50%':selectedTag.days === 90? '25%':'10%'})
+          </div>
+          <div>{
+            selectedTag.days === 360? (tokenId === "Staking"? Number(Number(ethers.utils.formatEther(claimableReward || 0)).toFixed(2)).toLocaleString():tokenId === "Pool2"? (Pool2Rewards && Number((Number(Pool2Rewards) / 10 ** 18).toFixed(2)).toLocaleString()): tokenId === "Liquidity"? (rewards && Number((Number(rewards) / 10 ** 18).toFixed(2)).toLocaleString()): 0):
+            selectedTag.days === 180? (tokenId === "Staking"? Number(Number(Number(ethers.utils.formatEther(claimableReward || 0))* 0.5).toFixed(2)).toLocaleString():tokenId === "Pool2"? (Pool2Rewards && Number((Number(Pool2Rewards)* 0.5 / 10 ** 18).toFixed(2)).toLocaleString()): tokenId === "Liquidity"? (rewards && Number((Number(rewards)* 0.5 / 10 ** 18).toFixed(2)).toLocaleString()): 0):
+            selectedTag.days === 90? (tokenId === "Staking"? Number(Number(Number(ethers.utils.formatEther(claimableReward || 0))* 0.25).toFixed(2)).toLocaleString():tokenId === "Pool2"? (Pool2Rewards && Number((Number(Pool2Rewards)* 0.25 / 10 ** 18).toFixed(2)).toLocaleString()): tokenId === "Liquidity"? (rewards && Number((Number(rewards)* 0.25 / 10 ** 18).toFixed(2)).toLocaleString()): 0):
+            (tokenId === "Staking"? Number(Number(Number(ethers.utils.formatEther(claimableReward || 0))* 0.1).toFixed(2)).toLocaleString():tokenId === "Pool2"? (Pool2Rewards && Number((Number(Pool2Rewards)* 0.1 / 10 ** 18).toFixed(2)).toLocaleString()): tokenId === "Liquidity"? (rewards && Number((Number(rewards)* 0.1 / 10 ** 18).toFixed(2)).toLocaleString()): 0)} AGX</div>
+        </div>
+
+        <div className="w-full flex justify-between mb-4">
+          <div>
+            Lose Amount ({selectedTag.days === 360? '0%':selectedTag.days === 180? '50%':selectedTag.days === 90? '75%':'90%'})
+          </div>
+          <div>{
+            selectedTag.days === 360? 0:
+            selectedTag.days === 180? (tokenId === "Staking"? Number(Number(Number(ethers.utils.formatEther(claimableReward || 0))* 0.5).toFixed(2)).toLocaleString():tokenId === "Pool2"? (Pool2Rewards && Number((Number(Pool2Rewards)* 0.5 / 10 ** 18).toFixed(2)).toLocaleString()): tokenId === "Liquidity"? (rewards && Number((Number(rewards)* 0.5 / 10 ** 18).toFixed(2)).toLocaleString()): 0):
+            selectedTag.days === 90? (tokenId === "Staking"? Number(Number(Number(ethers.utils.formatEther(claimableReward || 0))* 0.75).toFixed(2)).toLocaleString():tokenId === "Pool2"? (Pool2Rewards && Number((Number(Pool2Rewards)* 0.75 / 10 ** 18).toFixed(2)).toLocaleString()): tokenId === "Liquidity"? (rewards && Number((Number(rewards)* 0.75 / 10 ** 18).toFixed(2)).toLocaleString()): 0):
+            (tokenId === "Staking"? Number(Number(Number(ethers.utils.formatEther(claimableReward || 0))* 0.9).toFixed(2)).toLocaleString():tokenId === "Pool2"? (Pool2Rewards && Number((Number(Pool2Rewards)* 0.9 / 10 ** 18).toFixed(2)).toLocaleString()): tokenId === "Liquidity"? (rewards && Number((Number(rewards)* 0.9 / 10 ** 18).toFixed(2)).toLocaleString()): 0)} AGX</div>
+        </div>
+
+        {/* <div className="w-full flex justify-between">
+          <div>You will receive</div>
+          <div>{Pool2Rewards && Number((Number(Pool2Rewards) / 10 ** 18).toFixed(2)).toLocaleString()} AGX</div>
+        </div> */}
         <div className="Exchange-swap-button-container">
           <Button variant="primary-action" className="w-full" onClick={goDeposit} loading={isDeposit}>
             Claim
@@ -1439,7 +1465,7 @@ export function ClaimHistoryModal(props) {
   if (!isVisible) return null;
   return (
     <Dialog open={isVisible}>
-      <DialogContent className="sm:max-w-[925px] bg-[#292B2F] focus:outline-none">
+      <DialogContent className="sm:max-w-[925px] bg-[#292B2F] focus:outline-none max-h-[61%] overflow-auto">
         <div
           className="absolute cursor-pointer right-6 top-6 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-white/10 p-5 rounded-full"
           onClick={() => {

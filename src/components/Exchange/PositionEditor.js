@@ -82,6 +82,7 @@ export default function PositionEditor(props) {
   const [fromValue, setFromValue] = useState("");
   const [isApproving, setIsApproving] = useState(false);
   const [isSwapping, setIsSwapping] = useState(false);
+  const [hasEnoughValue, sethasEnoughValue] = useState(true);
   const prevIsVisible = usePrevious(isVisible);
   const longOrShortText = position?.isLong ? t`Long` : t`Short`;
   const positionPriceDecimal = getPriceDecimals(chainId, position?.indexToken?.symbol);
@@ -274,7 +275,9 @@ export default function PositionEditor(props) {
     if (isPositionRouterApproving) {
       return false;
     }
-
+    if (!hasEnoughValue) {
+      return false;
+    }
     return true;
   };
 
@@ -548,7 +551,6 @@ export default function PositionEditor(props) {
     }),
     [minExecutionFee, minExecutionFeeUSD]
   );
-
   return (
     <div className="PositionEditor">
       {position && (
@@ -565,7 +567,12 @@ export default function PositionEditor(props) {
               <div>
                 <BuyInputSection
                   inputValue={fromValue}
-                  onInputValueChange={(e) => setFromValue(e.target.value)}
+                  onInputValueChange={(e) => {
+                    if (maxAmount && (Number(e.target.value) > Number(maxAmountFormatted))) {
+                      sethasEnoughValue(false)
+                    }
+                    setFromValue(e.target.value)
+                  }}
                   topLeftLabel={isDeposit ? t`Deposit` : t`Withdraw`}
                   topLeftValue={
                     convertedAmountFormatted

@@ -120,9 +120,9 @@ export function DataTablePagination<TData>({ table, paginations }: DataTablePagi
                   type="button"
                   className={cn("h-8 w-8 rounded-lg p-0 lg:flex", {
                     "!bg-white/10 text-white dark:bg-[#424242] dark:text-white dark:border-none":
-                      Number(pageNum) - 1 === pageIndex,
-                    "bg-transparent  hover:bg-transparent dark:text-[#ADADAD] dark:bg-transparent border-none":
                       Number(pageNum) - 1 !== pageIndex,
+                    "bg-transparent  hover:bg-transparent dark:text-[#ADADAD] dark:bg-transparent border-none":
+                      Number(pageNum) - 1 === pageIndex,
                   })}
                   key={i}
                   onClick={() => table.setPageIndex(Number(pageNum) - 1)}
@@ -133,7 +133,7 @@ export function DataTablePagination<TData>({ table, paginations }: DataTablePagi
             })}
             <div
               className="h-8 w-8 border-[#5C5C5C] p-0 flex"
-              onClick={() => table.nextPage()}
+              onClick={() => table.getCanNextPage() && table.nextPage()}
               // disabled={!table.getCanNextPage()}
             >
               <span className="sr-only">Go to next page</span>

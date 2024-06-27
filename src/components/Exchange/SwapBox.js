@@ -2186,7 +2186,7 @@ export default function SwapBox(props) {
                   {hasExistingPosition && toAmount && toAmount.gt(0) && (
                     <div className="inline-block muted">
                       {formatAmount(existingPosition.leverage, 4, 2)}x
-                      <BsArrowRight className="transition-arrow" />
+                      <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                   )}
                   {toAmount && leverage && leverage.gt(0) && `${formatAmount(leverage, 4, 2)}x`}
@@ -2202,7 +2202,7 @@ export default function SwapBox(props) {
                   {hasExistingPosition && toAmount && toAmount.gt(0) && (
                     <div className="inline-block muted">
                       ${formatAmount(existingPosition.averagePrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
-                      <BsArrowRight className="transition-arrow" />
+                      <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                   )}
                   {nextAveragePrice && `$${formatAmount(nextAveragePrice, USD_DECIMALS, toTokenPriceDecimal, true)}`}
@@ -2217,7 +2217,7 @@ export default function SwapBox(props) {
                   {hasExistingPosition && toAmount && toAmount.gt(0) && (
                     <div className="inline-block muted">
                       ${formatAmount(existingLiquidationPrice, USD_DECIMALS, existingPositionPriceDecimal, true)}
-                      <BsArrowRight className="transition-arrow" />
+                      <BsArrowRight className="transition-arrow inline-block" />
                     </div>
                   )}
                   {toAmount &&
@@ -2253,7 +2253,7 @@ export default function SwapBox(props) {
                 trigger orders. <br />
                 <br />
                 For screenshots and more information, please see the{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/trading/v1#stop-loss--take-profit-orders">
+                <ExternalLink href="https://docs.agx.xyz">
                   docs
                 </ExternalLink>
                 .
@@ -2340,7 +2340,7 @@ export default function SwapBox(props) {
                           top right of the page after connecting your wallet.
                           <br />
                           <br />
-                          <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
+                          <ExternalLink href="https://docs.agx.xyz">
                             Read more
                           </ExternalLink>
                           .
@@ -2370,7 +2370,7 @@ export default function SwapBox(props) {
                           This exit price will change with the price of the asset.
                           <br />
                           <br />
-                          <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
+                          <ExternalLink href="https://docs.agx.xyz">
                             Read more
                           </ExternalLink>
                           .
@@ -2410,7 +2410,7 @@ export default function SwapBox(props) {
                           </div>
                         )}
                         <br />
-                        <ExternalLink href="https://docs.gmx.io/docs/trading/v1#opening-a-position">
+                        <ExternalLink href="https://docs.agx.xyz">
                           <Trans>Read more</Trans>
                         </ExternalLink>
                         .
