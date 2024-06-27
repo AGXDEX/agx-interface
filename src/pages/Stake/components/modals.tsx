@@ -1391,7 +1391,7 @@ export function ClaimHistoryModal(props) {
       cell: ({ row }) => {
         return (
           <div className="border-b border-none p-4  text-white text-left">
-            {formatAmount(ethers.BigNumber.from(row.original.amount), 18, 4, true)} AGX
+            {formatAmount(ethers.BigNumber.from(row.original.amount), 18, 4, true)}
           </div>
         );
       },
