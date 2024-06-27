@@ -150,7 +150,6 @@ function ClaimAllModal(props) {
       });
     } else if (tokenId === "Staking") {
       setIsDeposit(true);
-      // const queryClient = useQueryClient();
       const stakeAGXAddress = getContract(chainId, "StakeAGX");
       const contract = new ethers.Contract(stakeAGXAddress, StakeAGX.abi, signer);
       callContract(chainId, contract, "claim", [(selectedTag.days * 86400)], {
@@ -159,8 +158,6 @@ function ClaimAllModal(props) {
         successMsg: t`Claim completed!`,
         setPendingTxns,
       }).finally(() => {
-        // queryClient.invalidateQueries({ queryKey: ["totalStakingClaim", chainId] });
-        // queryClient.invalidateQueries({ queryKey: ["totalStakedWithoutMultiplier", chainId] });
         setIsDeposit(false);
         setIsVisible(false);
         getNew();
