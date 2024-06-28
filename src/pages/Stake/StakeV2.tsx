@@ -33,7 +33,7 @@ import Button from "components/Button/Button";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
-import { bigNumberify, expandDecimals, formatAmount, parseValue,formatKeyAmount } from "lib/numbers";
+import { bigNumberify, expandDecimals, formatAmount, parseValue, formatKeyAmount } from "lib/numbers";
 import "./StakeV2.css";
 import useWallet from "lib/wallets/useWallet";
 import PageTitle from "components/PageTitle/PageTitle";
@@ -106,7 +106,6 @@ export default function StakeV2() {
   const [userTotalStakedWithoutMultipliers, setuserTotalStakedWithoutMultipliers] = useState("");
   const [avgMultipliers, setavgMultipliers] = useState("");
 
-
   const [selectTab, setselectTab] = useState("Pool2");
   const [isUnstaking, setIsUnstakeLoading] = useState(false);
   const [isStaking, setIsStaking] = useState(false);
@@ -133,10 +132,10 @@ export default function StakeV2() {
   const contract = useStakeAGXContract(chainId);
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const wrappedTokenSymbol = getConstant(chainId, "wrappedTokenSymbol");
-  const getNew = ()=> {
-    setTimeout(async ()=>{
-    const response = await axios.post(STAKER_SUBGRAPH_URL, {
-      query: `{
+  const getNew = () => {
+    setTimeout(async () => {
+      const response = await axios.post(STAKER_SUBGRAPH_URL, {
+        query: `{
       claimHistories(
         where: { owner: "${account?.toLowerCase()}" }
         orderDirection: desc
@@ -148,24 +147,24 @@ export default function StakeV2() {
         amount
       }
     }`,
+      });
+      setClaimHistorie(response.data.data.claimHistories);
+    }, 1000);
+  };
+  const getStake = async () => {
+    await fetchMaxAPR(contract).then((res) => {
+      setmaxAPRs(res);
     });
-    setClaimHistorie(response.data.data.claimHistories)
-    },1000)
-  }
-  const getStake = async() => {
-    await fetchMaxAPR(contract).then((res)=>{
-      setmaxAPRs(res)
-    })
-    await fetchTotalStakedWithoutMultiplier(contract).then((res)=>{
-      settotalStakedWithoutMultipliers(res)
-    })
-    await fetchUserTotalStakedWithoutMultiplier(contract, account).then((res)=>{
-      setuserTotalStakedWithoutMultipliers(res)
-    })
-    await fetchAvgMultiplier(contract, account).then((res)=>{
-      setavgMultipliers(res)
-    })
-  }
+    await fetchTotalStakedWithoutMultiplier(contract).then((res) => {
+      settotalStakedWithoutMultipliers(res);
+    });
+    await fetchUserTotalStakedWithoutMultiplier(contract, account).then((res) => {
+      setuserTotalStakedWithoutMultipliers(res);
+    });
+    await fetchAvgMultiplier(contract, account).then((res) => {
+      setavgMultipliers(res);
+    });
+  };
   const { data: novaPoints } = useQuery({
     queryKey: ["novaPoints", account, project],
     queryFn: () => fetchNovaPoints(account, project),
@@ -256,6 +255,7 @@ export default function StakeV2() {
   const { data: stakeliquidity } = useQuery({
     queryKey: ["stakeliquidity"],
     queryFn: fetchStakeLiquidity,
+    refetchInterval: 5000,
   });
 
   const { data: NFTClaimed } = useQuery({
@@ -483,7 +483,6 @@ export default function StakeV2() {
         successMsg: t`Stake completed!`,
         setPendingTxns,
       });
-      queryClient.invalidateQueries({ queryKey: ["poolData", Pooladdress, chainId] });
       queryClient.setQueryData(["positions", account], (prevPositionsData: any) => {
         const updatedPositions = prevPositionsData.map((position) => {
           if (Number(position.tokenId) === tokenId) {
@@ -501,6 +500,8 @@ export default function StakeV2() {
     } finally {
       setIsStaking(false);
       setSelectedCard(null);
+      queryClient.invalidateQueries({ queryKey: ["stakeliquidity"] });
+      queryClient.invalidateQueries({ queryKey: ["poolData", Pooladdress, chainId, stakeliquidity] });
     }
   };
 
@@ -515,7 +516,7 @@ export default function StakeV2() {
         successMsg: t`Withdraw completed!`,
         setPendingTxns,
       });
-      queryClient.invalidateQueries({ queryKey: ["poolData", Pooladdress, chainId] });
+      queryClient.invalidateQueries({ queryKey: ["poolData", Pooladdress, chainId, stakeliquidity] });
       queryClient.setQueryData(
         [`StakeV2:getSpecificNftIds:${active}`, chainId, dexreaderAddress],
         (prevNFTlist: any) => {
@@ -580,7 +581,6 @@ export default function StakeV2() {
         successMsg: t`Unstake completed!`,
         setPendingTxns,
       });
-      queryClient.invalidateQueries({ queryKey: ["poolData", Pooladdress, chainId] });
       queryClient.setQueryData(["positions", account], (prevPositionsData: any) => {
         const updatedPositions = prevPositionsData.map((position) => {
           if (Number(position.tokenId) === tokenId) {
@@ -598,6 +598,8 @@ export default function StakeV2() {
     } finally {
       setIsUnstakeLoading(false);
       setSelectedCard(null);
+      queryClient.invalidateQueries({ queryKey: ["stakeliquidity"] });
+      queryClient.invalidateQueries({ queryKey: ["poolData", Pooladdress, chainId, stakeliquidity] });
     }
   };
   const { data: totalTokenWeights } = useSWR(
@@ -673,6 +675,7 @@ export default function StakeV2() {
     const stakeAPRValue =
       stakeliquidity === 0 ? "0" : _.defaultTo((((agxPrice * 2e7) / stakeAllValue) * 100).toFixed(2), "0");
 
+    console.log(stakeliquidity, "stakeliquidity---->");
     return {
       poolValue,
       AGXVFTValue: AGXVFTValue.toFixed(2),
@@ -682,7 +685,7 @@ export default function StakeV2() {
   };
 
   const { data: poolData } = useQuery({
-    queryKey: ["poolData", Pooladdress, chainId],
+    queryKey: ["poolData", Pooladdress, chainId, stakeliquidity],
     queryFn: () => fetchPoolData(Pooladdress),
     enabled: !!Pooladdress && !!chainId,
     refetchInterval: 5000,
@@ -863,11 +866,15 @@ export default function StakeV2() {
       <ClaimHistoryModal
         isVisible={isClaimHistoryModalVisible}
         setIsVisible={setIsClaimHistoryModalVisible}
-        data={claimHistorie.length>0? claimHistorie:claimHistories}
+        data={claimHistorie.length > 0 ? claimHistorie : claimHistories}
       />
       {/* <UnstakeModal isVisible={false} /> */}
-      <StakingModal isVisible={isStakingModalVisible} setIsVisible={setIsStakingModalVisible} data={claimHistories}
-        getStake={getStake}/>
+      <StakingModal
+        isVisible={isStakingModalVisible}
+        setIsVisible={setIsStakingModalVisible}
+        data={claimHistories}
+        getStake={getStake}
+      />
       <ClaimAllModal
         isVisible={claimModalVisible}
         setIsVisible={setClaimModalVisible}
@@ -1109,7 +1116,10 @@ export default function StakeV2() {
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Staked AGX</div>
                   <div>
-                    {Number(formatValue(Number(totalStakedWithoutMultipliers || totalStakedWithoutMultiplier))?.toFixed(2)).toLocaleString()} AGX
+                    {Number(
+                      formatValue(Number(totalStakedWithoutMultipliers || totalStakedWithoutMultiplier))?.toFixed(2)
+                    ).toLocaleString()}{" "}
+                    AGX
                   </div>
                 </div>
                 <div className="StakeV2-fomBox">
@@ -1165,7 +1175,12 @@ export default function StakeV2() {
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Staked AGX</div>
-                  <div>{formatValue(Number(userTotalStakedWithoutMultipliers || userTotalStakedWithoutMultiplier)?.toFixed(2) || 0)} AGX</div>
+                  <div>
+                    {formatValue(
+                      Number(userTotalStakedWithoutMultipliers || userTotalStakedWithoutMultiplier)?.toFixed(2) || 0
+                    )}{" "}
+                    AGX
+                  </div>
                 </div>
                 <div className="StakeV2-fomBox">
                   <div className="StakeV2-tit">Avg Multiplier</div>
@@ -1281,7 +1296,7 @@ export default function StakeV2() {
                 mergedDepNFTlists.length > 0 &&
                 mergedDepNFTlists.map((item, index) => {
                   return (
-                    <div key={item.tokenId+index}>
+                    <div key={item.tokenId + index}>
                       <div className={cx("")}>
                         {depUrlList[index]?.image && !imageLoaded && !isDepBaseListLoading && (
                           <div className="bg-white/10 p-2 sm:p-4 sm:h-[300px] rounded-3xl shadow-lg flex flex-col sm:flex-row gap-5 select-none ">
@@ -1360,7 +1375,7 @@ export default function StakeV2() {
               <div className="rightAlign small">UTILIZATION</div>
               <div className="rightAlign small"></div>
             </div>
-            {visibleTokens.map((token,index) => {
+            {visibleTokens.map((token, index) => {
               let tokenFeeBps;
               const obj = getBuyGlpFromAmount(
                 glpAmount,
@@ -1376,12 +1391,7 @@ export default function StakeV2() {
               const tokenInfo = getTokenInfo(infoTokens, token.address);
               // console.log(tokenInfo)
               let utilization = bigNumberify(0);
-              if (
-                tokenInfo &&
-                tokenInfo.reservedAmount &&
-                tokenInfo.poolAmount &&
-                tokenInfo.poolAmount.gt(0)
-              ) {
+              if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
                 utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
               }
               let managedUsd;
@@ -1390,7 +1400,7 @@ export default function StakeV2() {
               } else {
                 managedUsd = ethers.BigNumber.from(0);
               }
-              let target = 0.1
+              let target = 0.1;
 
               const dataList = [
                 { name: "USDT", value: 0.25 },
@@ -1400,27 +1410,36 @@ export default function StakeV2() {
                 { name: "pufETH", value: 0.1 },
                 { name: "weeTH", value: 0.1 },
               ];
-              dataList.map((item)=>{
+              dataList.map((item) => {
                 if (item.name === tokenInfo.symbol) {
-                  target = item.value
+                  target = item.value;
                 }
-              })
+              });
               let manage = 1;
               manage = managedUsd && calculateManage(managedUsd, glpSupplyUsd);
               return (
-                <div className="table-td" key={token.symbol+index}>
+                <div className="table-td" key={token.symbol + index}>
                   <div className="leftAlign small">
-                    <TokenIcon symbol={token.symbol} displaySize={24} importSize={24} />{token.symbol}
+                    <TokenIcon symbol={token.symbol} displaySize={24} importSize={24} />
+                    {token.symbol}
                   </div>
-                  <div className="rightAlign small">${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</div>
+                  <div className="rightAlign small">
+                    ${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}
+                  </div>
                   <div className="rightAlign small">{formatAmount(manage, 0, 0, true)}</div>
                   <div className="rightAlign">
                     <TooltipWithPortal
                       renderContent={() => {
                         return (
                           <>
-                            <div className="w-full flex justify-between"><span>Pool Amount:</span><span>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</span></div>
-                            <div className="w-full flex justify-between"><span>Max ETH Capacity:</span><span>$ {formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}</span></div>
+                            <div className="w-full flex justify-between">
+                              <span>Pool Amount:</span>
+                              <span>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</span>
+                            </div>
+                            <div className="w-full flex justify-between">
+                              <span>Max ETH Capacity:</span>
+                              <span>$ {formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}</span>
+                            </div>
                           </>
                         );
                       }}
@@ -1429,29 +1448,40 @@ export default function StakeV2() {
                     </TooltipWithPortal>
                   </div>
                   <div className="rightAlign">
-                  <TooltipWithPortal
-                    renderContent={() => {
-                      return (
-                        <>
-                          <div className="w-full flex justify-between"><span>Current Weight:</span><span>{(Number(managedUsd)/Number(glpSupplyUsd)*100).toFixed(2)}%</span></div>
-                          <div className="w-full flex justify-between"><span>Target Weight:</span><span>{Number(target)*100}%</span></div>
-                          ETH is below its target weight. <br />
-                          Get lower fees to <Link className="App-header-link-main" to="/buy">
-                            buy ALP
-                          </Link> with ETH, and to  <Link className="App-header-link-main" to="/v1">
-                            swap
-                          </Link> ETH for other tokens.<br />
-                          <a target="_blank" rel="noreferrer" href={`https://docs.agx.xyz/tokenomics/points-system`}>
-                            Read more &gt;&gt;
-                          </a>
-                        </>
-                      );
-                    }}
-                  >
-                    <span>{(Number(managedUsd)/Number(glpSupplyUsd)*100).toFixed(2)}% </span>
-                    <span className="value-gap">/ </span>
-                    <span>{Number(target)*100}% </span>
-                  </TooltipWithPortal>
+                    <TooltipWithPortal
+                      renderContent={() => {
+                        return (
+                          <>
+                            <div className="w-full flex justify-between">
+                              <span>Current Weight:</span>
+                              <span>{((Number(managedUsd) / Number(glpSupplyUsd)) * 100).toFixed(2)}%</span>
+                            </div>
+                            <div className="w-full flex justify-between">
+                              <span>Target Weight:</span>
+                              <span>{Number(target) * 100}%</span>
+                            </div>
+                            ETH is below its target weight. <br />
+                            Get lower fees to{" "}
+                            <Link className="App-header-link-main" to="/buy">
+                              buy ALP
+                            </Link>{" "}
+                            with ETH, and to{" "}
+                            <Link className="App-header-link-main" to="/v1">
+                              swap
+                            </Link>{" "}
+                            ETH for other tokens.
+                            <br />
+                            <a target="_blank" rel="noreferrer" href={`https://docs.agx.xyz/tokenomics/points-system`}>
+                              Read more &gt;&gt;
+                            </a>
+                          </>
+                        );
+                      }}
+                    >
+                      <span>{((Number(managedUsd) / Number(glpSupplyUsd)) * 100).toFixed(2)}% </span>
+                      <span className="value-gap">/ </span>
+                      <span>{Number(target) * 100}% </span>
+                    </TooltipWithPortal>
                   </div>
                   <div className="rightAlign small">{formatAmount(utilization, 2, 2, false)}%</div>
                   {/* <div className="rightAlign">{`${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`}</div> */}

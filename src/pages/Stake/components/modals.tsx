@@ -1388,6 +1388,16 @@ export function ClaimHistoryModal(props) {
         return "Unknown";
     }
   };
+  const renderAmountUnit=(_type)=>{
+      switch (Number(_type)) {
+        case 4:
+          return "WETH";
+        case 5:
+          return "WETH";
+        default:
+          return "AGX";
+      }
+  }
   const columns: any[] = [
     {
       accessorKey: "type",
@@ -1415,6 +1425,7 @@ export function ClaimHistoryModal(props) {
         return (
           <div className="border-b border-none p-4  text-white text-left">
             {formatAmount(ethers.BigNumber.from(row.original.amount), 18, 4, true)}
+            <span className="mx-1">{renderAmountUnit(Number(row.original.type))}</span>
           </div>
         );
       },
