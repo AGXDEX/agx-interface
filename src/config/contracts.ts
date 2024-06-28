@@ -159,15 +159,15 @@ export const SEPOLOIA_CONTRACRT = {
 
   Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   v3StakerAddress: "0xD5da92D0461AAea73313a24cf3dA292D6d1Af071",
-  nonfungibleTokenPositionManagerAddress: "0x45f84cf9620cecEDaf6742d38F480A5683030fe8",
+  nonfungibleTokenPositionManagerAddress: "0x27a6F7719735Bcb7A5550Adf745C1623533eD1eA",
   dexreader: "0x4EC56767b9D6B3c128fd3b7F301430a90b2cb5B6",
   IncentiveKey: {
-    "rewardToken": "0x07c807Da4e8337BDCb517FDe733b303C1d120DB6",
-    "pool": "0xA5e691bBda0D135CCb10eF7dCe039E1590C3c811",
-    "startTime": 1718880380,
-    "endTime": 1734432380,
-    "refundee": "0x330BD48140Cf1796e3795A6b374a673D7a4461d0"
-  },   
+    rewardToken: "0x07c807Da4e8337BDCb517FDe733b303C1d120DB6",
+    pool: "0xA5e691bBda0D135CCb10eF7dCe039E1590C3c811",
+    startTime: 1718880380,
+    endTime: 1734432380,
+    refundee: "0x330BD48140Cf1796e3795A6b374a673D7a4461d0",
+  },
   UniswapAGXEthPool: "0x13208D4923b9358cF4ccC450bB79ad98bA108D63",
   v3Factory: "0xE8d9Dcf7e670550e2FBC4161C1E9A454Dfe40b47",
   WethSwap: "0x13208D4923b9358cF4ccC450bB79ad98bA108D63",
