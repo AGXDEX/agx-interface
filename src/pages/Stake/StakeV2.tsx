@@ -1437,7 +1437,7 @@ export default function StakeV2() {
                               <span>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</span>
                             </div>
                             <div className="w-full flex justify-between">
-                              <span>Max ETH Capacity:</span>
+                              <span>Max {token.symbol} Capacity:</span>
                               <span>$ {formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}</span>
                             </div>
                           </>
@@ -1448,40 +1448,29 @@ export default function StakeV2() {
                     </TooltipWithPortal>
                   </div>
                   <div className="rightAlign">
-                    <TooltipWithPortal
-                      renderContent={() => {
-                        return (
-                          <>
-                            <div className="w-full flex justify-between">
-                              <span>Current Weight:</span>
-                              <span>{((Number(managedUsd) / Number(glpSupplyUsd)) * 100).toFixed(2)}%</span>
-                            </div>
-                            <div className="w-full flex justify-between">
-                              <span>Target Weight:</span>
-                              <span>{Number(target) * 100}%</span>
-                            </div>
-                            ETH is below its target weight. <br />
-                            Get lower fees to{" "}
-                            <Link className="App-header-link-main" to="/buy">
-                              buy ALP
-                            </Link>{" "}
-                            with ETH, and to{" "}
-                            <Link className="App-header-link-main" to="/v1">
-                              swap
-                            </Link>{" "}
-                            ETH for other tokens.
-                            <br />
-                            <a target="_blank" rel="noreferrer" href={`https://docs.agx.xyz/tokenomics/points-system`}>
-                              Read more &gt;&gt;
-                            </a>
-                          </>
-                        );
-                      }}
-                    >
-                      <span>{((Number(managedUsd) / Number(glpSupplyUsd)) * 100).toFixed(2)}% </span>
-                      <span className="value-gap">/ </span>
-                      <span>{Number(target) * 100}% </span>
-                    </TooltipWithPortal>
+                  <TooltipWithPortal
+                    renderContent={() => {
+                      return (
+                        <>
+                          <div className="w-full flex justify-between"><span>Current Weight:</span><span>{(Number(managedUsd)/Number(glpSupplyUsd)*100).toFixed(2)}%</span></div>
+                          <div className="w-full flex justify-between"><span>Target Weight:</span><span>{Number(target)*100}%</span></div>
+                          {token.symbol} is below its target weight. <br />
+                          Get lower fees to <Link className="App-header-link-main" to="/buy">
+                            buy ALP
+                          </Link> with {token.symbol}, and to  <Link className="App-header-link-main" to="/v1">
+                            swap
+                          </Link> {token.symbol} for other tokens.<br />
+                          <a target="_blank" rel="noreferrer" href={`https://docs.agx.xyz/tokenomics/points-system`}>
+                            Read more &gt;&gt;
+                          </a>
+                        </>
+                      );
+                    }}
+                  >
+                    <span>{(Number(managedUsd)/Number(glpSupplyUsd)*100).toFixed(2)}% </span>
+                    <span className="value-gap">/ </span>
+                    <span>{Number(target)*100}% </span>
+                  </TooltipWithPortal>
                   </div>
                   <div className="rightAlign small">{formatAmount(utilization, 2, 2, false)}%</div>
                   {/* <div className="rightAlign">{`${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`}</div> */}

@@ -570,6 +570,8 @@ export default function PositionEditor(props) {
                   onInputValueChange={(e) => {
                     if (maxAmount && (Number(e.target.value) > Number(maxAmountFormatted))) {
                       sethasEnoughValue(false)
+                    } else {
+                      sethasEnoughValue(true)
                     }
                     setFromValue(e.target.value)
                   }}
@@ -623,7 +625,7 @@ export default function PositionEditor(props) {
                         <div>
                           <div className="inline-block muted">
                             {formatAmount(position.leverage, 4, 2, true)}x
-                            <BsArrowRight className="transition-arrow" />
+                            <BsArrowRight className="transition-arrow inline-block" />
                           </div>
                           {formatAmount(nextLeverage, 4, 2, true)}x
                         </div>
@@ -662,7 +664,7 @@ export default function PositionEditor(props) {
                         <div>
                           <div className="inline-block muted">
                             ${formatAmount(liquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
-                            <BsArrowRight className="transition-arrow" />
+                            <BsArrowRight className="transition-arrow inline-block" />
                           </div>
                           ${formatAmount(nextLiquidationPrice, USD_DECIMALS, positionPriceDecimal, true)}
                         </div>
@@ -687,7 +689,7 @@ export default function PositionEditor(props) {
                         <div>
                           <div className="inline-block muted">
                             ${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
-                            <BsArrowRight className="transition-arrow" />
+                            <BsArrowRight className="transition-arrow inline-block" />
                           </div>
                           ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
                         </div>
@@ -706,7 +708,7 @@ export default function PositionEditor(props) {
                             <>
                               <div className="inline-block muted">
                                 ${formatAmount(fundingFee, USD_DECIMALS, 2, true)}
-                                <BsArrowRight className="transition-arrow" />
+                                <BsArrowRight className="transition-arrow inline-block" />
                               </div>
                               $0
                             </>

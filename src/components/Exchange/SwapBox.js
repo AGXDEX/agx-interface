@@ -1858,9 +1858,9 @@ export default function SwapBox(props) {
           Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {toToken.symbol} Available Liquidity. Reduce
           the "Pay" size, or use {toToken.symbol} as the "Pay" token to use it for collateral.
         </p>
-        <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, toToken.symbol)}>
+        {/* <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, toToken.symbol)}>
           You can buy {toToken.symbol} on 1inch.
-        </ExternalLink>
+        </ExternalLink> */}
       </Trans>
     ),
     [ErrorCode.TokenPoolExceeded]: (
@@ -1870,9 +1870,9 @@ export default function SwapBox(props) {
           Swap amount from {fromToken.symbol} to {toToken.symbol} exceeds {fromToken.symbol} acceptable amount. Reduce
           the "Pay" size, or use {toToken.symbol} as the "Pay" token to use it for collateral.
         </p>
-        <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, toToken.symbol)}>
+        {/* <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, toToken.symbol)}>
           You can buy {toToken.symbol} on 1inch.
-        </ExternalLink>
+        </ExternalLink> */}
       </Trans>
     ),
     [ErrorCode.TokenPoolExceededShorts]: (
@@ -1883,9 +1883,9 @@ export default function SwapBox(props) {
           amount. Reduce the "Pay" size, or use {shortCollateralToken.symbol} as the "Pay" token to use it for
           collateral.
         </p>
-        <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, shortCollateralToken.symbol)}>
+        {/* <ExternalLink href={get1InchSwapUrl(chainId, fromToken.symbol, shortCollateralToken.symbol)}>
           You can buy {shortCollateralToken.symbol} on 1inch.
-        </ExternalLink>
+        </ExternalLink> */}
       </Trans>
     ),
     [ErrorCode.InsufficientCollateralIn]: (

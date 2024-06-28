@@ -299,7 +299,7 @@ export function StakingModal(props) {
 
                   <div className="flex-col items-center justify-center w-full text-lg">
                     <span className="text-white flex">{tag.days} days</span>
-                    <span className="text-gray-400 flex">Multiplier {tag.multiplier}</span>
+                    <span className="text-gray-400 flex">Multiplier {tag.multiplier}X</span>
                   </div>
                 </div>
               ))}
