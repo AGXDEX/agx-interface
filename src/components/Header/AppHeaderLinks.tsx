@@ -26,17 +26,14 @@ export function AppHeaderLinks({ small, openSettings, clickCloseIcon, showRedire
     await queryClient.prefetchQuery({
       queryKey: ["positions", account],
       queryFn: fetchPositions,
-      staleTime: 10000,
     });
     await queryClient.prefetchQuery({
       queryKey: ["NFTData", account],
       queryFn: () => fetchNFTData(account),
-      staleTime: 10000,
     });
     await queryClient.prefetchQuery({
       queryKey: ["stakeliquidity"],
       queryFn: fetchStakeLiquidity,
-      staleTime: 10000,
     });
   };
   return (

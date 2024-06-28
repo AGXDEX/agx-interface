@@ -11,11 +11,11 @@ import App from "./App/App";
 import reportWebVitals from "./reportWebVitals";
 import QueryProvider from "providers/react-query-provider";
 
-if (process.env.NODE_ENV === "production") {
-  console.log = () => {};
-  console.error = () => {};
-  console.debug = () => {};
-}
+// if (process.env.NODE_ENV === "production") {
+//   console.log = () => {};
+//   console.error = () => {};
+//   console.debug = () => {};
+// }
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
