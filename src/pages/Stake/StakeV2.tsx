@@ -684,8 +684,8 @@ export default function StakeV2() {
   const { data: poolData } = useQuery({
     queryKey: ["poolData", Pooladdress, chainId],
     queryFn: () => fetchPoolData(Pooladdress),
-    enabled: !!Pooladdress,
-    refetchInterval: 60000,
+    enabled: !!Pooladdress && !!chainId,
+    refetchInterval: 5000,
     select: (data) => calculatePoolValues(data, agxPrice, ethPrice, stakeliquidity),
   });
   const { poolValue, AGXVFTValue, stakeAPRValue } = poolData || {};
