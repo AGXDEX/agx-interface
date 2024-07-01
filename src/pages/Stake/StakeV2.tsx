@@ -20,6 +20,7 @@ import UniswapV3Factory from "abis/UniswapV3Factory.json";
 import DexReader from "abis/DexReader.json";
 import VaultV2 from "abis/VaultV2.json";
 import YieldEmission from "abis/YieldEmission.json";
+import WETHEmission from "abis/WETHEmission.json";
 
 import { ARBITRUM, getConstant } from "config/chains";
 import { useAGXPrice } from "domain/legacy";
@@ -128,7 +129,8 @@ export default function StakeV2() {
   const IncentiveKeyAddress = getContract(chainId, "IncentiveKey");
   const AGXAddress = getContract(chainId, "AGX");
   const wethAddress = getContract(chainId, "WethSwap");
-
+  const ALPWETH = getContract(chainId, "ALP_WETH_Emission");
+  const StakeWETH = getContract(chainId, "Stake_WETH_Emission");
   const contract = useStakeAGXContract(chainId);
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const wrappedTokenSymbol = getConstant(chainId, "wrappedTokenSymbol");
@@ -451,6 +453,12 @@ export default function StakeV2() {
   });
   const { data: Pooladdress } = useSWR([`StakeV2:getPool:${active}`, chainId, v3FactoryAddress, "getPool"], {
     fetcher: contractFetcher(signer, UniswapV3Factory, [AGXAddress, EthPoolAddress, 10000]),
+  });
+  const { data: ALPWETHValue } = useSWR([`StakeV2:getPool:${active}`, chainId, ALPWETH, "claimable"], {
+    fetcher: contractFetcher(signer, WETHEmission, [account]),
+  });
+  const { data: StakeWETHValue } = useSWR([`StakeV2:getPool:${active}`, chainId, StakeWETH, "claimable"], {
+    fetcher: contractFetcher(signer, WETHEmission, [account]),
   });
   const fetchRewardRate = async () => {
     if (!signer || !yieldTrackerAddress) return null;
@@ -899,6 +907,8 @@ export default function StakeV2() {
         URLlist={urlList}
         Pool2Rewards={Pool2Rewards}
         rewards={rewards}
+        ALPWETHValue={ALPWETHValue}
+        StakeWETHValue={StakeWETHValue}
         getNew={getNew}
       />
       <DepositModal

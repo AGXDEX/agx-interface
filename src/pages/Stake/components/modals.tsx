@@ -15,6 +15,7 @@ import NFTPositionsManager from "abis/NFTPositionsManager.json";
 import UniV3Staker from "abis/UniV3Staker.json";
 import YieldEmission from "abis/YieldEmission.json";
 import StakeAGX from "abis/StakeAGX.json";
+import WETHEmission from "abis/WETHEmission.json";
 
 import { useRecommendStakeGmxAmount } from "domain/stake/useRecommendStakeGmxAmount";
 import { useAccumulatedBnGMXAmount } from "domain/rewards/useAccumulatedBnGMXAmount";
@@ -91,6 +92,8 @@ function ClaimAllModal(props) {
     Pool2Rewards,
     rewards,
     getNew,
+    ALPWETHValue,
+    StakeWETHValue,
     getStake,
   } = props;
   const [tokenId, setTokenId] = useState("");
@@ -102,6 +105,8 @@ function ClaimAllModal(props) {
   const yieldTrackerAddress = getContract(chainId, "YieldTracker");
   const { data: claimableReward, isLoading: isLoadingClaimableReward } = useClaimableReward(account, chainId);
 
+  const ALPWETH = getContract(chainId, "ALP_WETH_Emission");
+  const StakeWETH = getContract(chainId, "Stake_WETH_Emission");
   const useClaimReward = (chainId) => {
     const queryClient = useQueryClient();
     const contract = useStakeAGXContract(chainId);
@@ -162,10 +167,36 @@ function ClaimAllModal(props) {
         setIsVisible(false);
         getNew();
       });
-    } else {
+    } else if (tokenId === "Pool2") {
       setIsDeposit(true);
       const contract = new ethers.Contract(uniV3StakerAddress, UniV3Staker.abi, signer);
       callContract(chainId, contract, "claimReward", [AGXAddress, account, (selectedTag.days * 86400)], {
+        sentMsg: t`Claim submitted.`,
+        failMsg: t`Claim failed.`,
+        successMsg: t`Claim completed!`,
+        setPendingTxns,
+      }).finally(() => {
+        setIsDeposit(false);
+        setIsVisible(false);
+        getNew();
+      });
+    } else if (tokenId === "ALPReward") {
+      setIsDeposit(true);
+      const contract = new ethers.Contract(ALPWETH, WETHEmission.abi, signer);
+      callContract(chainId, contract, "claim", [], {
+        sentMsg: t`Claim submitted.`,
+        failMsg: t`Claim failed.`,
+        successMsg: t`Claim completed!`,
+        setPendingTxns,
+      }).finally(() => {
+        setIsDeposit(false);
+        setIsVisible(false);
+        getNew();
+      });
+    } else if (tokenId === "StakeReward") {
+      setIsDeposit(true);
+      const contract = new ethers.Contract(StakeWETH, WETHEmission.abi, signer);
+      callContract(chainId, contract, "claim", [], {
         sentMsg: t`Claim submitted.`,
         failMsg: t`Claim failed.`,
         successMsg: t`Claim completed!`,
@@ -233,9 +264,39 @@ function ClaimAllModal(props) {
             </div>
             <div>{rewards && Number((Number(rewards) / 10 ** 18).toFixed(2)).toLocaleString()} AGX</div>
           </div>
+          <div className="tabBox">
+            <div>
+              <Checkbox
+                isChecked={tokenId === "ALPReward"}
+                setIsChecked={(isChecked) => {
+                  isChecked ? setTokenId("ALPReward") : setTokenId("");
+                }}
+              >
+                <span className="muted">
+                  <Trans>ALP Reward</Trans>
+                </span>
+              </Checkbox>
+            </div>
+            <div>{ALPWETHValue && Number((Number(ALPWETHValue) / 10 ** 18).toFixed(2)).toLocaleString()} wETH</div>
+          </div>
+          <div className="tabBox">
+            <div>
+              <Checkbox
+                isChecked={tokenId === "StakeReward"}
+                setIsChecked={(isChecked) => {
+                  isChecked ? setTokenId("StakeReward") : setTokenId("");
+                }}
+              >
+                <span className="muted">
+                  <Trans>Stake Reward</Trans>
+                </span>
+              </Checkbox>
+            </div>
+            <div>{StakeWETHValue && Number((Number(StakeWETHValue) / 10 ** 18).toFixed(2)).toLocaleString()} wETH</div>
+          </div>
         </div>
-        <div className="mb-2">AGX Lock Duration</div>
-        <div className="grid grid-cols-4 gap-4 mb-4">
+        {(tokenId !== "ALPReward" && tokenId !== "StakeReward") && <div className="mb-2">AGX Lock Duration</div>}
+        {(tokenId !== "ALPReward" && tokenId !== "StakeReward") && <div className="grid grid-cols-4 gap-4 mb-4">
           {tags.map((tag,index) => (
             <div key={tag.days+index} className="relative flex items-center md:p-6 p-3 pt-10 md:pt-6 bg-[#18191E] rounded-lg cursor-pointer"
             onClick={() => handleClickTag(tag)}>
@@ -272,9 +333,9 @@ function ClaimAllModal(props) {
               </div>
             </div>
           ))}
-        </div>
+        </div>}
 
-        <div className="w-full flex justify-between mb-4">
+        {(tokenId !== "ALPReward" && tokenId !== "StakeReward") && <div className="w-full flex justify-between mb-4">
           <div>
             Stake Amount ({selectedTag.days === 360? '100%':selectedTag.days === 180? '50%':selectedTag.days === 90? '25%':'10%'})
           </div>
@@ -283,9 +344,9 @@ function ClaimAllModal(props) {
             selectedTag.days === 180? (tokenId === "Staking"? Number(Number(Number(ethers.utils.formatEther(claimableReward || 0))* 0.5).toFixed(2)).toLocaleString():tokenId === "Pool2"? (Pool2Rewards && Number((Number(Pool2Rewards)* 0.5 / 10 ** 18).toFixed(2)).toLocaleString()): tokenId === "Liquidity"? (rewards && Number((Number(rewards)* 0.5 / 10 ** 18).toFixed(2)).toLocaleString()): 0):
             selectedTag.days === 90? (tokenId === "Staking"? Number(Number(Number(ethers.utils.formatEther(claimableReward || 0))* 0.25).toFixed(2)).toLocaleString():tokenId === "Pool2"? (Pool2Rewards && Number((Number(Pool2Rewards)* 0.25 / 10 ** 18).toFixed(2)).toLocaleString()): tokenId === "Liquidity"? (rewards && Number((Number(rewards)* 0.25 / 10 ** 18).toFixed(2)).toLocaleString()): 0):
             (tokenId === "Staking"? Number(Number(Number(ethers.utils.formatEther(claimableReward || 0))* 0.1).toFixed(2)).toLocaleString():tokenId === "Pool2"? (Pool2Rewards && Number((Number(Pool2Rewards)* 0.1 / 10 ** 18).toFixed(2)).toLocaleString()): tokenId === "Liquidity"? (rewards && Number((Number(rewards)* 0.1 / 10 ** 18).toFixed(2)).toLocaleString()): 0)} AGX</div>
-        </div>
+        </div>}
 
-        <div className="w-full flex justify-between mb-4">
+        {(tokenId !== "ALPReward" && tokenId !== "StakeReward") && <div className="w-full flex justify-between mb-4">
           <div>
             Lose Amount ({selectedTag.days === 360? '0%':selectedTag.days === 180? '50%':selectedTag.days === 90? '75%':'90%'})
           </div>
@@ -294,7 +355,7 @@ function ClaimAllModal(props) {
             selectedTag.days === 180? (tokenId === "Staking"? Number(Number(Number(ethers.utils.formatEther(claimableReward || 0))* 0.5).toFixed(2)).toLocaleString():tokenId === "Pool2"? (Pool2Rewards && Number((Number(Pool2Rewards)* 0.5 / 10 ** 18).toFixed(2)).toLocaleString()): tokenId === "Liquidity"? (rewards && Number((Number(rewards)* 0.5 / 10 ** 18).toFixed(2)).toLocaleString()): 0):
             selectedTag.days === 90? (tokenId === "Staking"? Number(Number(Number(ethers.utils.formatEther(claimableReward || 0))* 0.75).toFixed(2)).toLocaleString():tokenId === "Pool2"? (Pool2Rewards && Number((Number(Pool2Rewards)* 0.75 / 10 ** 18).toFixed(2)).toLocaleString()): tokenId === "Liquidity"? (rewards && Number((Number(rewards)* 0.75 / 10 ** 18).toFixed(2)).toLocaleString()): 0):
             (tokenId === "Staking"? Number(Number(Number(ethers.utils.formatEther(claimableReward || 0))* 0.9).toFixed(2)).toLocaleString():tokenId === "Pool2"? (Pool2Rewards && Number((Number(Pool2Rewards)* 0.9 / 10 ** 18).toFixed(2)).toLocaleString()): tokenId === "Liquidity"? (rewards && Number((Number(rewards)* 0.9 / 10 ** 18).toFixed(2)).toLocaleString()): 0)} AGX</div>
-        </div>
+        </div>}
 
         {/* <div className="w-full flex justify-between">
           <div>You will receive</div>
